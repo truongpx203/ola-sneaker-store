@@ -63,10 +63,10 @@ class AccountController extends Controller
              } else {
                  // Tài khoản không active
                  Auth::logout();
-                 return redirect()->back()->with('message', 'Tài khoản của bạn đã bị khóa.');
+                 return redirect()->back()->with('error', 'Tài khoản của bạn đã bị khóa.');
              }
          } else {
-             return redirect()->back()->with('message', 'Tên đăng nhập hoặc mật khẩu không đúng.');
+             return redirect()->back()->with('error', 'Tên đăng nhập hoặc mật khẩu không đúng.');
          }
      }
  

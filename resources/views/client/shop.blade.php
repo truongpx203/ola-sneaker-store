@@ -10,12 +10,12 @@
       <div class="row">
         <div class="col-12">
           <div class="page-header-content">
-            <h2 class="title" data-aos="fade-down" data-aos-duration="1000">Product Page</h2>
+            <h2 class="title" data-aos="fade-down" data-aos-duration="1000">Cửa hàng</h2>
             <nav class="breadcrumb-area" data-aos="fade-down" data-aos-duration="1200">
               <ul class="breadcrumb">
-                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html">Trang Chủ</a></li>
                 <li class="breadcrumb-sep">//</li>
-                <li>Product Page</li>
+                <li>Cửa hàng</li>
               </ul>
             </nav>
           </div>
@@ -798,7 +798,7 @@
         <div class="col-xl-3">
           <div class="shop-sidebar">
             <div class="shop-sidebar-category">
-              <h4 class="sidebar-title">Top Categories</h4>
+              <h4 class="sidebar-title">Danh mục</h4>
               <div class="sidebar-category">
                 <ul class="category-list mb--0">
                   <li><a href="shop.html">Shoes <span>(6)</span></a></li>
@@ -813,14 +813,14 @@
             </div>
 
             <div class="shop-sidebar-price-range">
-              <h4 class="sidebar-title">Price Filter</h4>
+              <h4 class="sidebar-title">Giá</h4>
               <div class="sidebar-price-range">   
                 <div id="price-range"></div>
               </div>
             </div>
 
             <div class="shop-sidebar-color">
-              <h4 class="sidebar-title">Color</h4>
+              <h4 class="sidebar-title">Màu sắc</h4>
               <div class="sidebar-color">
                 <ul class="color-list">
                   <li data-bg-color="#39ed8c" class="active"></li>
@@ -855,7 +855,7 @@
             </div>
 
             <div class="shop-sidebar-brand">
-              <h4 class="sidebar-title">Brand</h4>
+              <h4 class="sidebar-title">Thương hiệu</h4>
               <div class="sidebar-brand">
                 <ul class="brand-list mb--0">
                   <li><a href="shop.html">Lakmeetao <span>(6)</span></a></li>

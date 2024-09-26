@@ -84,7 +84,7 @@
                 <div class="product-category-content">
                   <div class="content">
                     <h4 class="sub-title">Sale 50% Off</h4>
-                    <h3 class="title"><a href="shop.html">Sports Shoes</a></h3>
+                    <h3 class="title"><a href="shop.html">Giày thể thao</a></h3>
                   </div>
                 </div>
                 <div class="product-category-thumb" data-bg-img="assets/img/shop/category/1.webp"></div>
@@ -100,7 +100,7 @@
                 <div class="product-category-content">
                   <div class="content">
                     <h4 class="sub-title">Sale 50% Off</h4>
-                    <h3 class="title"><a href="shop.html">new arrival</a></h3>
+                    <h3 class="title"><a href="shop.html">Giày mới nhập</a></h3>
                   </div>
                 </div>
                 <div class="product-category-thumb" data-bg-img="assets/img/shop/category/2.webp"></div>
@@ -116,7 +116,7 @@
                 <div class="product-category-content">
                   <div class="content">
                     <h4 class="sub-title">Sale 50% Off</h4>
-                    <h3 class="title"><a href="shop.html">New sneakers</a></h3>
+                    <h3 class="title"><a href="shop.html">Giày thể thao mới</a></h3>
                   </div>
                 </div>
                 <div class="product-category-thumb" data-bg-img="assets/img/shop/category/3.webp"></div>
@@ -136,9 +136,9 @@
         <div class="row">
           <div class="col-12">
             <div class="section-title text-center">
-              <h3 class="title">Featured Items</h3>
+              <h3 class="title">Sản Phẩm Nổi Bật</h3>
               <div class="desc">
-                <p>There are many variations of passages of Lorem Ipsum available</p>
+                <p>Khám phá bộ sưu tập giày thể thao hàng đầu của chúng tôi. Từ những mẫu mới nhất đến những thiết kế kinh điển, chúng tôi có tất cả để đáp ứng nhu cầu thể thao và phong cách của bạn.</p>
               </div>
             </div>
           </div>
@@ -149,7 +149,7 @@
             <div class="product-item">
               <div class="inner-content">
                 <div class="product-thumb">
-                  <a href="single-product.html">
+                  <a href="{{route('product-detail')}}">
                     <img src="assets/img/shop/1.webp" width="270" height="274" alt="Image-HasTech">
                   </a>
                   <div class="product-flag">
@@ -499,7 +499,7 @@
                         <img class="icon-img" src="assets/img/icons/1.webp" width="55" height="41" alt="Icon-HasTech">
                       </div>
                       <div class="content">
-                        <h5 class="title">Free Home Delivary</h5>
+                        <h5 class="title">Giao hàng tận nhà miễn phí</h5>
                       </div>
                     </div>
                   </div>
@@ -511,7 +511,7 @@
                         <img class="icon-img" src="assets/img/icons/2.webp" width="35" height="41" alt="Icon-HasTech">
                       </div>
                       <div class="content">
-                        <h5 class="title">Secure Payment</h5>
+                        <h5 class="title">Thanh toán an toàn</h5>
                       </div>
                     </div>
                   </div>
@@ -523,7 +523,7 @@
                         <img class="icon-img" src="assets/img/icons/3.webp" width="33" height="41" alt="Icon-HasTech">
                       </div>
                       <div class="content">
-                        <h5 class="title">Order Discount</h5>
+                        <h5 class="title">Đặt hàng giảm giá</h5>
                       </div>
                     </div>
                   </div>
@@ -535,7 +535,7 @@
                         <img class="icon-img" src="assets/img/icons/4.webp" width="43" height="41" alt="Icon-HasTech">
                       </div>
                       <div class="content">
-                        <h5 class="title">24 x 7 Online Support</h5>
+                        <h5 class="title">Hỗ trợ trực tuyến 24/7</h5>
                       </div>
                     </div>
                   </div>
@@ -560,9 +560,9 @@
         <div class="row">
           <div class="col-12">
             <div class="section-title text-center">
-              <h3 class="title">Best Seller</h3>
+              <h3 class="title">Sản Phẩm Bán Chạy</h3>
               <div class="desc">
-                <p>There are many variations of passages of Lorem Ipsum available</p>
+                <p>Khám phá những mẫu giày thể thao được yêu thích nhất từ khách hàng. Chất lượng vượt trội và thiết kế phong cách, những sản phẩm này chắc chắn sẽ làm hài lòng bạn.</p>
               </div>
             </div>
           </div>
@@ -833,8 +833,8 @@
               <div class="inner-content">
                 <div class="product-collection-content">
                   <div class="content">
-                    <h3 class="title"><a href="shop.html">Sports Shoes</a></h3>
-                    <h4 class="price">From $95.00</h4>
+                    <h3 class="title"><a href="shop.html">Giày thể thao</a></h3>
+                    <h4 class="price">Chỉ từ 350.000</h4>
                   </div>
                 </div>
                 <div class="product-collection-thumb" data-bg-img="assets/img/shop/collection/1.webp"></div>
@@ -849,7 +849,7 @@
               <div class="inner-content">
                 <div class="product-collection-content">
                   <div class="content">
-                    <h3 class="title"><a href="shop.html">Latest Shoes</a></h3>
+                    <h3 class="title"><a href="shop.html">Giày mới nhất</a></h3>
                     <h4 class="price">From $90.00</h4>
                   </div>
                 </div>
@@ -886,9 +886,9 @@
         <div class="row">
           <div class="col-12">
             <div class="section-title text-center">
-              <h3 class="title">Client Feedback</h3>
+              <h3 class="title">Đánh Giá Khách Hàng</h3>
               <div class="desc">
-                <p>There are many variations of passages of Lorem Ipsum available</p>
+                <p>Khách hàng của chúng tôi luôn hài lòng với sản phẩm giày thể thao chất lượng và dịch vụ tận tâm.</p>
               </div>
             </div>
           </div>

@@ -26,7 +26,25 @@ Route::get('/shop', function () {
 Route::get('/blog', function () {
     return view('client.blog');
 })->name('/blog');
+Route::get('/product-detail', function () {
+    return view('client.product-details');
+})->name('product-detail');
+Route::get('/product-details', function () {
+    return view('client.product-details');
+})->name('/product-detail');
 // ...
+
+Route::get('page-not-found', function () {
+    return view('client.page-not-found');
+});
+
+Route::get('order-details', function () {
+    return view('client.order-details');
+})->name('order-details');
+
+Route::get('tt-thanhcong', function () {
+    return view('client.tt-thanh-cong');
+});
 
 // Client
 
