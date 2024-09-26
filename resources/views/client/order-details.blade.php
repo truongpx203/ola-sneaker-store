@@ -36,8 +36,8 @@
               <nav>
                 <div class="myaccount-tab-menu nav nav-tabs" id="nav-tab" role="tablist">
                   @auth
-                  <button class="nav-link active" id="account-info-tab" data-bs-toggle="tab" data-bs-target="#account-info" type="button" role="tab" aria-controls="account-info" aria-selected="true">Account Details</button>
-                  <button class="nav-link" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab" aria-controls="orders" aria-selected="false"> Orders</button>
+                  <button class="nav-link" id="account-info-tab" data-bs-toggle="tab" data-bs-target="#account-info" type="button" role="tab" aria-controls="account-info" aria-selected="false">Account Details</button>
+                  <button class="nav-link active" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab" aria-controls="orders" aria-selected="true"> Orders</button>
                   <button class="nav-link" id="download-tab" data-bs-toggle="tab" data-bs-target="#download" type="button" role="tab" aria-controls="download" aria-selected="false">Download</button>
                   <button class="nav-link" id="payment-method-tab" data-bs-toggle="tab" data-bs-target="#payment-method" type="button" role="tab" aria-controls="payment-method" aria-selected="false">Payment Method</button>
                   <button class="nav-link" id="address-edit-tab" data-bs-toggle="tab" data-bs-target="#address-edit" type="button" role="tab" aria-controls="address-edit" aria-selected="false">address</button>
@@ -48,7 +48,7 @@
             </div>
             <div class="col-lg-9 col-md-8">
               <div class="tab-content" id="nav-tabContent">
-                <div class="tab-pane fade show active" id="account-info" role="tabpanel" aria-labelledby="account-info-tab">
+                <div class="tab-pane fade" id="account-info" role="tabpanel" aria-labelledby="account-info-tab">
                   <div class="myaccount-content">
                     <h3>Account Details</h3>
                     @if (Session('success'))
@@ -124,17 +124,20 @@
                     </div>
                   </div>
                 </div>
-                <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+                <div class="tab-pane fade show active" id="orders" role="tabpanel" aria-labelledby="orders-tab">
                   <div class="myaccount-content">
-                    <h3>Orders</h3>
+                    <h3>Orders Detail</h3>
                     <div class="myaccount-table table-responsive text-center">
                       <table class="table table-bordered">
                         <thead class="thead-light">
                           <tr>
                             <th>Order</th>
                             <th>Date</th>
-                            <th>Status</th>
-                            <th>Total</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Hình ảnh</th>
+                            <th>Giá</th>
+                            <th>Số lượng</th>
+                            <th>T</th>
                             <th>Action</th>
                           </tr>
                         </thead>
@@ -144,21 +147,11 @@
                             <td>Aug 22, 2022</td>
                             <td>Pending</td>
                             <td>$3000</td>
-                            <td><a href="{{route('order-details')}}" class="check-btn sqr-btn ">View</a></td>
-                          </tr>
-                          <tr>
-                            <td>2</td>
-                            <td>July 22, 2022</td>
-                            <td>Approved</td>
-                            <td>$200</td>
-                            <td><a href="{{route('order-details')}}" class="check-btn sqr-btn ">View</a></td>
-                          </tr>
-                          <tr>
-                            <td>3</td>
-                            <td>June 12, 2022</td>
-                            <td>On Hold</td>
-                            <td>$990</td>
-                            <td><a href="{{route('order-details')}}" class="check-btn sqr-btn ">View</a></td>
+                            <td>$3000</td>
+                            <td>$3000</td>
+                            <td>$3000</td>
+                            <td>Quay lại</td>
+                            {{-- <td><a href="shop-cart.html" class="check-btn sqr-btn ">View</a></td> --}}
                           </tr>
                         </tbody>
                       </table>

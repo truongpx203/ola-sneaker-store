@@ -57,7 +57,7 @@
             <div class="header-top-align">
               <div class="header-top-align-start">
                 <div class="desc">
-                  <p>World Wide Completely Free Returns and Free Shipping</p>
+                  <p>Đổi trả và giao hàng miễn phí.</p>
                 </div>
               </div>
               <div class="header-top-align-end">
@@ -71,7 +71,7 @@
                         @if (Auth::check())
                         <a href="{{ route('account') }}">{{ Auth::user()->username }}</a>
                         @else
-                            <a href="{{ route('login') }}">Account</a>
+                            <a href="{{ route('login') }}">Tài khoản</a>
                         @endif
                     </li>
                     </ul>
@@ -137,17 +137,17 @@
             <div class="header-align">
               <div class="header-navigation-area position-relative">
                 <ul class="main-menu nav">
-                    <li><a href="{{route('/')}}"><span>Home</span></a></li>
+                    <li><a href="{{route('/')}}"><span>TRANG CHỦ</span></a></li>
                   {{-- <li class="has-submenu"><a href="#/"><span>Home</span></a>
                     <ul class="submenu-nav">
                       <li><a href="index.html"><span>Home One</span></a></li>
                       <li><a href="index-two.html"><span>Home Two</span></a></li>
                     </ul>
                   </li> --}}
-                  <li><a href="#"><span>About</span></a></li>
-                  <li><a href="{{route('/shop')}}"><span>Shop</span></a></li>
+                  <li><a href="#"><span>GIỚI THIỆU</span></a></li>
+                  <li><a href="{{route('/shop')}}"><span>CỬA HÀNG</span></a></li>
                   <li><a href="{{route('/blog')}}"><span>Blog</span></a></li>
-                  <li><a href="#"><span>Contact</span></a></li>
+                  <li><a href="#"><span>LIÊN HỆ</span></a></li>
                 </ul>
               </div>
             </div>
@@ -177,7 +177,8 @@
                     <img class="logo-main" src="assets/img/logo-light.webp" width="131" height="34" alt="Logo" />
                   </a>
                 </div>
-                <p class="desc">Lorem ipsum dolor sit amet consl adipisi elit, sed do eiusmod templ incididunt ut labore</p>
+                <p class="desc">Khám phá bộ sưu tập giày thể thao đa dạng, phong cách và chất lượng. Mang đến sự thoải mái và tự tin cho từng bước đi của bạn.
+                  </p>
                 <div class="social-icons">
                   <a href="https://www.facebook.com/" target="_blank" rel="noopener"><i class="fa fa-facebook"></i></a>
                   <a href="https://dribbble.com/" target="_blank" rel="noopener"><i class="fa fa-dribbble"></i></a>
@@ -191,17 +192,17 @@
           <div class="col-md-6 col-lg-3">
             <!--== Start widget Item ==-->
             <div class="widget-item widget-services-item">
-              <h4 class="widget-title">Services</h4>
+              <h4 class="widget-title">Dịch vụ</h4>
               <h4 class="widget-collapsed-title collapsed" data-bs-toggle="collapse" data-bs-target="#widgetId-1">Services</h4>
               <div id="widgetId-1" class="collapse widget-collapse-body">
                 <div class="collapse-body">
                   <div class="widget-menu-wrap">
                     <ul class="nav-menu">
-                      <li><a href="contact.html">Home monitoring</a></li>
-                      <li><a href="contact.html">Air Filters</a></li>
-                      <li><a href="contact.html">Professional installation</a></li>
-                      <li><a href="contact.html">Smart Buildings</a></li>
-                      <li><a href="contact.html">For contractors</a></li>
+                      <li><a href="contact.html">Tư vấn giày thể thao</a></li>
+                      <li><a href="contact.html">Giao hàng tận nơi</a></li>
+                      <li><a href="contact.html">Đổi trả dễ dàng</a></li>
+                      <li><a href="contact.html">Hỗ trợ khách hàng</a></li>
+                      <li><a href="contact.html">Chương trình khuyến mãi</a></li>
                     </ul>
                   </div>
                 </div>
@@ -212,17 +213,17 @@
           <div class="col-md-6 col-lg-3">
             <!--== Start widget Item ==-->
             <div class="widget-item widget-account-item">
-              <h4 class="widget-title">My Account</h4>
+              <h4 class="widget-title">Tài khoản</h4>
               <h4 class="widget-collapsed-title collapsed" data-bs-toggle="collapse" data-bs-target="#widgetId-2">My Account</h4>
               <div id="widgetId-2" class="collapse widget-collapse-body">
                 <div class="collapse-body">
                   <div class="widget-menu-wrap">
                     <ul class="nav-menu">
-                      <li><a href="account-login.html">My Account</a></li>
-                      <li><a href="contact.html">Contact</a></li>
-                      <li><a href="shop-cart.html">Shopping cart</a></li>
-                      <li><a href="shop.html">Shop</a></li>
-                      <li><a href="account-login.html">Services Login</a></li>
+                      <li><a href="account-login.html">Tài khoản của tôi</a></li>
+                      <li><a href="contact.html">Liên hệ</a></li>
+                      <li><a href="shop-cart.html">Giỏ hàng</a></li>
+                      <li><a href="shop.html">Cửa hàng</a></li>
+                      {{-- <li><a href="account-login.html">Services Login</a></li> --}}
                     </ul>
                   </div>
                 </div>
@@ -233,16 +234,16 @@
           <div class="col-md-6 col-lg-3">
             <!--== Start widget Item ==-->
             <div class="widget-item">
-              <h4 class="widget-title">Contact Info</h4>
+              <h4 class="widget-title">Thông tin liên hệ</h4>
               <h4 class="widget-collapsed-title collapsed" data-bs-toggle="collapse" data-bs-target="#widgetId-3">Contact Info</h4>
               <div id="widgetId-3" class="collapse widget-collapse-body">
                 <div class="collapse-body">
                   <div class="widget-contact-wrap">
                     <ul>
-                      <li><span>Address:</span> Your address goes here.</li>
-                      <li><span>Phone//fax:</span> <a href="tel://0123456789">0123456789</a></li>
+                      <li><span>Địa chỉ: </span>Nam Từ Liêm - Hà Nội.</li>
+                      <li><span>Điện thoại:</span> <a href="tel://0123456789">0999999999</a></li>
                       <li><span>Email:</span> <a href="mailto://demo@example.com">demo@example.com</a></li>
-                      <li><a target="_blank" href="https://www.hasthemes.com/">www.example.com</a></li>
+                      <li><a target="_blank" href="https://www.hasthemes.com/">OlaSneaker.vn</a></li>
                     </ul>
                   </div>
                 </div>
@@ -256,7 +257,7 @@
     <!--== End Footer Main ==-->
 
     <!--== Start Footer Bottom ==-->
-    <div class="footer-bottom">
+    {{-- <div class="footer-bottom">
       <div class="container pt--0 pb--0">
         <div class="row">
           <div class="col-md-7 col-lg-6">
@@ -269,7 +270,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> --}}
     <!--== End Footer Bottom ==-->
   </footer>
   <!--== End Footer Area Wrapper ==-->

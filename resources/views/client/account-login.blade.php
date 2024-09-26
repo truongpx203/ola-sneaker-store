@@ -35,6 +35,11 @@
           </div>
         </div>
       </div>
+      @if (Session('error'))
+      <div class="alert alert-danger" role="alert">
+          {{Session('error')}}
+      </div>
+      @endif
       @if (Session('message'))
       <div class="alert alert-success" role="alert">
           {{Session('message')}}
