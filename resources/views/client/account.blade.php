@@ -62,14 +62,14 @@
                         <div class="row">
                           <div class="col-lg-6">
                             <div class="single-input-item">
-                              <label for="first-name" class="required">Full Name</label>
-                              <input type="text" id="first-name" value="{{ Auth::user()->fullname}}" disabled>
+                              <label for="first-name" class="required">Họ tên</label>
+                              <input type="text" id="first-name" value="{{ Auth::user()->full_name}}" disabled>
                             </div>
                           </div>
                           <div class="col-lg-6">
                             <div class="single-input-item">
-                              <label for="last-name" class="required">User name</label>
-                              <input type="text" id="last-name" value="{{ Auth::user()->username}}">
+                              <label for="last-name" class="required">Số điện thoại</label>
+                              <input type="text" id="last-name" value="{{ Auth::user()->phone_number}}">
                             </div>
                           </div>
                         </div>
@@ -78,8 +78,8 @@
                           <input type="email" id="email" value="{{ Auth::user()->email}}">
                         </div>
                         <div class="single-input-item">
-                          <label for="display-name" class="required">Avatar(Không bắt buộc)</label>
-                          <input type="text" id="display-name" disabled>
+                          <label for="display-name" class="required">Địa chỉ</label>
+                          <input type="text" id="display-name" value="{{ Auth::user()->address}}">
                         </div>
                        
                         <fieldset>

@@ -69,7 +69,7 @@
                       <li class="account">
                         <i class="fa fa-user"></i>
                         @if (Auth::check())
-                        <a href="{{ route('account') }}">{{ Auth::user()->username }}</a>
+                        <a href="{{ route('account') }}">{{ Auth::user()->full_name }}</a>
                         @else
                             <a href="{{ route('login') }}">Tài khoản</a>
                         @endif

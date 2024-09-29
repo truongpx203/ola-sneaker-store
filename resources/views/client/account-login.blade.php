@@ -53,9 +53,9 @@
               <div class="row">
                 <div class="col-12">
                   <div class="form-group">
-                    <label for="username">Username<span class="required">*</span></label>
-                    <input id="username" name="username" class="form-control" type="text" value="{{ old('username') }}">
-                    @error('username')
+                    <label for="email">Email<span class="required">*</span></label>
+                    <input id="email" name="email" class="form-control" type="text" value="{{ old('email') }}">
+                    @error('email')
                       <span class="text-danger">{{$message}}</span>
                     @enderror
                   </div>
@@ -77,12 +77,12 @@
                 <div class="col-12">
                   <div class="form-group account-info-group mb--0">
                     <div class="rememberme-account">
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                        <label class="form-check-label" for="defaultCheck1">Remember me</label>
-                      </div>
+                      {{-- <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" name="remember" id="remember">
+                        <label class="form-check-label" for="remember">Ghi nhớ tài khoản</label>
+                      </div> --}}
                     </div>
-                    <a class="lost-password" href="#/">Lost your password?</a>
+                    <a class="lost-password" href="#/">Quên mật khẩu?</a>
                   </div>
                 </div>
                 <div class="mt-5 text-center">
