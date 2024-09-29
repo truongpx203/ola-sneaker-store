@@ -44,17 +44,8 @@
                 <div class="col-12">
                   <div class="form-group">
                     <label for="username">Full name <span class="required">*</span></label>
-                    <input id="fullname" name="fullname" class="form-control" type="text" value="{{old('fullname')}}">
-                    @error('fullname')
-                <span class="text-danger">{{$message}}</span>
-            @enderror
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="form-group">
-                    <label for="username">Username <span class="required">*</span></label>
-                    <input id="username" name="username" class="form-control" type="text" value="{{old('username')}}">
-                    @error('username')
+                    <input id="fullname" name="full_name" class="form-control" type="text" value="{{old('full_name')}}">
+                    @error('full_name')
                 <span class="text-danger">{{$message}}</span>
             @enderror
                   </div>
@@ -62,8 +53,26 @@
                 <div class="col-12">
                   <div class="form-group">
                     <label for="email">Email<span class="required">*</span></label>
-                    <input id="email" name="email" class="form-control" type="email" value="{{old('email')}}">
+                    <input id="email" name="email" class="form-control" type="text" value="{{old('email')}}">
                     @error('email')
+                <span class="text-danger">{{$message}}</span>
+            @enderror
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="email">Phone_number<span class="required">*</span></label>
+                    <input id="phone_number" name="phone_number" class="form-control" type="number" value="{{old('phone_number')}}">
+                    @error('phone_number')
+                <span class="text-danger">{{$message}}</span>
+            @enderror
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="email">Address<span class="required">*</span></label>
+                    <input id="address" name="address" class="form-control" type="text" value="{{old('address')}}">
+                    @error('address')
                 <span class="text-danger">{{$message}}</span>
             @enderror
                   </div>
