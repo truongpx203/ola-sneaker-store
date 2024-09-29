@@ -145,7 +145,7 @@
                     </ul>
                   </li> --}}
                   <li><a href="#"><span>GIỚI THIỆU</span></a></li>
-                  <li><a href="{{route('/shop')}}"><span>CỬA HÀNG</span></a></li>
+                  <li><a href="{{route('/shop')}}"><span>SẢN PHẨM</span></a></li>
                   <li><a href="{{route('/blog')}}"><span>Blog</span></a></li>
                   <li><a href="#"><span>LIÊN HỆ</span></a></li>
                 </ul>
