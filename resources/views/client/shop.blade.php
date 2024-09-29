@@ -10,12 +10,12 @@
       <div class="row">
         <div class="col-12">
           <div class="page-header-content">
-            <h2 class="title" data-aos="fade-down" data-aos-duration="1000">Cửa hàng</h2>
+            <h2 class="title" data-aos="fade-down" data-aos-duration="1000">Sản phẩm</h2>
             <nav class="breadcrumb-area" data-aos="fade-down" data-aos-duration="1200">
               <ul class="breadcrumb">
                 <li><a href="index.html">Trang Chủ</a></li>
                 <li class="breadcrumb-sep">//</li>
-                <li>Cửa hàng</li>
+                <li>Sản phẩm</li>
               </ul>
             </nav>
           </div>
@@ -34,7 +34,7 @@
             <div class="col-12">
               <div class="shop-top-bar">
                 <div class="shop-top-left">
-                  <p class="pagination-line"><a href="shop.html">12</a> Product Found of <a href="shop.html">30</a></p>
+                  {{-- <p class="pagination-line"><a href="shop.html">12</a> Product Found of <a href="shop.html">30</a></p> --}}
                 </div>
                 <div class="shop-top-center">
                   <nav class="product-nav">
@@ -46,13 +46,10 @@
                 </div>
                 <div class="shop-top-right">
                   <div class="shop-sort">
-                    <span>Sort By :</span>
+                    <span>Sắp xếp theo :</span>
                     <select class="form-select" aria-label="Sort select example">
-                      <option selected>Default</option>
-                      <option value="1">Popularity</option>
-                      <option value="2">Average Rating</option>
-                      <option value="3">Newsness</option>
-                      <option value="4">Price Low to High</option>
+                      <option selected>Mặc định</option>
+                      <option value="1">Giá thấp đến cao</option>
                     </select>
                   </div>
                 </div>
@@ -93,7 +90,7 @@
                                 <li><a href="shop.html">Women</a></li>
                               </ul>
                             </div>
-                            <h4 class="title"><a href="single-product.html">Leather Mens Slipper</a></h4>
+                            <h4 class="title"><a href="{{route('/product-detail')}}">Leather Mens Slipper</a></h4>
                             <div class="prices">
                               <span class="price-old">$300</span>
                               <span class="sep">-</span>
@@ -819,7 +816,7 @@
               </div>
             </div>
 
-            <div class="shop-sidebar-color">
+            {{-- <div class="shop-sidebar-color">
               <h4 class="sidebar-title">Màu sắc</h4>
               <div class="sidebar-color">
                 <ul class="color-list">
@@ -839,22 +836,25 @@
                   <li data-bg-color="#c8c289"></li>
                 </ul>
               </div>
-            </div>
+            </div> --}}
 
             <div class="shop-sidebar-size">
               <h4 class="sidebar-title">Size</h4>
               <div class="sidebar-size">
                 <ul class="size-list">
-                  <li><a href="shop.html">S <span>(6)</span></a></li>
-                  <li><a href="shop.html">M <span>(4)</span></a></li>
-                  <li><a href="shop.html">L <span>(2)</span></a></li>
-                  <li><a href="shop.html">XL <span>(6)</span></a></li>
-                  <li><a href="shop.html">XXL <span>(12)</span></a></li>
+                  <li><a href="shop.html">36 <span>(6)</span></a></li>
+                  <li><a href="shop.html">37 <span>(4)</span></a></li>
+                  <li><a href="shop.html">38 <span>(2)</span></a></li>
+                  <li><a href="shop.html">39 <span>(6)</span></a></li>
+                  <li><a href="shop.html">40 <span>(12)</span></a></li>
+                  <li><a href="shop.html">41 <span>(12)</span></a></li>
+                  <li><a href="shop.html">42 <span>(12)</span></a></li>
+                  <li><a href="shop.html">43 <span>(12)</span></a></li>
                 </ul>
               </div>
             </div>
 
-            <div class="shop-sidebar-brand">
+            {{-- <div class="shop-sidebar-brand">
               <h4 class="sidebar-title">Thương hiệu</h4>
               <div class="sidebar-brand">
                 <ul class="brand-list mb--0">
@@ -865,7 +865,7 @@
                   <li><a href="shop.html">Xlovgtir <span>(12)</span></a></li>
                 </ul>
               </div>
-            </div>
+            </div> --}}
           </div>
         </div>
       </div>
