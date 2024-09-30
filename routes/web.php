@@ -37,7 +37,18 @@ Route::get('/product-details', function () {
 Route::get('page-not-found', function () {
     return view('client.page-not-found');
 });
-
+Route::get('contact', function () {
+    return view('client.contact');
+});
+Route::get('shop-wishlist', function () {
+    return view('client.shop-wishlist');
+});
+Route::get('shop-cart', function () {
+    return view('client.shop-cart');
+});
+Route::get('shop-checkout', function () {
+    return view('client.shop-checkout');
+});
 Route::get('order-details', function () {
     return view('client.order-details');
 })->name('order-details');

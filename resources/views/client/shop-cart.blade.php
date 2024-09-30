@@ -10,12 +10,12 @@
       <div class="row">
         <div class="col-12">
           <div class="page-header-content">
-            <h2 class="title" data-aos="fade-down" data-aos-duration="1000">Shopping Cart</h2>
+            <h2 class="title" data-aos="fade-down" data-aos-duration="1000">Giỏ hàng</h2>
             <nav class="breadcrumb-area" data-aos="fade-down" data-aos-duration="1200">
               <ul class="breadcrumb">
-                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html">Trang chủ</a></li>
                 <li class="breadcrumb-sep">//</li>
-                <li>Shopping Cart</li>
+                <li>Giỏ hàng</li>
               </ul>
             </nav>
           </div>
@@ -37,10 +37,11 @@
                   <tr>
                     <th class="product-remove">&nbsp;</th>
                     <th class="product-thumb">&nbsp;</th>
-                    <th class="product-name">Product</th>
-                    <th class="product-price">Price</th>
-                    <th class="product-quantity">Quantity</th>
-                    <th class="product-subtotal">Total</th>
+                    <th class="product-name">Sản phẩm</th>
+                    <th class="product-price">Size</th>
+                    <th class="product-price">Giá</th>
+                    <th class="product-quantity">Số lượng</th>
+                    <th class="product-subtotal">Tổng cộng</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -55,6 +56,15 @@
                     </td>
                     <td class="product-name">
                       <h4 class="title"><a href="single-product.html">Leather Mens Slipper</a></h4>
+                    </td>
+                    <td class="product-price">
+                      <select id="shoeSizeSelect" class="form-select" aria-label="Chọn kích thước giày">
+                        <option value="" disabled selected>40</option>
+                        <option value="36">36</option>
+                        <option value="37">37</option>
+                        <option value="38">38</option>
+                        <option value="39">39</option>
+                      </select>
                     </td>
                     <td class="product-price">
                       <span class="price">£69.99</span>
@@ -81,6 +91,15 @@
                       <h4 class="title"><a href="single-product.html">Quickiin Mens shoes</a></h4>
                     </td>
                     <td class="product-price">
+                      <select id="shoeSizeSelect" class="form-select" aria-label="Chọn kích thước giày">
+                        <option value="" disabled selected>40</option>
+                        <option value="36">36</option>
+                        <option value="37">37</option>
+                        <option value="38">38</option>
+                        <option value="39">39</option>
+                      </select>
+                    </td>
+                    <td class="product-price">
                       <span class="price">£20.00</span>
                     </td>
                     <td class="product-quantity">
@@ -105,6 +124,15 @@
                       <h4 class="title"><a href="single-product.html">Rexpo Womens shoes</a></h4>
                     </td>
                     <td class="product-price">
+                      <select id="shoeSizeSelect" class="form-select" aria-label="Chọn kích thước giày">
+                        <option value="" disabled selected>40</option>
+                        <option value="36">36</option>
+                        <option value="37">37</option>
+                        <option value="38">38</option>
+                        <option value="39">39</option>
+                      </select>
+                    </td>
+                    <td class="product-price">
                       <span class="price">£39.00</span>
                     </td>
                     <td class="product-quantity">
@@ -117,10 +145,10 @@
                     </td>
                   </tr>
                   <tr class="actions">
-                    <td class="border-0" colspan="6">
-                      <button type="submit" class="update-cart" disabled>Update cart</button>
-                      <button type="submit" class="clear-cart">Clear Cart</button>
-                      <a href="shop.html" class="btn-theme btn-flat">Continue Shopping</a>
+                    <td class="border-0" colspan="8">
+                      <button type="submit" class="update-cart" disabled>Cập nhật giỏ hàng</button>
+                      <button type="submit" class="clear-cart">Xóa giỏ hàng</button>
+                      <a href="shop.html" class="btn-theme btn-flat">Tiếp tục mua sắm</a>
                     </td>
                   </tr>
                 </tbody>
@@ -131,7 +159,7 @@
       </div>
       <div class="row row-gutter-50">
         <div class="col-md-6 col-lg-4">
-          <div id="CategoriesAccordion" class="shipping-form-calculate">
+          {{-- <div id="CategoriesAccordion" class="shipping-form-calculate">
             <div class="section-title-cart">
               <h5 class="title">Calculate Shipping</h5>
               <div class="desc">
@@ -177,14 +205,14 @@
                 </div>
               </form>
             </div>
-          </div>
+          </div> --}}
         </div>
         <div class="col-md-6 col-lg-4">
           <div class="shipping-form-coupon">
             <div class="section-title-cart">
-              <h5 class="title">Coupon Code</h5>
+              <h5 class="title">Mã giảm giá</h5>
               <div class="desc">
-                <p>Enter your coupon code if you have one.</p>
+                <p>Nhập mã phiếu giảm giá nếu bạn có.</p>
               </div>
             </div>
             <form action="#" method="post">
@@ -192,12 +220,12 @@
                 <div class="col-md-12">
                   <div class="form-group">
                     <label for="couponCode" class="visually-hidden">Coupon Code</label>
-                    <input type="text" id="couponCode" class="form-control" placeholder="Enter your coupon code..">
+                    <input type="text" id="couponCode" class="form-control" placeholder="Nhập mã phiếu giảm giá của bạn">
                   </div>
                 </div>
                 <div class="col-md-12">
                   <div class="form-group">
-                    <button type="submit" class="coupon-btn">Apply coupon</button>
+                    <button type="submit" class="coupon-btn">Áp dụng phiếu giảm giá</button>
                   </div>
                 </div>
               </div>
@@ -207,43 +235,30 @@
         <div class="col-md-12 col-lg-4">
           <div class="shipping-form-cart-totals">
             <div class="section-title-cart">
-              <h5 class="title">Cart totals</h5>
+              <h5 class="title">Tổng giỏ hàng</h5>
             </div>
             <div class="cart-total-table">
               <table class="table">
                 <tbody>
                   <tr class="cart-subtotal">
                     <td>
-                      <p class="value">Subtotal</p>
+                      <p class="value">Tạm tính</p>
                     </td>
                     <td>
                       <p class="price">£128.00</p>
                     </td>
                   </tr>
-                  <tr class="shipping">
+                  <tr class="cart-subtotal">
                     <td>
-                      <p class="value">Shipping</p>
+                      <p class="value">Giảm giá</p>
                     </td>
                     <td>
-                      <ul class="shipping-list">
-                        <li class="radio">
-                          <input type="radio" name="shipping" id="radio1" checked>
-                          <label for="radio1"><span></span> Flat Rate</label>
-                        </li>
-                        <li class="radio">
-                          <input type="radio" name="shipping" id="radio2">
-                          <label for="radio2"><span></span> Free Shipping</label>
-                        </li>
-                        <li class="radio">
-                          <input type="radio" name="shipping" id="radio3">
-                          <label for="radio3"><span></span> Local Pickup</label>
-                        </li>
-                      </ul>
+                      <p class="price">20%</p>
                     </td>
                   </tr>
                   <tr class="order-total">
                     <td>
-                      <p class="value">Total</p>
+                      <p class="value">Tổng tiền</p>
                     </td>
                     <td>
                       <p class="price">£128.00</p>
@@ -252,7 +267,7 @@
                 </tbody>
               </table>
             </div>
-            <a class="btn-theme btn-flat" href="shop-checkout.html">Proceed to checkout</a>
+            <a class="btn-theme btn-flat" href="{{'shop-checkout'}}">Tiến hành thanh toán</a>
           </div>
         </div>
       </div>

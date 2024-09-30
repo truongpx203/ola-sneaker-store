@@ -99,7 +99,7 @@
               <div class="header-middle-align-center">
                 <div class="header-search-area">
                   <form class="header-searchbox">
-                    <input type="search" class="form-control" placeholder="Search">
+                    <input type="search" class="form-control" placeholder="Tìm kiếm">
                     <button class="btn-submit" type="submit"><i class="pe-7s-search"></i></button>
                   </form>
                 </div>
@@ -110,7 +110,7 @@
                     <button class="shopping-search-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#AsideOffcanvasSearch" aria-controls="AsideOffcanvasSearch"><i class="pe-7s-search icon"></i></button>
                   </div>
                   <div class="shopping-wishlist">
-                    <a class="shopping-wishlist-btn" href="shop-wishlist.html">
+                    <a class="shopping-wishlist-btn" href="{{'shop-wishlist'}}">
                       <i class="pe-7s-like icon"></i>
                     </a>
                   </div>
@@ -147,7 +147,7 @@
                   <li><a href="#"><span>GIỚI THIỆU</span></a></li>
                   <li><a href="{{route('/shop')}}"><span>SẢN PHẨM</span></a></li>
                   <li><a href="{{route('/blog')}}"><span>Blog</span></a></li>
-                  <li><a href="#"><span>LIÊN HỆ</span></a></li>
+                  <li><a href="{{'contact'}}"><span>LIÊN HỆ</span></a></li>
                 </ul>
               </div>
             </div>
@@ -303,20 +303,10 @@
                 <div class="quick-view-select-item">
                   <label for="forSize" class="form-label">Size:</label>
                   <select class="form-select" id="forSize" required>
-                    <option selected value="">s</option>
-                    <option>m</option>
-                    <option>l</option>
-                    <option>xl</option>
-                  </select>
-                </div>
-                <div class="quick-view-select-item">
-                  <label for="forColor" class="form-label">Color:</label>
-                  <select class="form-select" id="forColor" required>
-                    <option selected value="">red</option>
-                    <option>green</option>
-                    <option>blue</option>
-                    <option>yellow</option>
-                    <option>white</option>
+                    <option selected value="">40</option>
+                    <option>41</option>
+                    <option>42</option>
+                    <option>43</option>
                   </select>
                 </div>
               </div>
@@ -324,7 +314,7 @@
                 <div class="pro-qty">
                   <input type="text" id="quantity20" title="Quantity" value="1" />
                 </div>
-                <button class="btn btn-black">Add to cart</button>
+                <button class="btn btn-black">Thêm vào giỏ hàng</button>
               </div>
             </div>
           </div>
@@ -339,7 +329,7 @@
   <div class="aside-cart-wrapper offcanvas offcanvas-end" tabindex="-1" id="AsideOffcanvasCart" aria-labelledby="offcanvasRightLabel">
     <div class="offcanvas-header">
       <h1 id="offcanvasRightLabel"></h1>
-      <button class="btn-aside-cart-close" data-bs-dismiss="offcanvas" aria-label="Close">Shopping Cart <i class="fa fa-chevron-right"></i></button>
+      <button class="btn-aside-cart-close" data-bs-dismiss="offcanvas" aria-label="Close">Giỏ hàng <i class="fa fa-chevron-right"></i></button>
     </div>
     <div class="offcanvas-body">
       <ul class="aside-cart-product-list">
@@ -360,9 +350,9 @@
           <span class="product-price">1 × £20.00</span>
         </li>
       </ul>
-      <p class="cart-total"><span>Subtotal:</span><span class="amount">£89.99</span></p>
-      <a class="btn-theme" data-margin-bottom="10" href="shop-cart.html">View cart</a>
-      <a class="btn-theme" href="shop-checkout.html">Checkout</a>
+      <p class="cart-total"><span>Tổng cộng:</span><span class="amount">£89.99</span></p>
+      <a class="btn-theme" data-margin-bottom="10" href="shop-cart.html">Xem giỏ hàng</a>
+      <a class="btn-theme" href="shop-checkout.html">Thanh toán</a>
       <a class="d-block text-end lh-1" href="shop-checkout.html"><img src="assets/img/photos/paypal.webp" width="133" height="26" alt="Has-image"></a>
     </div>
   </div>
