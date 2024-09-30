@@ -1,6 +1,6 @@
 @extends('client.layout')
 
-@section('title', 'Login')
+@section('title', 'Đăng nhập')
 
 @section('content')
 <main class="main-content">
@@ -10,12 +10,12 @@
       <div class="row">
         <div class="col-12">
           <div class="page-header-content">
-            <h2 class="title" data-aos="fade-down" data-aos-duration="1000">Login</h2>
+            <h2 class="title" data-aos="fade-down" data-aos-duration="1000">Đăng nhập</h2>
             <nav class="breadcrumb-area" data-aos="fade-down" data-aos-duration="1200">
               <ul class="breadcrumb">
-                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html">Trang chủ</a></li>
                 <li class="breadcrumb-sep">//</li>
-                <li>Login</li>
+                <li>Đăng nhập</li>
               </ul>
             </nav>
           </div>
@@ -31,7 +31,7 @@
       <div class="row">
         <div class="col-sm-8 m-auto">
           <div class="section-title text-center">
-            <h2 class="title">Login</h2>
+            <h2 class="title">Đăng nhập</h2>
           </div>
         </div>
       </div>
@@ -62,7 +62,7 @@
                 </div>
                 <div class="col-12">
                   <div class="form-group">
-                    <label for="password">Password <span class="required">*</span></label>
+                    <label for="password">Mật khẩu<span class="required">*</span></label>
                     <input id="password" name="password" class="form-control" type="password">
                     @error('password')
                     <span class="text-danger">{{$message}}</span>
@@ -71,7 +71,7 @@
                 </div>
                 <div class="col-12">
                   <div class="form-group">
-                    <button class="btn-login" type="submit">Login</button>
+                    <button class="btn-login" type="submit">Đăng nhập</button>
                   </div>
                 </div>
                 <div class="col-12">

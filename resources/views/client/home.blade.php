@@ -75,7 +75,7 @@
 
     <!--== Start Product Category Area Wrapper ==-->
     <section class="product-area product-category-area">
-      <div class="container-fluid">
+      {{-- <div class="container-fluid">
         <div class="row">
           <div class="col-sm-6 col-lg-4">
             <!--== Start Product Category Item ==-->
@@ -126,7 +126,7 @@
             <!--== End Product Category Item ==-->
           </div>
         </div>
-      </div>
+      </div> --}}
     </section>
     <!--== End Product Category Area Wrapper ==-->
 
@@ -138,7 +138,7 @@
             <div class="section-title text-center">
               <h3 class="title">Sản Phẩm Nổi Bật</h3>
               <div class="desc">
-                <p>Khám phá bộ sưu tập giày thể thao hàng đầu của chúng tôi. Từ những mẫu mới nhất đến những thiết kế kinh điển, chúng tôi có tất cả để đáp ứng nhu cầu thể thao và phong cách của bạn.</p>
+                <p>Khám phá bộ sưu tập giày thể thao hàng đầu của chúng tôi.</p>
               </div>
             </div>
           </div>
@@ -163,18 +163,11 @@
                     <button type="button" class="btn-product-quick-view-open">
                       <i class="fa fa-arrows"></i>
                     </button>
-                    <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a>
+                    {{-- <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a> --}}
                   </div>
                   <a class="banner-link-overlay" href="shop.html"></a>
                 </div>
                 <div class="product-info">
-                  <div class="category">
-                    <ul>
-                      <li><a href="shop.html">Men</a></li>
-                      <li class="sep">/</li>
-                      <li><a href="shop.html">Women</a></li>
-                    </ul>
-                  </div>
                   <h4 class="title"><a href="single-product.html">Leather Mens Slipper</a></h4>
                   <div class="prices">
                     <span class="price-old">$100</span>
@@ -191,7 +184,7 @@
             <div class="product-item">
               <div class="inner-content">
                 <div class="product-thumb">
-                  <a href="single-product.html">
+                  <a href="{{route('product-detail')}}">
                     <img src="assets/img/shop/2.webp" width="270" height="274" alt="Image-HasTech">
                   </a>
                   <div class="product-action">
@@ -200,18 +193,11 @@
                     <button type="button" class="btn-product-quick-view-open">
                       <i class="fa fa-arrows"></i>
                     </button>
-                    <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a>
+                    {{-- <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a> --}}
                   </div>
                   <a class="banner-link-overlay" href="shop.html"></a>
                 </div>
                 <div class="product-info">
-                  <div class="category">
-                    <ul>
-                      <li><a href="shop.html">Men</a></li>
-                      <li class="sep">/</li>
-                      <li><a href="shop.html">Women</a></li>
-                    </ul>
-                  </div>
                   <h4 class="title"><a href="single-product.html">Quickiin Mens shoes</a></h4>
                   <div class="prices">
                     <span class="price">$140.00</span>
@@ -226,7 +212,7 @@
             <div class="product-item">
               <div class="inner-content">
                 <div class="product-thumb">
-                  <a href="single-product.html">
+                  <a href="{{route('product-detail')}}">
                     <img src="assets/img/shop/3.webp" width="270" height="274" alt="Image-HasTech">
                   </a>
                   <div class="product-flag">
@@ -240,18 +226,11 @@
                     <button type="button" class="btn-product-quick-view-open">
                       <i class="fa fa-arrows"></i>
                     </button>
-                    <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a>
+                    {{-- <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a> --}}
                   </div>
                   <a class="banner-link-overlay" href="shop.html"></a>
                 </div>
                 <div class="product-info">
-                  <div class="category">
-                    <ul>
-                      <li><a href="shop.html">Men</a></li>
-                      <li class="sep">/</li>
-                      <li><a href="shop.html">Women</a></li>
-                    </ul>
-                  </div>
                   <h4 class="title"><a href="single-product.html">Rexpo Womens shoes</a></h4>
                   <div class="prices">
                     <span class="price-old">$60</span>
@@ -277,18 +256,11 @@
                     <button type="button" class="btn-product-quick-view-open">
                       <i class="fa fa-arrows"></i>
                     </button>
-                    <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a>
+                    {{-- <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a> --}}
                   </div>
                   <a class="banner-link-overlay" href="shop.html"></a>
                 </div>
                 <div class="product-info">
-                  <div class="category">
-                    <ul>
-                      <li><a href="shop.html">Men</a></li>
-                      <li class="sep">/</li>
-                      <li><a href="shop.html">Women</a></li>
-                    </ul>
-                  </div>
                   <h4 class="title"><a href="single-product.html">Hollister V-Neck Knit</a></h4>
                   <div class="prices">
                     <span class="price">$880.00</span>
@@ -312,18 +284,11 @@
                     <button type="button" class="btn-product-quick-view-open">
                       <i class="fa fa-arrows"></i>
                     </button>
-                    <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a>
+                    {{-- <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a> --}}
                   </div>
                   <a class="banner-link-overlay" href="shop.html"></a>
                 </div>
                 <div class="product-info">
-                  <div class="category">
-                    <ul>
-                      <li><a href="shop.html">Men</a></li>
-                      <li class="sep">/</li>
-                      <li><a href="shop.html">Women</a></li>
-                    </ul>
-                  </div>
                   <h4 class="title"><a href="single-product.html">Primitive Mens shoes</a></h4>
                   <div class="prices">
                     <span class="price">$500.00</span>
@@ -352,18 +317,11 @@
                     <button type="button" class="btn-product-quick-view-open">
                       <i class="fa fa-arrows"></i>
                     </button>
-                    <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a>
+                    {{-- <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a> --}}
                   </div>
                   <a class="banner-link-overlay" href="shop.html"></a>
                 </div>
                 <div class="product-info">
-                  <div class="category">
-                    <ul>
-                      <li><a href="shop.html">Men</a></li>
-                      <li class="sep">/</li>
-                      <li><a href="shop.html">Women</a></li>
-                    </ul>
-                  </div>
                   <h4 class="title"><a href="single-product.html">New Womens High Hills</a></h4>
                   <div class="prices">
                     <span class="price-old">$300</span>
@@ -389,18 +347,11 @@
                     <button type="button" class="btn-product-quick-view-open">
                       <i class="fa fa-arrows"></i>
                     </button>
-                    <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a>
+                    {{-- <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a> --}}
                   </div>
                   <a class="banner-link-overlay" href="shop.html"></a>
                 </div>
                 <div class="product-info">
-                  <div class="category">
-                    <ul>
-                      <li><a href="shop.html">Men</a></li>
-                      <li class="sep">/</li>
-                      <li><a href="shop.html">Women</a></li>
-                    </ul>
-                  </div>
                   <h4 class="title"><a href="single-product.html">Simple Fabric Shoe</a></h4>
                   <div class="prices">
                     <span class="price">$133.00</span>
@@ -429,18 +380,11 @@
                     <button type="button" class="btn-product-quick-view-open">
                       <i class="fa fa-arrows"></i>
                     </button>
-                    <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a>
+                    {{-- <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a> --}}
                   </div>
                   <a class="banner-link-overlay" href="shop.html"></a>
                 </div>
                 <div class="product-info">
-                  <div class="category">
-                    <ul>
-                      <li><a href="shop.html">Men</a></li>
-                      <li class="sep">/</li>
-                      <li><a href="shop.html">Women</a></li>
-                    </ul>
-                  </div>
                   <h4 class="title"><a href="single-product.html">exclusive mens shoe</a></h4>
                   <div class="prices">
                     <span class="price-old">$300</span>
@@ -562,7 +506,7 @@
             <div class="section-title text-center">
               <h3 class="title">Sản Phẩm Bán Chạy</h3>
               <div class="desc">
-                <p>Khám phá những mẫu giày thể thao được yêu thích nhất từ khách hàng. Chất lượng vượt trội và thiết kế phong cách, những sản phẩm này chắc chắn sẽ làm hài lòng bạn.</p>
+                <p>Khám phá những mẫu giày thể thao được yêu thích nhất từ khách hàng.</p>
               </div>
             </div>
           </div>
@@ -591,18 +535,11 @@
                     <button type="button" class="btn-product-quick-view-open">
                       <i class="fa fa-arrows"></i>
                     </button>
-                    <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a>
+                    {{-- <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a> --}}
                   </div>
                           <a class="banner-link-overlay" href="shop.html"></a>
                         </div>
                         <div class="product-info">
-                          <div class="category">
-                    <ul>
-                      <li><a href="shop.html">Men</a></li>
-                              <li class="sep">/</li>
-                              <li><a href="shop.html">Women</a></li>
-                            </ul>
-                          </div>
                           <h4 class="title"><a href="single-product.html">Modern Smart Shoes</a></h4>
                           <div class="prices">
                             <span class="price-old">$200</span>
@@ -628,18 +565,11 @@
                     <button type="button" class="btn-product-quick-view-open">
                       <i class="fa fa-arrows"></i>
                     </button>
-                    <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a>
+                    {{-- <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a> --}}
                   </div>
                           <a class="banner-link-overlay" href="shop.html"></a>
                         </div>
                         <div class="product-info">
-                          <div class="category">
-                    <ul>
-                      <li><a href="shop.html">Men</a></li>
-                              <li class="sep">/</li>
-                              <li><a href="shop.html">Women</a></li>
-                            </ul>
-                          </div>
                           <h4 class="title"><a href="single-product.html">Quickiin Mens shoes</a></h4>
                           <div class="prices">
                             <span class="price">$440.00</span>
@@ -668,18 +598,11 @@
                     <button type="button" class="btn-product-quick-view-open">
                       <i class="fa fa-arrows"></i>
                     </button>
-                    <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a>
+                    {{-- <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a> --}}
                   </div>
                           <a class="banner-link-overlay" href="shop.html"></a>
                         </div>
                         <div class="product-info">
-                          <div class="category">
-                    <ul>
-                      <li><a href="shop.html">Men</a></li>
-                              <li class="sep">/</li>
-                              <li><a href="shop.html">Women</a></li>
-                            </ul>
-                          </div>
                           <h4 class="title"><a href="single-product.html">Rexpo Womens shoes</a></h4>
                           <div class="prices">
                             <span class="price-old">$130</span>
@@ -705,18 +628,11 @@
                     <button type="button" class="btn-product-quick-view-open">
                       <i class="fa fa-arrows"></i>
                     </button>
-                    <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a>
+                    {{-- <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a> --}}
                   </div>
                           <a class="banner-link-overlay" href="shop.html"></a>
                         </div>
                         <div class="product-info">
-                          <div class="category">
-                    <ul>
-                      <li><a href="shop.html">Men</a></li>
-                              <li class="sep">/</li>
-                              <li><a href="shop.html">Women</a></li>
-                            </ul>
-                          </div>
                           <h4 class="title"><a href="single-product.html">Leather Mens Slipper</a></h4>
                           <div class="prices">
                             <span class="price">$540.00</span>
@@ -740,18 +656,11 @@
                     <button type="button" class="btn-product-quick-view-open">
                       <i class="fa fa-arrows"></i>
                     </button>
-                    <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a>
+                    {{-- <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a> --}}
                   </div>
                           <a class="banner-link-overlay" href="shop.html"></a>
                         </div>
                         <div class="product-info">
-                          <div class="category">
-                    <ul>
-                      <li><a href="shop.html">Men</a></li>
-                              <li class="sep">/</li>
-                              <li><a href="shop.html">Women</a></li>
-                            </ul>
-                          </div>
                           <h4 class="title"><a href="single-product.html">Primitive Mens shoes</a></h4>
                           <div class="prices">
                             <span class="price-old">$40</span>
@@ -782,18 +691,11 @@
                     <button type="button" class="btn-product-quick-view-open">
                       <i class="fa fa-arrows"></i>
                     </button>
-                    <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a>
+                    {{-- <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a> --}}
                   </div>
                           <a class="banner-link-overlay" href="shop.html"></a>
                         </div>
                         <div class="product-info">
-                          <div class="category">
-                    <ul>
-                      <li><a href="shop.html">Men</a></li>
-                              <li class="sep">/</li>
-                              <li><a href="shop.html">Women</a></li>
-                            </ul>
-                          </div>
                           <h4 class="title"><a href="single-product.html">Simple Fabric Shoe</a></h4>
                           <div class="prices">
                             <span class="price-old">$400</span>
@@ -824,7 +726,7 @@
     <!--== End Product Area Wrapper ==-->
 
     <!--== Start Product Collection Area Wrapper ==-->
-    <section class="product-area product-collection-area">
+    {{-- <section class="product-area product-collection-area">
       <div class="container pt--0">
         <div class="row">
           <div class="col-lg-4 col-md-6">
@@ -877,11 +779,11 @@
           </div>
         </div>
       </div>
-    </section>
+    </section> --}}
     <!--== End Product Collection Area Wrapper ==-->
 
     <!--== Start Testimonial Area Wrapper ==-->
-    <section class="testimonial-area">
+    {{-- <section class="testimonial-area">
       <div class="container pt--0">
         <div class="row">
           <div class="col-12">
@@ -942,7 +844,7 @@
           </div>
         </div>
       </div>
-    </section>
+    </section> --}}
     <!--== End Testimonial Area Wrapper ==-->
   </main>
 @endsection

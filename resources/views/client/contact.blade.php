@@ -10,12 +10,12 @@
       <div class="row">
         <div class="col-12">
           <div class="page-header-content">
-            <h2 class="title" data-aos="fade-down" data-aos-duration="1000">Contact Us</h2>
+            <h2 class="title" data-aos="fade-down" data-aos-duration="1000">Liên hệ</h2>
             <nav class="breadcrumb-area" data-aos="fade-down" data-aos-duration="1200">
               <ul class="breadcrumb">
-                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html">Trang chủ</a></li>
                 <li class="breadcrumb-sep">//</li>
-                <li>Contact Us</li>
+                <li>Liên hệ</li>
               </ul>
             </nav>
           </div>
@@ -32,7 +32,7 @@
         <div class="col-xl-9">
           <div class="contact-form-wrap" data-aos="fade-right">
             <div class="contact-form-title">
-              <h2 class="title">We Are Here! <br>Please Send A Quest</h2>
+              <h2 class="title">Chúng Tôi Luôn Sẵn Sàng!<br>Hãy gửi Thắc Mắc Của Bạn</h2>
             </div>
             <!--== Start Contact Form ==-->
             <div class="contact-form">
@@ -40,7 +40,7 @@
                 <div class="row row-gutter-20">
                   <div class="col-md-6">
                     <div class="form-group">
-                      <input class="form-control" type="text" name="con_name" placeholder="Name *">
+                      <input class="form-control" type="text" name="con_name" placeholder="Họ tên *">
                     </div>
                   </div>
                   <div class="col-md-6">
@@ -50,17 +50,17 @@
                   </div>
                   <div class="col-12">
                     <div class="form-group">
-                      <input class="form-control" type="text" placeholder="Subject (Optinal)">
+                      <input class="form-control" type="text" placeholder="Tiêu đề">
                     </div>
                   </div>
                   <div class="col-12">
                     <div class="form-group mb--0">
-                      <textarea class="form-control" name="con_message" placeholder="Message"></textarea>
+                      <textarea class="form-control" name="con_message" placeholder="Nội dung"></textarea>
                     </div>
                   </div>
                   <div class="col-12">
                     <div class="form-group mb--0">
-                      <button class="btn-theme" type="submit">Send Message</button>
+                      <button class="btn-theme" type="submit">Gửi tin nhắn</button>
                     </div>
                   </div>
                 </div>
@@ -88,8 +88,8 @@
                       <img src="assets/img/icons/c1.webp" width="69" height="65" alt="Image-HasTech">
                     </div>
                     <div class="info">
-                      <h5 class="title">Address</h5>
-                      <p>Your address goes here. 123 Your Location</p>
+                      <h5 class="title">Địa chỉ</h5>
+                      <p>Polytechnin Hà Nội, Trái Đất </p>
                     </div>
                   </div>
                 </div>
@@ -99,10 +99,10 @@
                       <img src="assets/img/icons/c2.webp" width="65" height="65" alt="Image-HasTech">
                     </div>
                     <div class="info">
-                      <h5 class="title">Phone No</h5>
+                      <h5 class="title">Số điện thoại</h5>
                       <p>
-                        <a href="tel://+00123456789">+00123456789</a><br>
-                        <a href="tel://+00123456789">+00123456789</a>
+                        <a href="tel://+00123456789">0328902188</a><br>
+                        {{-- <a href="tel://+00123456789">+00123456789</a> --}}
                       </p>
                     </div>
                   </div>
@@ -113,10 +113,10 @@
                       <img src="assets/img/icons/c3.webp" width="65" height="65" alt="Image-HasTech">
                     </div>
                     <div class="info">
-                      <h5 class="title">Email / Web</h5>
+                      <h5 class="title">Email</h5>
                       <p>
-                        <a href="mailto://demo@example.com">demo@example.com</a><br>
-                        <a href="mailto://www.example.com">www.example.com</a>
+                        <a href="mailto://demo@example.com">adminDZ@gmail.com</a><br>
+                        {{-- <a href="mailto://www.example.com">www.example.com</a> --}}
                       </p>
                     </div>
                   </div>
