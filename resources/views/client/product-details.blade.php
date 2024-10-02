@@ -1,6 +1,6 @@
 @extends('client.layout')
 
-@section('title', 'Product Details')
+@section('title', 'Chi tiết sản phẩm')
 
 @section('content')
 <main class="main-content">
