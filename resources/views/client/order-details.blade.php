@@ -3,7 +3,6 @@
 @section('title', 'Account')
 
 @section('content')
-<<<<<<< HEAD
     <main class="main-content">
         <!--== Start Page Header Area Wrapper ==-->
         <div class="page-header-area" data-bg-img="assets/img/photos/bg3.webp">
@@ -23,7 +22,6 @@
                     </div>
                 </div>
             </div>
-=======
 <main class="main-content">
   <!--== Start Page Header Area Wrapper ==-->
   <div class="page-header-area" data-bg-img="assets/img/photos/bg3.webp">
@@ -40,11 +38,9 @@
               </ul>
             </nav>
           </div>
->>>>>>> d2aebcd (create Database)
         </div>
         <!--== End Page Header Area Wrapper ==-->
 
-<<<<<<< HEAD
         <!--== Start My Account Wrapper ==-->
         <section class="my-account-area">
             <div class="container pt--0 pb--0">
@@ -140,7 +136,7 @@
                             </div>
                         </div>
                     </div>
-=======
+
   <!--== Start My Account Wrapper ==-->
   <section class="my-account-area">
     <div class="container pt--0 pb--0">
@@ -159,15 +155,14 @@
                   <button class="nav-link" id="address-edit-tab" data-bs-toggle="tab" data-bs-target="#address-edit" type="button" role="tab" aria-controls="address-edit" aria-selected="false">Địa chỉ</button>
                   <button class="nav-link" onclick="window.location.href='{{route('logout')}}'" type="button">Đăng xuất</button>
                   @endauth
->>>>>>> d2aebcd (create Database)
+
                 </div>
             </div>
-<<<<<<< HEAD
         </section>
         <!--== End My Account Wrapper ==-->
     </main>
 @endsection
-=======
+
             <div class="col-lg-9 col-md-8">
               <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade" id="account-info" role="tabpanel" aria-labelledby="account-info-tab">
@@ -340,4 +335,4 @@
   <!--== End My Account Wrapper ==-->
 </main>
 @endsection
->>>>>>> d2aebcd (create Database)
+
