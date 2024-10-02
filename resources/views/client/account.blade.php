@@ -263,7 +263,6 @@
                     </div>
                 </div>
             </div>
-<<<<<<< HEAD
             <div class="col-lg-9 col-md-8">
               <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="account-info" role="tabpanel" aria-labelledby="account-info-tab">
@@ -444,9 +443,4 @@
   <!--== End My Account Wrapper ==-->
 </main>
 @endsection
-=======
-        </section>
-        <!--== End My Account Wrapper ==-->
-    </main>
-@endsection
->>>>>>> d2aebcd (create Database)
+

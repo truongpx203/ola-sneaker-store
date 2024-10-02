@@ -3,7 +3,7 @@
 @section('title', 'Shop')
 
 @section('content')
-<<<<<<< HEAD
+
 <main class="main-content">
   <!--== Start Page Header Area Wrapper ==-->
   <div class="page-header-area" data-bg-img="assets/img/photos/bg3.webp">
@@ -501,10 +501,9 @@
                                     <li>Cửa hàng</li>
                                 </ul>
                             </nav>
->>>>>>> d2aebcd (create Database)
                         </div>
                     </div>
-<<<<<<< HEAD
+
                     <div class="col-md-12">
                       <!--== Start Product Item ==-->
                       <div class="product-item product-list-item">
@@ -1632,66 +1631,6 @@
                                 </div>
                             </div>
 
-<<<<<<< HEAD
-            {{-- <div class="shop-sidebar-color">
-              <h4 class="sidebar-title">Màu sắc</h4>
-              <div class="sidebar-color">
-                <ul class="color-list">
-                  <li data-bg-color="#39ed8c" class="active"></li>
-                  <li data-bg-color="#a6ed42"></li>
-                  <li data-bg-color="#daed39"></li>
-                  <li data-bg-color="#eed739"></li>
-                  <li data-bg-color="#eca23a"></li>
-                  <li data-bg-color="#f36768"></li>
-                  <li data-bg-color="#e14755"></li>
-                  <li data-bg-color="#dc83a3"></li>
-                  <li data-bg-color="#dc82da"></li>
-                  <li data-bg-color="#9a82dd"></li>
-                  <li data-bg-color="#82c2db"></li>
-                  <li data-bg-color="#6bd6b0"></li>
-                  <li data-bg-color="#9ed76b"></li>
-                  <li data-bg-color="#c8c289"></li>
-                </ul>
-              </div>
-            </div> --}}
-
-            <div class="shop-sidebar-size">
-              <h4 class="sidebar-title">Size</h4>
-              <div class="sidebar-size">
-                <ul class="size-list">
-                  <li><a href="shop.html">36 <span>(6)</span></a></li>
-                  <li><a href="shop.html">37 <span>(4)</span></a></li>
-                  <li><a href="shop.html">38 <span>(2)</span></a></li>
-                  <li><a href="shop.html">39 <span>(6)</span></a></li>
-                  <li><a href="shop.html">40 <span>(12)</span></a></li>
-                  <li><a href="shop.html">41 <span>(12)</span></a></li>
-                  <li><a href="shop.html">42 <span>(12)</span></a></li>
-                  <li><a href="shop.html">43 <span>(12)</span></a></li>
-                </ul>
-              </div>
-            </div>
-
-            {{-- <div class="shop-sidebar-brand">
-              <h4 class="sidebar-title">Thương hiệu</h4>
-              <div class="sidebar-brand">
-                <ul class="brand-list mb--0">
-                  <li><a href="shop.html">Lakmeetao <span>(6)</span></a></li>
-                  <li><a href="shop.html">Beautifill <span>(4)</span></a></li>
-                  <li><a href="shop.html">Made In GD <span>(2)</span></a></li>
-                  <li><a href="shop.html">Pecifico <span>(6)</span></a></li>
-                  <li><a href="shop.html">Xlovgtir <span>(12)</span></a></li>
-                </ul>
-              </div>
-            </div> --}}
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!--== End Product Area Wrapper ==-->
-</main>
-@endsection
-=======
                             <div class="shop-sidebar-price-range">
                                 <h4 class="sidebar-title">Giá</h4>
                                 <div class="sidebar-price-range">
@@ -1754,4 +1693,4 @@
         <!--== End Product Area Wrapper ==-->
     </main>
 @endsection
->>>>>>> d2aebcd (create Database)
+
