@@ -72,6 +72,9 @@ Route::get('categories/{id}/show', [CategoryController::class, 'show'])->name('c
 Route::get('categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
 Route::put('categories/{id}/update', [CategoryController::class, 'update'])->name('categories.update');
 Route::delete('categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+
+// Manage product variants
+Route::get('variants',              [VariantController::class, 'index'])->name('variants.index');
 // Client
 
 Route::get('/login', [AccountController::class, 'login'])->name('login');
