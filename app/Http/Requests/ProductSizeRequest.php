@@ -66,7 +66,7 @@ class ProductSizeRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name' => 'Tên size',
+            'name' => 'Tên kích thước',
         ];
     }
 }

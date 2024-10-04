@@ -52,7 +52,7 @@
                             <div class="row gy-4">
                                 <div class="col-md-4">
                                     <div>
-                                        <label for="name" class="form-label">Tên size</label>
+                                        <label for="name" class="form-label">Tên kích thước</label>
                                         <input type="text" class="form-control" value="{{ $productSize->name }}"
                                             name="name" id="name">
                                     </div>
