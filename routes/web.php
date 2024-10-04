@@ -75,6 +75,7 @@ Route::delete('categories/{id}', [CategoryController::class, 'destroy'])->name('
 // Client
 
 Route::get('/login', [AccountController::class, 'login'])->name('login');
+Route::get('/verify-account/{email}', [AccountController::class, 'verify_account'])->name('verify.account');
 Route::post('/login', [AccountController::class, 'loginSubmit'])->name('loginSubmit');
 
 Route::get('/register', [AccountController::class, 'register'])->name('register');
