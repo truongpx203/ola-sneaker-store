@@ -34,7 +34,7 @@
                 <li class="menu-title"><span data-key="t-menu">Menu</span></li>
                 <li class="nav-item">
 
-                    <a class="nav-link menu-link" href="{{route('admin.dashboard')}}" 
+                    <a class="nav-link menu-link" href="{{route('admin.dashboard')}}"  
 
                         role="button" aria-expanded="false" aria-controls="sidebarDashboards">
                         <i class="ri-dashboard-2-line"></i> <span data-key="t-dashboards">Dashboards</span>
@@ -50,12 +50,12 @@
                     <div class="collapse menu-dropdown" id="sidebarLayouts">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="{{route('admin.catelogues.index')}}" target="_blank" class="nav-link"
+                                <a href="{{route('categories.index')}}" target="_blank" class="nav-link"
                                     data-key="t-horizontal">Danh sách</a>
                              
                             </li>
                             <li class="nav-item">
-                                <a href="{{route('admin.catelogues.create')}}" target="_blank" class="nav-link"
+                                <a href="{{route('categories.create')}}" target="_blank" class="nav-link"
                                     data-key="t-horizontal">Thêm mới </a>
                              
                             </li>
@@ -71,12 +71,12 @@
                     <div class="collapse menu-dropdown" id="sidebarProducts">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="{{route('admin.products.index')}}" target="_blank" class="nav-link"
+                                <a href="" target="_blank" class="nav-link"
                                     data-key="t-horizontal">Danh sách</a>
                              
                             </li>
                             <li class="nav-item">
-                                <a href="{{route('admin.products.create')}}" target="_blank" class="nav-link"
+                                <a href="" target="_blank" class="nav-link"
                                     data-key="t-horizontal">Thêm mới </a>
                              
                             </li>
