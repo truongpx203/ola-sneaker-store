@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductSizeRequest;
 use App\Models\ProductSize;
-use Illuminate\Http\Request;
 
 class ProductSizeController extends Controller
 {
@@ -12,7 +12,8 @@ class ProductSizeController extends Controller
      */
     public function index()
     {
-        //
+        $productSizes = ProductSize::query()->get();
+        return view('admin.productsizes.index', compact('productSizes'));
     }
 
     /**
@@ -20,46 +21,46 @@ class ProductSizeController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.productsizes.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ProductSizeRequest $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(ProductSize $productSize)
-    {
-        //
+        $productSizes = ProductSize::create($request->all());
+        return redirect()->route('dashboard.size.index');
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ProductSize $productSize)
+    public function edit($id)
     {
-        //
+        $productSize = ProductSize::find($id);
+        return view('admin.productsizes.edit', compact('productSize'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ProductSize $productSize)
+    public function update(ProductSizeRequest $request, $id)
     {
-        //
+        $productSize = ProductSize::find($id);
+        $productSize->update([
+            'name' => $request->name
+        ]);
+        return redirect()->route('dashboard.size.index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ProductSize $productSize)
+    public function destroy($id)
     {
-        //
+        $productSizes = ProductSize::find($id);
+        $productSizes->delete();
+        return redirect()->route('dashboard.size.index');
     }
 }
