@@ -86,3 +86,4 @@ Route::get('/logout', [AccountController::class, 'logout'])->name('logout');
 Route::get('/account', [AccountController::class, 'account'])
     ->name('account')
     ->middleware('auth');
+require_once __DIR__ . "/product_size.php";
