@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <form action="" method="POST" enctype="multipart/form-data">
+    <form action="{{route('categories.update', $category->id)}}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
@@ -35,7 +35,8 @@
                         <div class="live-preview">
                             <div class="row gy-4">
                                 <div class="col-md-4">
-                                  
+                                  <label for="" class="form-label">Tên:</label>
+                                  <input type="text" name="name" class="form-control" value="{{$category->name}}">
                                 </div>
                             </div>
 

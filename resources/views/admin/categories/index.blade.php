@@ -28,10 +28,37 @@
                 <div class="card-header d-flex justify-content-between ">
                     <h5 class="card-title mb-0 "> Danh Sách</h5>
 
-                    <a href="" class="btn btn-primary mb-3">Thêm Mới </a>
+                    <a href="{{route('categories.create')}}" class="btn btn-primary mb-3">Thêm Mới </a>
                 </div>
                 <div class="card-body">
-                   
+                   <table class="table">
+                    @if (session('message'))
+                        <p>{{session('message')}}</p>
+                    @endif
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên danh mục</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($data as $item)                     
+                        <tr>
+                            <td>{{$item->id}}</td>
+                            <td>{{$item->name}}</td>
+                            <td>                            
+                                <a href="{{route('categories.show', $item->id)}}" class="btn btn-primary">Xem</a>
+                                <a href="{{route('categories.edit', $item->id)}}" class="btn btn-success">Sửa</a>
+                                <form action="{{route('categories.destroy', $item->id)}}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" onclick="return confirm('Bạn có thật sự muốn xóa không??')" class="btn btn-danger">Xóa</button>
+                                </form>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                   </table>
                 </div>
             </div>
         </div><!--end col-->

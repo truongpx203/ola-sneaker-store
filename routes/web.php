@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\client\Account;
 use App\Http\Controllers\client\AccountController;
 use Illuminate\Support\Facades\Route;
@@ -57,9 +58,24 @@ Route::get('tt-thanhcong', function () {
     return view('client.tt-thanh-cong');
 });
 
+
+// Admin
+
+Route::get('admin', function() {
+    return view('admin.dashboard');
+})->name('admin.dashboard');
+
+Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
+Route::get('categories/create', [CategoryController::class, 'create'])->name('categories.create');
+Route::post('categories/store', [CategoryController::class, 'store'])->name('categories.store');
+Route::get('categories/{id}/show', [CategoryController::class, 'show'])->name('categories.show');
+Route::get('categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+Route::put('categories/{id}/update', [CategoryController::class, 'update'])->name('categories.update');
+Route::delete('categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 // Client
 
 Route::get('/login', [AccountController::class, 'login'])->name('login');
+Route::get('/verify-account/{email}', [AccountController::class, 'verify_account'])->name('verify.account');
 Route::post('/login', [AccountController::class, 'loginSubmit'])->name('loginSubmit');
 
 Route::get('/register', [AccountController::class, 'register'])->name('register');
