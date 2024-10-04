@@ -57,6 +57,24 @@ Route::get('order-details', function () {
 Route::get('tt-thanhcong', function () {
     return view('client.tt-thanh-cong');
 });
+Route::get('check-outCart', function () {
+    return view('client.shop-checkout');
+});
+Route::get('shop-wishlist', function () {
+    return view('client.shop-wishlist');
+});
+Route::get('shop-compare', function () {
+    return view('client.shop-compare');
+});
+Route::get('account', function () {
+    return view('client.account');
+});
+Route::get('shop-cart', function () {
+    return view('client.shop-cart');
+});
+Route::get('tt-thanh-cong', function () {
+    return view('client.tt-thanh-cong');
+});
 
 
 // Admin

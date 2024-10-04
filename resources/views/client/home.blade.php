@@ -17,13 +17,13 @@
                       <div class="slider-content">
                         <div class="content">
                           <div class="desc-box">
-                            <p class="desc">Up To 30% Off</p>
+                            <p class="desc">Sale đến  30% </p>
                           </div>
                           <div class="title-box">
-                            <h2 class="title"><span class="font-weight-400">Exclusive<br> </span>New Shoes</h2>
+                            <h2 class="title"><span class="font-weight-400">Độc Quyền <br> </span>New</h2>
                           </div>
                           <div class="btn-box">
-                            <a class="btn-slider" href="shop.html">Shop Now</a>
+                            <a class="btn-slider" href="shop.html">Mua Ngay</a>
                           </div>
                         </div>
                       </div>
@@ -42,7 +42,7 @@
                       <div class="slider-content">
                         <div class="content">
                           <div class="desc-box">
-                            <p class="desc">Up To 30% Off</p>
+                            <p class="desc">Up To 30% </p>
                           </div>
                           <div class="title-box">
                             <h2 class="title"><span class="font-weight-400">Exclusive<br> </span>New Shoes</h2>
@@ -83,7 +83,7 @@
               <div class="inner-content">
                 <div class="product-category-content">
                   <div class="content">
-                    <h4 class="sub-title">Sale 50% Off</h4>
+                    <h4 class="sub-title">Sale 50% </h4>
                     <h3 class="title"><a href="shop.html">Giày thể thao</a></h3>
                   </div>
                 </div>
@@ -99,7 +99,7 @@
               <div class="inner-content">
                 <div class="product-category-content">
                   <div class="content">
-                    <h4 class="sub-title">Sale 50% Off</h4>
+                    <h4 class="sub-title">Sale 50% </h4>
                     <h3 class="title"><a href="shop.html">Giày mới nhập</a></h3>
                   </div>
                 </div>
@@ -115,7 +115,7 @@
               <div class="inner-content">
                 <div class="product-category-content">
                   <div class="content">
-                    <h4 class="sub-title">Sale 50% Off</h4>
+                    <h4 class="sub-title">Sale 50% </h4>
                     <h3 class="title"><a href="shop.html">Giày thể thao mới</a></h3>
                   </div>
                 </div>
@@ -168,11 +168,22 @@
                   <a class="banner-link-overlay" href="shop.html"></a>
                 </div>
                 <div class="product-info">
+<<<<<<< HEAD
                   <h4 class="title"><a href="single-product.html">Leather Mens Slipper</a></h4>
+=======
+                  <div class="category">
+                    <ul>
+                      <li><a href="shop.html">Nam</a></li>
+                      <li class="sep">/</li>
+                      <li><a href="shop.html">Nữ</a></li>
+                    </ul>
+                  </div>
+                  <h4 class="title"><a href="single-product.html">Nike Zoom Vomero 5</a></h4>
+>>>>>>> d2aebcd (create Database)
                   <div class="prices">
-                    <span class="price-old">$100</span>
+                    <span class="price-old">350.000đ<span>
                     <span class="sep">-</span>
-                    <span class="price">$240.00</span>
+                    <span class="price">200.000đ</span>
                   </div>
                 </div>
               </div>
@@ -198,9 +209,20 @@
                   <a class="banner-link-overlay" href="shop.html"></a>
                 </div>
                 <div class="product-info">
+<<<<<<< HEAD
                   <h4 class="title"><a href="single-product.html">Quickiin Mens shoes</a></h4>
+=======
+                  <div class="category">
+                    <ul>
+                      <li><a href="shop.html">Nam</a></li>
+                      <li class="sep">/</li>
+                      <li><a href="shop.html">Nữ</a></li>
+                    </ul>
+                  </div>
+                  <h4 class="title"><a href="single-product.html">Nike Zoom Vomero 5</a></h4>
+>>>>>>> d2aebcd (create Database)
                   <div class="prices">
-                    <span class="price">$140.00</span>
+                    <span class="price">350.000đ</span>
                   </div>
                 </div>
               </div>
@@ -231,11 +253,22 @@
                   <a class="banner-link-overlay" href="shop.html"></a>
                 </div>
                 <div class="product-info">
+<<<<<<< HEAD
                   <h4 class="title"><a href="single-product.html">Rexpo Womens shoes</a></h4>
+=======
+                  <div class="category">
+                    <ul>
+                      <li><a href="shop.html">Men</a></li>
+                      <li class="sep">/</li>
+                      <li><a href="shop.html">Nữ</a></li>
+                    </ul>
+                  </div>
+                  <h4 class="title"><a href="single-product.html">Nike Zoom Vomero 5</a></h4>
+>>>>>>> d2aebcd (create Database)
                   <div class="prices">
-                    <span class="price-old">$60</span>
+                    <pan class="price-old">350.000đ</pan>
                     <span class="sep">-</span>
-                    <span class="price">$260.00</span>
+                    <span class="price">260.000đ</span>
                   </div>
                 </div>
               </div>
@@ -261,9 +294,20 @@
                   <a class="banner-link-overlay" href="shop.html"></a>
                 </div>
                 <div class="product-info">
+<<<<<<< HEAD
                   <h4 class="title"><a href="single-product.html">Hollister V-Neck Knit</a></h4>
+=======
+                  <div class="category">
+                    <ul>
+                      <li><a href="shop.html">Men</a></li>
+                      <li class="sep">/</li>
+                      <li><a href="shop.html">Nữ</a></li>
+                    </ul>
+                  </div>
+                  <h4 class="title"><a href="single-product.html">Nike Zoom Vomero 5</a></h4>
+>>>>>>> d2aebcd (create Database)
                   <div class="prices">
-                    <span class="price">$880.00</span>
+                    <span class="price">350.000đ</span>
                   </div>
                 </div>
               </div>
@@ -289,9 +333,20 @@
                   <a class="banner-link-overlay" href="shop.html"></a>
                 </div>
                 <div class="product-info">
+<<<<<<< HEAD
                   <h4 class="title"><a href="single-product.html">Primitive Mens shoes</a></h4>
+=======
+                  <div class="category">
+                    <ul>
+                      <li><a href="shop.html">Men</a></li>
+                      <li class="sep">/</li>
+                      <li><a href="shop.html">Nữ</a></li>
+                    </ul>
+                  </div>
+                  <h4 class="title"><a href="single-product.html">Nike Zoom Vomero 5</a></h4>
+>>>>>>> d2aebcd (create Database)
                   <div class="prices">
-                    <span class="price">$500.00</span>
+                    <span class="price">350.000đ</span>
                   </div>
                 </div>
               </div>
@@ -322,11 +377,22 @@
                   <a class="banner-link-overlay" href="shop.html"></a>
                 </div>
                 <div class="product-info">
+<<<<<<< HEAD
                   <h4 class="title"><a href="single-product.html">New Womens High Hills</a></h4>
+=======
+                  <div class="category">
+                    <ul>
+                      <li><a href="shop.html">Men</a></li>
+                      <li class="sep">/</li>
+                      <li><a href="shop.html">Nữ</a></li>
+                    </ul>
+                  </div>
+                  <h4 class="title"><a href="single-product.html">Nike Zoom Vomero 5</a></h4>
+>>>>>>> d2aebcd (create Database)
                   <div class="prices">
-                    <span class="price-old">$300</span>
+                    <span class="price-old">350.000đ<span>
                     <span class="sep">-</span>
-                    <span class="price">$333.00</span>
+                    <span class="price">300.000đ</span>
                   </div>
                 </div>
               </div>
@@ -352,9 +418,20 @@
                   <a class="banner-link-overlay" href="shop.html"></a>
                 </div>
                 <div class="product-info">
+<<<<<<< HEAD
                   <h4 class="title"><a href="single-product.html">Simple Fabric Shoe</a></h4>
+=======
+                  <div class="category">
+                    <ul>
+                      <li><a href="shop.html">Men</a></li>
+                      <li class="sep">/</li>
+                      <li><a href="shop.html">Nữ</a></li>
+                    </ul>
+                  </div>
+                  <h4 class="title"><a href="single-product.html">Nike Zoom Vomero 5</a></h4>
+>>>>>>> d2aebcd (create Database)
                   <div class="prices">
-                    <span class="price">$133.00</span>
+                    <span class="price">350.000đ</span>
                   </div>
                 </div>
               </div>
@@ -385,11 +462,22 @@
                   <a class="banner-link-overlay" href="shop.html"></a>
                 </div>
                 <div class="product-info">
+<<<<<<< HEAD
                   <h4 class="title"><a href="single-product.html">exclusive mens shoe</a></h4>
+=======
+                  <div class="category">
+                    <ul>
+                      <li><a href="shop.html">Men</a></li>
+                      <li class="sep">/</li>
+                      <li><a href="shop.html">Nữ</a></li>
+                    </ul>
+                  </div>
+                  <h4 class="title"><a href="single-product.html">Nike Zoom Vomero 5</a></h4>
+>>>>>>> d2aebcd (create Database)
                   <div class="prices">
-                    <span class="price-old">$300</span>
+                    <span class="price-old">350.000đ<span>
                     <span class="sep">-</span>
-                    <span class="price">$420.00</span>
+                    <span class="price">310.000đ</span>
                   </div>
                 </div>
               </div>
@@ -418,10 +506,10 @@
           </div>
           <div class="col-lg-6">
             <div class="divider-content">
-              <h4 class="sub-title">Saving 50%</h4>
-              <h2 class="title">All Online Store</h2>
-              <p class="desc">Offer Available All Shoes & Products</p>
-              <a class="btn-theme" href="shop.html">Shop Now</a>
+              <h4 class="sub-title">Tiết Kiệm Đến 50%</h4>
+              <h2 class="title">Áp Dụng Cho Tất Cả Các Sản Phẩm </h2>
+              {{-- <p class="desc">Áp Dụng Cho Tất Cả Các Sản Phẩm</p> --}}
+              <a class="btn-theme" href="shop.html">Mua Ngay</a>
             </div>
           </div>
         </div>
@@ -540,11 +628,22 @@
                           <a class="banner-link-overlay" href="shop.html"></a>
                         </div>
                         <div class="product-info">
+<<<<<<< HEAD
                           <h4 class="title"><a href="single-product.html">Modern Smart Shoes</a></h4>
+=======
+                          <div class="category">
+                    <ul>
+                      <li><a href="shop.html">Men</a></li>
+                              <li class="sep">/</li>
+                              <li><a href="shop.html">Nữ</a></li>
+                            </ul>
+                          </div>
+                          <h4 class="title"><a href="single-product.html">Nike Revolution 7 EasyOn</a></h4>
+>>>>>>> d2aebcd (create Database)
                           <div class="prices">
-                            <span class="price-old">$200</span>
+                            <span class="price-old">450.000đ<span>
                             <span class="sep">-</span>
-                            <span class="price">$240.00</span>
+                            <span class="price">400.000đ</span>
                           </div>
                         </div>
                       </div>
@@ -570,9 +669,20 @@
                           <a class="banner-link-overlay" href="shop.html"></a>
                         </div>
                         <div class="product-info">
+<<<<<<< HEAD
                           <h4 class="title"><a href="single-product.html">Quickiin Mens shoes</a></h4>
+=======
+                          <div class="category">
+                    <ul>
+                      <li><a href="shop.html">Nam</a></li>
+                              <li class="sep">/</li>
+                              <li><a href="shop.html">Nữ</a></li>
+                            </ul>
+                          </div>
+                          <h4 class="title"><a href="single-product.html">Nike Revolution 7 EasyOn</a></h4>
+>>>>>>> d2aebcd (create Database)
                           <div class="prices">
-                            <span class="price">$440.00</span>
+                            <span class="price">400.000đ</span>
                           </div>
                         </div>
                       </div>
@@ -603,11 +713,22 @@
                           <a class="banner-link-overlay" href="shop.html"></a>
                         </div>
                         <div class="product-info">
+<<<<<<< HEAD
                           <h4 class="title"><a href="single-product.html">Rexpo Womens shoes</a></h4>
+=======
+                          <div class="category">
+                    <ul>
+                      <li><a href="shop.html">Nam</a></li>
+                              <li class="sep">/</li>
+                              <li><a href="shop.html">Nữ</a></li>
+                            </ul>
+                          </div>
+                          <h4 class="title"><a href="single-product.html">Nike Revolution 7 EasyOn</a></h4>
+>>>>>>> d2aebcd (create Database)
                           <div class="prices">
-                            <span class="price-old">$130</span>
+                            <span class="price-old">450.000đ<span>
                             <span class="sep">-</span>
-                            <span class="price">$333.00</span>
+                            <span class="price">350.000đ</span>
                           </div>
                         </div>
                       </div>
@@ -633,9 +754,20 @@
                           <a class="banner-link-overlay" href="shop.html"></a>
                         </div>
                         <div class="product-info">
+<<<<<<< HEAD
                           <h4 class="title"><a href="single-product.html">Leather Mens Slipper</a></h4>
+=======
+                          <div class="category">
+                    <ul>
+                      <li><a href="shop.html">Nam</a></li>
+                              <li class="sep">/</li>
+                              <li><a href="shop.html">Nữ</a></li>
+                            </ul>
+                          </div>
+                          <h4 class="title"><a href="single-product.html">Nike Revolution 7 EasyOn</a></h4>
+>>>>>>> d2aebcd (create Database)
                           <div class="prices">
-                            <span class="price">$540.00</span>
+                            <span class="price">450.000đ</span>
                           </div>
                         </div>
                       </div>
@@ -661,11 +793,22 @@
                           <a class="banner-link-overlay" href="shop.html"></a>
                         </div>
                         <div class="product-info">
+<<<<<<< HEAD
                           <h4 class="title"><a href="single-product.html">Primitive Mens shoes</a></h4>
+=======
+                          <div class="category">
+                    <ul>
+                      <li><a href="shop.html">Nam</a></li>
+                              <li class="sep">/</li>
+                              <li><a href="shop.html">Nữ</a></li>
+                            </ul>
+                          </div>
+                          <h4 class="title"><a href="single-product.html">Nike Revolution 7 EasyOn</a></h4>
+>>>>>>> d2aebcd (create Database)
                           <div class="prices">
-                            <span class="price-old">$40</span>
+                            <pan class="price-old">450.000đ</pan>
                             <span class="sep">-</span>
-                            <span class="price">$280.00</span>
+                            <span class="price">250.000đ</span>
                           </div>
                         </div>
                       </div>
@@ -696,11 +839,22 @@
                           <a class="banner-link-overlay" href="shop.html"></a>
                         </div>
                         <div class="product-info">
+<<<<<<< HEAD
                           <h4 class="title"><a href="single-product.html">Simple Fabric Shoe</a></h4>
+=======
+                          <div class="category">
+                    <ul>
+                      <li><a href="shop.html">Nam</a></li>
+                              <li class="sep">/</li>
+                              <li><a href="shop.html">Nữ</a></li>
+                            </ul>
+                          </div>
+                          <h4 class="title"><a href="single-product.html">Nike Revolution 7 EasyOn</a></h4>
+>>>>>>> d2aebcd (create Database)
                           <div class="prices">
-                            <span class="price-old">$400</span>
+                            <span class="price-old">450.000đ<span>
                             <span class="sep">-</span>
-                            <span class="price">$580.00</span>
+                            <span class="price">350.000đ</span>
                           </div>
                         </div>
                       </div>
@@ -736,7 +890,7 @@
                 <div class="product-collection-content">
                   <div class="content">
                     <h3 class="title"><a href="shop.html">Giày thể thao</a></h3>
-                    <h4 class="price">Chỉ từ 350.000</h4>
+                    <h4 class="price">Chỉ từ 350.000đ</h4>
                   </div>
                 </div>
                 <div class="product-collection-thumb" data-bg-img="assets/img/shop/collection/1.webp"></div>
@@ -752,7 +906,7 @@
                 <div class="product-collection-content">
                   <div class="content">
                     <h3 class="title"><a href="shop.html">Giày mới nhất</a></h3>
-                    <h4 class="price">From $90.00</h4>
+                    <h4 class="price">Chỉ từ  300.000đ</h4>
                   </div>
                 </div>
                 <div class="product-collection-thumb" data-bg-img="assets/img/shop/collection/2.webp"></div>
@@ -767,8 +921,8 @@
               <div class="inner-content">
                 <div class="product-collection-content">
                   <div class="content">
-                    <h3 class="title"><a href="shop.html">Office Shoes</a></h3>
-                    <h4 class="price">From $82.00</h4>
+                    <h3 class="title"><a href="shop.html">Sản Phẩm Ưu Thích</a></h3>
+                    <h4 class="price">Chỉ từ 350.000đ</h4>
                   </div>
                 </div>
                 <div class="product-collection-thumb" data-bg-img="assets/img/shop/collection/3.webp"></div>
@@ -807,10 +961,10 @@
                         <img src="assets/img/testimonial/1.webp" width="90" height="90" alt="Image-HasTech">
                       </div>
                       <div class="testi-content">
-                        <p>Lorem ipsum dolor sit amel adipiscing elit, sed do eiusll tempor incididunt ut laborj et dolore magna.</p>
+                        <p>Giày rất tốt không có gì để chê</p>
                         <div class="testi-author">
                           <div class="testi-info">
-                            <span class="name"><a href="about-us.html">Jaren Hammer</a></span>
+                            <span class="name"><a href="about-us.html">Thiết </a></span>
                           </div>
                         </div>
                         <div class="testi-quote"><img src="assets/img/icons/quote1.webp" width="62" height="44" alt="Image-HasTech"></div>
@@ -827,10 +981,10 @@
                         <img src="assets/img/testimonial/2.webp" width="90" height="90" alt="Image-HasTech">
                       </div>
                       <div class="testi-content">
-                        <p>Lorem ipsum dolor sit amel adipiscing elit, sed do eiusll tempor incididunt ut laborj et dolore magna.</p>
+                        <p>Giày tốt khỏi bàn , xứng đáng cho 5 sao .</p>
                         <div class="testi-author">
                           <div class="testi-info">
-                            <span class="name"><a href="about-us.html">Dorian Cordova</a></span>
+                            <span class="name"><a href="about-us.html">Anh Thanh</a></span>
                           </div>
                         </div>
                         <div class="testi-quote"><img src="assets/img/icons/quote1.webp" width="62" height="44" alt="Image-HasTech"></div>
