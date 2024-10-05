@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\client\Account;
 use App\Http\Controllers\client\AccountController;
+use App\Http\Controllers\VariantController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -92,7 +93,12 @@ Route::put('categories/{id}/update', [CategoryController::class, 'update'])->nam
 Route::delete('categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
 // Manage product variants
-Route::get('variants',              [VariantController::class, 'index'])->name('variants.index');
+Route::get('variants',                  [VariantController::class, 'index'])->name('variants.index');
+Route::get('variants/{variant}/show',   [VariantController::class, 'show'])->name('variants.show');
+Route::get('variants/{variant}/edit',   [VariantController::class, 'edit'])->name('variants.edit');
+Route::put('variants/{variant}/update', [VariantController::class, 'update'])->name('variants.update');
+Route::delete('variants/{variant}',     [VariantController::class, 'destroy'])->name('variants.destroy');
+
 // Client
 
 Route::get('/login', [AccountController::class, 'login'])->name('login');
