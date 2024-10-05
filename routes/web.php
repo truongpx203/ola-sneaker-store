@@ -108,6 +108,12 @@ Route::post('/login', [AccountController::class, 'loginSubmit'])->name('loginSub
 Route::get('/register', [AccountController::class, 'register'])->name('register');
 Route::post('/register', [AccountController::class, 'registerSubmit'])->name('registerSubmit');
 
+Route::get('/forgot-password', [AccountController::class, 'forgot_password'])->name('account.forgot_password');
+Route::post('/forgot-password', [AccountController::class,'check_forgot_password']);
+
+Route::get('/reset-password/{token}', [AccountController::class, 'reset_password'])->name('account.reset_password');
+Route::post('/reset-password/{token}', [AccountController::class,'check_reset_password']);
+
 Route::get('/logout', [AccountController::class, 'logout'])->name('logout');        
 
 Route::get('/account', [AccountController::class, 'account'])
