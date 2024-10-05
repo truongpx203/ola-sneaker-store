@@ -1,6 +1,6 @@
 @extends('client.layout')
 
-@section('title', 'Đăng nhập')
+@section('title', 'Quên mật khẩu')
 
 @section('content')
 <main class="main-content">
@@ -10,12 +10,12 @@
       <div class="row">
         <div class="col-12">
           <div class="page-header-content">
-            <h2 class="title" data-aos="fade-down" data-aos-duration="1000">Đăng nhập</h2>
+            <h2 class="title" data-aos="fade-down" data-aos-duration="1000">Quên mật khẩu</h2>
             <nav class="breadcrumb-area" data-aos="fade-down" data-aos-duration="1200">
               <ul class="breadcrumb">
                 <li><a href="index.html">Trang chủ</a></li>
                 <li class="breadcrumb-sep">//</li>
-                <li>Đăng nhập</li>
+                <li>Quên mật khẩu</li>
               </ul>
             </nav>
           </div>
@@ -31,7 +31,7 @@
       <div class="row">
         <div class="col-sm-8 m-auto">
           <div class="section-title text-center">
-            <h2 class="title">Đăng nhập</h2>
+            <h2 class="title">Quên mật khẩu</h2>
           </div>
         </div>
       </div>
@@ -62,30 +62,14 @@
                 </div>
                 <div class="col-12">
                   <div class="form-group">
-                    <label for="password">Mật khẩu<span class="required">*</span></label>
-                    <input id="password" name="password" class="form-control" type="password">
-                    @error('password')
-                    <span class="text-danger">{{$message}}</span>
-                  @enderror
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="form-group">
-                    <button class="btn-login" type="submit">Đăng nhập</button>
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="form-group account-info-group mb--0">
-                    <div class="rememberme-account">
-                      {{-- <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" name="remember" id="remember">
-                        <label class="form-check-label" for="remember">Ghi nhớ tài khoản</label>
-                      </div> --}}
-                    </div>
-                    <a class="lost-password" href="{{route('account.forgot_password')}}">Bạn quên mật khẩu?</a>
+                    <button class="btn-login" type="submit">Gửi email</button>
                   </div>
                 </div>
                 <div class="mt-5 text-center">
+                    <label>Bạn chưa đã có tài khoản?</label>
+                      <a href="{{ route('login')}}"><span style="color: red">Đăng nhập tại đây.</span></a>
+                    </div>
+                <div class="mt-2 text-center">
                 <label>Bạn chưa có tài khoản?</label>
                   <a href="{{ route('register')}}"><span style="color: red">Đăng ký tại đây.</span></a>
                 </div>

@@ -22,20 +22,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400;1,500&amp;display=swap" rel="stylesheet">
 
     <!--== Bootstrap CSS ==-->
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="{{asset('assets\css\bootstrap.min.css')}}" rel="stylesheet" />
     <!--== Font Awesome Min Icon CSS ==-->
-    <link href="assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="{{asset('assets/css/font-awesome.min.css')}}" rel="stylesheet" />
     <!--== Pe7 Stroke Icon CSS ==-->
-    <link href="assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
+    <link href="{{asset('assets/css/pe-icon-7-stroke.css')}}" rel="stylesheet" />
     <!--== Swiper CSS ==-->
-    <link href="assets/css/swiper.min.css" rel="stylesheet" />
+    <link href="{{asset('assets/css/swiper.min.css')}}" rel="stylesheet" />
     <!--== Fancybox Min CSS ==-->
-    <link href="assets/css/fancybox.min.css" rel="stylesheet" />
+    <link href="{{asset('assets/css/fancybox.min.css')}}" rel="stylesheet" />
     <!--== Aos Min CSS ==-->
-    <link href="assets/css/aos.min.css" rel="stylesheet" />
+    <link href="{{asset('assets/css/aos.min.css')}}" rel="stylesheet" />
 
     <!--== Main Style CSS ==-->
-    <link href="assets/css/style.css" rel="stylesheet" />
+    <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet" />
 
     <!--[if lt IE 9]>
     <script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -91,7 +91,7 @@
               <div class="header-middle-align-start">
                 <div class="header-logo-area">
                   <a href="{{route('/')}}">
-                    <img class="logo-main" src="assets/img/logo.webp" width="131" height="34" alt="Logo" />
+                    <img class="logo-main" src="{{asset('assets/img/logo.webp')}}" width="131" height="34" alt="Logo" />
                     <img class="logo-light" src="assets/img/logo-light.webp" width="131" height="34" alt="Logo" />
                   </a>
                 </div>
@@ -174,7 +174,7 @@
               <div class="about-widget-wrap">
                 <div class="widget-logo-area">
                   <a href="index.html">
-                    <img class="logo-main" src="assets/img/logo-light.webp" width="131" height="34" alt="Logo" />
+                    <img class="logo-main" src="{{asset('assets/img/logo-light.webp')}}" width="131" height="34" alt="Logo" />
                   </a>
                 </div>
                 <p class="desc">Khám phá bộ sưu tập giày thể thao đa dạng, phong cách và chất lượng. Mang đến sự thoải mái và tự tin cho từng bước đi của bạn.
@@ -473,30 +473,30 @@
 <!--=======================Javascript============================-->
 
 <!--=== jQuery Modernizr Min Js ===-->
-<script src="assets/js/modernizr.js"></script>
+<script src="{{asset('assets/js/modernizr.js')}}"></script>
 <!--=== jQuery Min Js ===-->
-<script src="assets/js/jquery-main.js"></script>
+<script src="{{asset('assets/js/jquery-main.js')}}"></script>
 <!--=== jQuery Migration Min Js ===-->
-<script src="assets/js/jquery-migrate.js"></script>
+<script src="{{asset('assets/js/jquery-migrate.js')}}"></script>
 <!--=== jQuery Popper Min Js ===-->
-<script src="assets/js/popper.min.js"></script>
+<script src="{{asset('assets/js/popper.min.js')}}"></script>
 <!--=== jQuery Bootstrap Min Js ===-->
-<script src="assets/js/bootstrap.min.js"></script>
+<script src="{{asset('assets/js/bootstrap.min.js')}}"></script>
 <!--=== jQuery Ui Min Js ===-->
-<script src="assets/js/jquery-ui.min.js"></script>
+<script src="{{asset('assets/js/jquery-ui.min.js')}}"></script>
 <!--=== jQuery Swiper Min Js ===-->
-<script src="assets/js/swiper.min.js"></script>
+<script src="{{asset('assets/js/swiper.min.js')}}"></script>
 <!--=== jQuery Fancybox Min Js ===-->
-<script src="assets/js/fancybox.min.js"></script>
+<script src="{{asset('assets/js/fancybox.min.js')}}"></script>
 <!--=== jQuery Waypoint Js ===-->
-<script src="assets/js/waypoint.js"></script>
+<script src="{{asset('assets/js/waypoint.js')}}"></script>
 <!--=== jQuery Parallax Min Js ===-->
-<script src="assets/js/parallax.min.js"></script>
+<script src="{{asset('assets/js/parallax.min.js')}}"></script>
 <!--=== jQuery Aos Min Js ===-->
-<script src="assets/js/aos.min.js"></script>
+<script src="{{asset('assets/js/aos.min.js')}}"></script>
 
 <!--=== jQuery Custom Js ===-->
-<script src="assets/js/custom.js"></script>
+<script src="{{asset('assets/js/custom.js')}}"></script>
 
 </body>
 
