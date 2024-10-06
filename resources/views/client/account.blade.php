@@ -40,7 +40,7 @@
                   <button class="nav-link" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab" aria-controls="orders" aria-selected="false"> Đơn hàng</button>
                   {{-- <button class="nav-link" id="download-tab" data-bs-toggle="tab" data-bs-target="#download" type="button" role="tab" aria-controls="download" aria-selected="false">Download</button> --}}
                   <button class="nav-link" id="address-edit-tab" data-bs-toggle="tab" data-bs-target="#address-edit" type="button" role="tab" aria-controls="address-edit" aria-selected="false">Địa chỉ</button>
-                  <button class="nav-link" onclick="window.location.href='{{route('logout')}}'" type="button">Logout</button>
+                  <button class="nav-link" onclick="window.location.href='{{route('logout')}}'" type="button">Đăng xuất</button>
                   @endauth
                 </div>
               </nav>

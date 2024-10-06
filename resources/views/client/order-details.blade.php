@@ -50,8 +50,8 @@
                                         <tr>
                                             <td>1</td>
                                             <td>Sản phẩm 1</td>
-                                            <td>Màu: kem, Kích thước: 35</td>
-                                            <td>Pending</td>
+                                            <td>Kích thước: 35</td>
+                                            <td><img src="{{asset('assets/img/shop/4.webp')}}" alt="" style="width: 100px; height: 100px;"></td>
                                             <td>$3000</td>
                                             <td><input class="w-25 border-0 text-center" type="number" name="" id="" min="1"
                                                     value="2"></td>

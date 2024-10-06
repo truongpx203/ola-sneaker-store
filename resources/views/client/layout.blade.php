@@ -92,7 +92,7 @@
                 <div class="header-logo-area">
                   <a href="{{route('/')}}">
                     <img class="logo-main" src="{{asset('assets/img/logo.webp')}}" width="131" height="34" alt="Logo" />
-                    <img class="logo-light" src="assets/img/logo-light.webp" width="131" height="34" alt="Logo" />
+                    <img class="logo-light" src="{{asset('assets/img/logo-light.webp')}}" width="131" height="34" alt="Logo" />
                   </a>
                 </div>
               </div>
@@ -147,7 +147,7 @@
                   <li><a href="#"><span>GIỚI THIỆU</span></a></li>
                   <li><a href="{{route('/shop')}}"><span>SẢN PHẨM</span></a></li>
                   <li><a href="{{route('/blog')}}"><span>Blog</span></a></li>
-                  <li><a href="{{'contact'}}"><span>LIÊN HỆ</span></a></li>
+                  <li><a href="{{route('contact')}}"><span>LIÊN HỆ</span></a></li>
                 </ul>
               </div>
             </div>

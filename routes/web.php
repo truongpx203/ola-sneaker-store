@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\admin\ProductController as AdminProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\client\Account;
 use App\Http\Controllers\client\AccountController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\VariantController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,10 +18,6 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::get('/', function () {
-    return view('client.home');
-})->name('/');
 
 Route::get('/shop', function () {
     return view('client.shop');
@@ -41,7 +39,7 @@ Route::get('page-not-found', function () {
 });
 Route::get('contact', function () {
     return view('client.contact');
-});
+})->name('contact');
 Route::get('shop-wishlist', function () {
     return view('client.shop-wishlist');
 });
@@ -120,3 +118,9 @@ Route::get('/account', [AccountController::class, 'account'])
     ->name('account')
     ->middleware('auth');
 require_once __DIR__ . "/product_size.php";
+
+
+// show sp mới limit8
+Route::get('/', [AdminProductController::class, 'showNewProducts'])->name('/');
+
+Route::get('/product/{id}', [AdminProductController::class, 'show'])->name('product-detail');
