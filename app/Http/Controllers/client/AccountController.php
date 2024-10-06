@@ -8,6 +8,7 @@ use App\Jobs\DeleteOldPasswordResetTokens;
 use App\Jobs\DeleteUserAfterTimeout;
 use App\Mail\forgotPassword;
 use App\Mail\verifyAccount;
+use Illuminate\Support\Str;
 use App\Models\PasswordResetToken;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -131,7 +132,7 @@ class AccountController extends Controller
     $user = User::where('email', $request->email)->first();
 
     // Tạo token mới
-    $token = \Str::random(40);
+    $token = Str::random(40);
     $tokenData = [
         'email' => $request->email,
         'token' => $token,
