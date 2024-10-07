@@ -3,123 +3,141 @@
 @section('title')
     Danh Sách Sản phẩm
 @endsection
-
 @section('content')
-    <!-- start page title -->
-    <div class="row">
-        <div class="col-12">
-            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0">Datatables</h4>
-
-                <div class="page-title-right">
-                    <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item"><a href="javascript: void(0);">Tables</a></li>
-                        <li class="breadcrumb-item active">Datatables</li>
-                    </ol>
-                </div>
-
-            </div>
-        </div>
-    </div>
+    <!-- end page title -->
 
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
-                <div class="card-header d-flex justify-content-between ">
-                    <h5 class="card-title mb-0 "> Danh Sách</h5>
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="card-title mb-0">Danh Sách Sản phẩm</h4>
+                    <a href="{{ route('products.create') }}">
+                        <button type="button" class="btn btn-success add-btn">
+                            <i class="ri-add-line align-bottom me-1"></i> Add
+                        </button>
+                    </a>
+                </div><!-- end card header -->
 
-                    <a href="{{ route('admin.products.create') }}" class="btn btn-primary mb-3">Thêm Mới </a>
-                </div>
                 <div class="card-body">
-                    <table id="example" class="table table-bordered dt-responsive nowrap table-striped align-middle"
-                        style="width:100%">
-                        <thead>
-                         
-                            <tr>
+                    <div class="listjs-table" id="customerList">
+                        <form action="{{ route('products.index') }}" method="GET">
+                            <div class="row">
+                                <div class="form-group col-6">
+                                    <label for="product_name">Tên sản phẩm:</label>
+                                    <input type="text" name="product_name" id="product_name" class="form-control"
+                                        value="{{ request('product_name') }}" placeholder="Nhập tên sản phẩm">
+                                </div>
 
-
-                                <th>ID</th>
-                                <th>Img_Thumbnail</th>
-                                <th>Name</th>
-                                <th>Catelogue</th>
-                                <th>SKU</th>
-                                <th>Is Active</th>
-                                <th>Price_Regular</th>
-                                <th>Price_sale</th>
-                                <th>Views</th>
-                                <th>Hot_deal</th>
-                                <th>Is_good_deal</th>
-                                <th>Is_new</th>
-                                <th>Is_show_home</th>
-                                <th>Tag</th>
-                                <th>Create</th>
-                                <th>Update</th>
-                                <th>Action </th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-
-
-                            @foreach ($data as $item)
-                                <tr>
-                                    <td>{{ $item->id }}</td>
-                                    <td>
-                                        @php
-                                            $url = $item->img_thumbnail;
-                                            if (!\Str::contains($url, 'http')) {
-                                                $url = Storage::url($url);
-                                            }
-                                        @endphp
-                                        <img src="{{ $url }}" alt="" width="100px">
-                                    </td>
-                                    <td>{{ $item->name }}</td>
-                                    <td>{{ $item->sku }}</td>
-                                    <td>{{ $item->catelogue?->name }}</td>
-                                    <td>{{ $item->price_regular }}</td>
-                                    <td>{{ $item->price_sale }}</td>
-                                    <td>{{ $item->views }}</td>
-                                    <td>{!! $item->is_active ?   '<span class="badge bg-info">Yes</span>' : 
-                                                                 '<span class="badge bg-danger">No</span>' !!}</td>
-                                    <td>{!! $item->is_hot_deal ? '<span class="badge bg-info">Yes</span>' : 
-                                                                 '<span class="badge bg-danger">No</span>' !!}</td>
-                                    <td>{!! $item->is_good_deal ?'<span class="badge bg-info">Yes</span>' : 
-                                                                 '<span class="badge bg-danger">No</span>' !!}</td>
-                                    <td>{!! $item->is_new ?      '<span class="badge bg-info">Yes</span>' : 
-                                                                 '<span class="badge bg-danger">No</span>' !!}</td>
-                                    <td>{!! $item->is_show_home ?'<span class="badge bg-info">Yes</span>' : 
-                                                                 '<span class="badge bg-danger">No</span>' !!}</td>
-                                    <td>
-                                        @foreach ($item->tags as $tag)
-                                            <span class="badge bg-info">{{ $tag->name }}</span>
+                                <div class="form-group col-6">
+                                    <label for="category_id">Danh mục sản phẩm:</label>
+                                    <select name="category_id" id="category_id" class="form-control">
+                                        <option value="">-- Chọn danh mục --</option>
+                                        @foreach ($categories as $category)
+                                            <option value="{{ $category->id }}"
+                                                {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                                                {{ $category->name }}
+                                            </option>
                                         @endforeach
-                                    </td>
-                                    <td>{{ $item->created_at }}</td>
-                                    <td>{{ $item->updated_at }}</td>
+                                    </select>
+                                </div>
+                            </div>
 
-                                    <td>
-                                        <a href="{{ route('admin.products.edit', $item) }}"
-                                        type="submit" class="btn btn-warning">Sửa</a>
-                                        <form action="{{ route('admin.products.destroy', $item) }}" method="post">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button
-                                                onclick="return confirm('Chắc chắn không?')"
-                                                type="submit" class="btn btn-danger">Xoá</button>
-                                        </form>
-                                        </td>
+                            <button class="btn btn-sm btn-primary mt-2">Tìm kiếm</button>
+                        </form>
 
-                                </tr>
-                            @endforeach
+                        @if (session('success'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                        @endif
 
+                        @if (session('error'))
+                            <div class="alert alert-danger alert-dismissible fade show mb-xl-0" role="alert">
+                                {{ session('error') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                        @endif
 
-                        </tbody>
-                    </table>
-                </div>
+                        <div class="table-responsive table-card mt-3 mb-1">
+                            <table class="table align-middle table-nowrap" id="customerTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Hình ảnh</th>
+                                        <th>Mã sản phẩm</th>
+                                        <th>Tên sản phẩm</th>
+                                        <th>Danh mục</th>
+                                        <th>Đánh giá</th>
+                                        <th>Action </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="list form-check-all">
+                                    @foreach ($listProducts as $item)
+                                        <tr>
+                                            <td>{{ $loop->index + 1 }}</td>
+                                            <td>
+                                                <img src="{{ Storage::url($item->primary_image_url) }}"
+                                                    alt="{{ $item->name }}" class="img-thumbnail" width="100px" />
+
+                                            </td>
+                                            <td>{{ $item->code }}</td>
+                                            <td>{{ $item->name }}</td>
+                                            <td>{{ $item->category->name }}</td>
+                                            <td>
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    @if ($i <= $item->average_rating)
+                                                        <i class="ri-star-fill text-warning"></i> <!-- Sao đầy -->
+                                                    @else
+                                                        <i class="ri-star-line"></i> <!-- Sao rỗng -->
+                                                    @endif
+                                                @endfor
+                                            </td>
+                                            <td>
+                                                <div class="d-flex gap-2">
+                                                    <div class="detail">
+                                                        <a href="{{ route('products.show', $item->id) }}"
+                                                            class="btn btn-sm btn-primary edit-item-btn">Xem</a>
+                                                    </div>
+                                                    <div class="edit">
+                                                        <a href="{{ route('products.edit', $item->id) }}"
+                                                            class="btn btn-sm btn-success edit-item-btn">Sửa</a>
+                                                    </div>
+                                                    <div class="remove">
+                                                        <form action="{{ route('products.destroy', $item->id) }}"
+                                                            method="POST" class="d-inline"
+                                                            onsubmit="return confirm('Xác nhận xóa?')">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit"
+                                                                class="btn btn-sm btn-danger remove-item-btn">Xóa</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <div class="pagination-wrap hstack gap-2">
+                                {{ $listProducts->appends(request()->input())->links('pagination::bootstrap-4') }}
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- end card -->
             </div>
-        </div><!--end col-->
-    </div><!--end row-->
+            <!-- end col -->
+        </div>
+        <!-- end col -->
+    </div>
+    <!-- end row -->
 @endsection
+
 @section('style-libs')
     <!--datatable css-->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
@@ -146,8 +164,10 @@
     <script src="assets/js/pages/datatables.init.js"></script>
     <!-- App js -->
     <script>
-       new DataTable('#example', {
-    order: [[0, 'desc']]
-});
+        new DataTable('#example', {
+            order: [
+                [0, 'desc']
+            ]
+        });
     </script>
 @endsection

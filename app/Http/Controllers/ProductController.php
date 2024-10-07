@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -10,9 +11,28 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        // Lấy dữ liệu tìm kiếm từ request
+        $query = Product::query();
+
+        // Tìm kiếm theo tên sản phẩm
+        if ($request->filled('product_name')) {
+            $query->where('name', 'like', '%' . $request->product_name . '%');
+        }
+
+        // Tìm kiếm theo danh mục sản phẩm
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        // Lấy danh sách sản phẩm sau khi lọc
+        $listProducts = $query->orderByDesc('id')->paginate(10);
+
+        // Truyền danh sách danh mục sản phẩm để hiển thị trong form
+        $categories = Category::all();
+
+        return view('admin.products.index', compact('listProducts', 'categories'));
     }
 
     /**
