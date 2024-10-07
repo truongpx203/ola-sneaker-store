@@ -34,7 +34,7 @@
                 <li class="menu-title"><span data-key="t-menu">Menu</span></li>
                 <li class="nav-item">
 
-                    <a class="nav-link menu-link" href="{{route('admin.dashboard')}}"  
+                    <a class="nav-link menu-link" href="{{route('dashboard')}}"  
 
                         role="button" aria-expanded="false" aria-controls="sidebarDashboards">
                         <i class="ri-dashboard-2-line"></i> <span data-key="t-dashboards">Dashboards</span>

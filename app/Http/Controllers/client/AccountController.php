@@ -39,10 +39,9 @@ class AccountController extends Controller
 
         // Tạo người dùng và ghi thời gian gửi email xác thực
         if ($user = User::create($data)) {
-            $user->email_verification_sent_at = now(); // Ghi thời gian gửi email
+            $user->email_verification_sent_at = now(); 
             $user->save();
 
-            // Gửi email xác thực
             Mail::to($user->email)->send(new VerifyAccount($user));
 
             DeleteUserAfterTimeout::dispatch($user)->delay(now()->addMinutes(5));
@@ -91,7 +90,6 @@ class AccountController extends Controller
             if ($user->status == 'active') {
                 $request->session()->regenerate();
 
-                // Kiểm tra vai trò của người dùng
                 if ($user->role == 'admin') {
                     return redirect()->route('dashboard');
                 } else {
@@ -123,12 +121,10 @@ class AccountController extends Controller
 
    public function check_forgot_password(Request $request)
 {
-    // Xác thực input
     $request->validate([
         'email' => 'required|email|exists:users,email',
     ]);
 
-    // Tìm người dùng theo email
     $user = User::where('email', $request->email)->first();
 
     // Tạo token mới
@@ -148,7 +144,7 @@ class AccountController extends Controller
     // Gửi email chứa token
     Mail::to($request->email)->send(new ForgotPassword($user, $token));
 
-    // Lên lịch job để xóa token cũ sau 5 phút
+
     DeleteOldPasswordResetTokens::dispatch()->delay(now()->addMinutes(5));
 
     return redirect()->back()->with('message', 'Vui lòng kiểm tra email để tiếp tục!');
@@ -158,7 +154,6 @@ public function reset_password($token)
 {
     $tokenData = PasswordResetToken::where('token', $token)->firstOrFail();
 
-    // Kiểm tra xem token có còn hiệu lực không (trong 5 phút)
     if ($tokenData->created_at < now()->subMinutes(5)) {
         return redirect()->route('account.forgot_password')->with('error', 'Token đã hết hạn. Vui lòng gửi lại email.');
     }
