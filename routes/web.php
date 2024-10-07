@@ -78,12 +78,12 @@ Route::get('tt-thanh-cong', function () {
 
 
 // Admin
-Route::middleware(CheckRole::class)->prefix('admin')->group(function(){
+Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
 
-    Route::get('/', function() {
+    Route::get('/', function () {
         return view('admin.dashboard');
     })->name('dashboard');
-    
+
     Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
     Route::get('categories/create', [CategoryController::class, 'create'])->name('categories.create');
     Route::post('categories/store', [CategoryController::class, 'store'])->name('categories.store');
@@ -91,14 +91,30 @@ Route::middleware(CheckRole::class)->prefix('admin')->group(function(){
     Route::get('categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
     Route::put('categories/{id}/update', [CategoryController::class, 'update'])->name('categories.update');
     Route::delete('categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
-    
-    // Manage product variants
-    Route::get('variants',                  [VariantController::class, 'index'])->name('variants.index');
-    Route::get('variants/{variant}/show',   [VariantController::class, 'show'])->name('variants.show');
-    Route::get('variants/{variant}/edit',   [VariantController::class, 'edit'])->name('variants.edit');
-    Route::put('variants/{variant}/update', [VariantController::class, 'update'])->name('variants.update');
-    Route::delete('variants/{variant}',     [VariantController::class, 'destroy'])->name('variants.destroy');
 
+    // Route quản lý sản phẩm
+    Route::prefix('products')
+        ->as('products.')
+        ->group(function () {
+            Route::get('/',                     [ProductController::class, 'index'])->name('index');
+            Route::get('/create',               [ProductController::class, 'create'])->name('create');
+            Route::post('/store',               [ProductController::class, 'store'])->name('store');
+            Route::get('/show/{product}',       [ProductController::class, 'show'])->name('show');
+            Route::get('{product}/edit',        [ProductController::class, 'edit'])->name('edit');
+            Route::put('{product}/update',      [ProductController::class, 'update'])->name('update');
+            Route::delete('{product}/destroy',  [ProductController::class, 'destroy'])->name('destroy');
+        });
+
+    // Route quản lý biến thể sản phẩm
+    Route::prefix('variants')
+        ->as('variants.')
+        ->group(function () {
+            Route::get('/',                     [VariantController::class, 'index'])->name('index');
+            Route::get('/show/{variant}',       [VariantController::class, 'show'])->name('show');
+            Route::get('{variant}/edit',        [VariantController::class, 'edit'])->name('edit');
+            Route::put('{variant}/update',      [VariantController::class, 'update'])->name('update');
+            Route::delete('{variant}/destroy',  [VariantController::class, 'destroy'])->name('destroy');
+        });
 });
 
 
@@ -113,12 +129,12 @@ Route::get('/register', [AccountController::class, 'register'])->name('register'
 Route::post('/register', [AccountController::class, 'registerSubmit'])->name('registerSubmit');
 
 Route::get('/forgot-password', [AccountController::class, 'forgot_password'])->name('account.forgot_password');
-Route::post('/forgot-password', [AccountController::class,'check_forgot_password']);
+Route::post('/forgot-password', [AccountController::class, 'check_forgot_password']);
 
 Route::get('/reset-password/{token}', [AccountController::class, 'reset_password'])->name('account.reset_password');
-Route::post('/reset-password/{token}', [AccountController::class,'check_reset_password']);
+Route::post('/reset-password/{token}', [AccountController::class, 'check_reset_password']);
 
-Route::get('/logout', [AccountController::class, 'logout'])->name('logout');        
+Route::get('/logout', [AccountController::class, 'logout'])->name('logout');
 
 Route::get('/account', [AccountController::class, 'account'])
     ->name('account')
