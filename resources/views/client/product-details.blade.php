@@ -71,22 +71,14 @@
                 <div class="product-single-info">
                   <h3 class="main-title">{{ $product->name }}</h3>
                   <div class="prices">
-                    @if ($product->variants->isNotEmpty())
-                        @php
-                            $variant = $product->variants->first();
-                        @endphp
-                        @if ($variant->sale_price)
-                            <span class="price-old" style="text-decoration: line-through; font-weight: 400">{{ number_format($variant->listed_price) }} VNĐ</span>
-                            <span class="sep">-</span>
-                            <span class="price">{{ number_format($variant->sale_price) }} VNĐ</span>
-                        @else
-                            <span class="price">{{ number_format($variant->listed_price) }} VNĐ</span>
-                        @endif
-                    @else
-                        <span class="price">{{ number_format($product->listed_price) }} VNĐ</span>
-                    @endif
+                    <span id="price-old" class="price-old" style="text-decoration: line-through; font-weight: 400;">
+                        {{ number_format($lowestSaleVariant->listed_price) }} VNĐ</span>
+                    <span class="sep" id="price-sep">-</span>
+                    <span id="price" class="price">
+                        {{ number_format($lowestSaleVariant->sale_price) }} VNĐ
+                    </span>
                 </div>
-                  <div class="rating-box-wrap">
+                  {{-- <div class="rating-box-wrap">
                     <div class="rating-box">
                       <i class="fa fa-star"></i>
                       <i class="fa fa-star"></i>
@@ -97,7 +89,7 @@
                     <div class="review-status">
                       <a href="javascript:void(0)">(5 Đánh giá của khách hàng )</a>
                     </div>
-                  </div>
+                  </div> --}}
                   <p>{{ $product->summary }}</p>
                   {{-- <div class="product-color">
                     <h6 class="title">Color</h6>
@@ -111,22 +103,17 @@
                   <div class="product-size">
                     <h6 class="title">Size</h6>
                     <ul class="size-list">
-                        @foreach ($product->variants as $variant)
-                            <li class="size-item {{ $variant->stock == 0 ? 'out-of-stock' : '' }}" 
-                                data-stock="{{ $variant->stock }}" 
-                                onclick="updateStockInfo(this, '{{ $variant->size ? $variant->size->name : 'Không xác định' }}')">
-                                {{ $variant->size ? $variant->size->name : 'Không xác định' }}
-                            </li>
-                        @endforeach
-                    </ul>
+                      @foreach ($product->variants as $variant)
+                          <li class="size-item {{ $variant->stock == 0 ? 'out-of-stock' : '' }}" 
+                              data-stock="{{ $variant->stock }}" 
+                              data-variant-id="{{ $variant->id }}"
+                              onclick="updateStockInfo(this, '{{ $variant->size ? $variant->size->name : 'Không xác định' }}')">
+                              {{ $variant->size ? $variant->size->name : 'Không xác định' }}
+                          </li>
+                      @endforeach
+                  </ul>
                 </div>
                 <div id="stock-info" class="stock-info mb-2"></div>
-                {{-- <style>
-                  .size-item.out-of-stock {
-                  color: lightgray; /* Màu nhạt hơn cho size hết hàng */
-                   cursor: not-allowed; /* Thay đổi con trỏ khi hover */
-                    }
-                </style> --}}
                   <div class="product-quick-action">
                     <div class="qty-wrap">
                       <div class="pro-qty">
@@ -136,14 +123,14 @@
                     <a id="add-to-cart-btn" class="btn-theme" href="{{ 'shop-cart' }}" onclick="addToCart(event)">Thêm vào giỏ hàng</a>
                     <style>
                       .btn-theme.disabled {
-    background-color: #fff; /* Màu nền cho nút đã bị vô hiệu hóa */
-    color: #eb3e32; /* Màu chữ cho nút đã bị vô hiệu hóa */
-    cursor: not-allowed; /* Thay đổi con trỏ khi hover */
-}
+                        background-color: #fff;
+                        color: #eb3e32;
+                        cursor: not-allowed;
+                      }
                     </style>
                   </div>
                   <div class="product-wishlist-compare">
-                    <a href="shop-wishlist.html"><i class="pe-7s-like"></i>Thêm vào sản phẩm yêu thích</a>
+                    {{-- <a href="shop-wishlist.html"><i class="pe-7s-like"></i>Thêm vào sản phẩm yêu thích</a> --}}
                     {{-- <a href="shop-compare.html"><i class="pe-7s-shuffle"></i>Add to Compare</a> --}}
                   </div>
                   <div class="product-info-footer">
@@ -174,7 +161,7 @@
                 <a id="description-tab" data-bs-toggle="pill" href="#description" role="tab" aria-controls="description" aria-selected="false">Sự miêu tả</a>
               </li> --}}
               <li role="presentation">
-                <a id="reviews-tab" data-bs-toggle="pill" href="#reviews" role="tab" aria-controls="reviews" aria-selected="false">Đánh giá <span>(05)</span></a>
+                {{-- <a id="reviews-tab" data-bs-toggle="pill" href="#reviews" role="tab" aria-controls="reviews" aria-selected="false">Đánh giá <span>(05)</span></a> --}}
               </li>
             </ul>
             <div class="tab-content product-tab-content" id="ReviewTabContent">
@@ -404,21 +391,25 @@
                         <div class="product-info">
                             <h4 class="title"><a href="{{ route('product-detail', ['id' => $relatedProduct->id]) }}">{{ $relatedProduct->name }}</a></h4>
                             <div class="prices">
-                                @if ($relatedProduct->variants->isNotEmpty())
-                                    @php
-                                        $variant = $relatedProduct->variants->first();
-                                    @endphp
-                                    @if ($variant->sale_price)
-                                        <span class="price-old">${{ number_format($variant->listed_price) }}</span>
-                                        <span class="sep">-</span>
-                                        <span class="price">${{ number_format($variant->sale_price) }}</span>
-                                    @else
-                                        <span class="price">${{ number_format($variant->listed_price) }}</span>
-                                    @endif
-                                @else
-                                    <span class="price">${{ number_format($relatedProduct->listed_price) }}</span>
-                                @endif
-                            </div>
+                              @if ($relatedProduct->variants->isNotEmpty())
+                                  @php
+                                      // Tìm biến thể có giá sale thấp nhất
+                                      $lowestSaleVariant = $relatedProduct->variants->whereNotNull('sale_price')->sortBy('sale_price')->first();
+                                  @endphp
+                                  @if ($lowestSaleVariant)
+                                      <span class="price-old" style="text-decoration: line-through;">
+                                          ${{ number_format($lowestSaleVariant->listed_price) }}</span>
+                                      <span class="sep">-</span>
+                                      <span class="price">
+                                          ${{ number_format($lowestSaleVariant->sale_price) }}
+                                      </span>
+                                  @else
+                                      <span class="price">${{ number_format($relatedProduct->listed_price) }}</span>
+                                  @endif
+                              @else
+                                  <span class="price">${{ number_format($relatedProduct->listed_price) }}</span>
+                              @endif
+                          </div>
                         </div>
                     </div>
                 </div>
@@ -446,21 +437,22 @@
 </main>
 <script>
   let selectedStock = null; // Biến để lưu số lượng còn lại
-  
+  let variants = @json($product->variants); // Lưu trữ tất cả biến thể vào biến JavaScript
+
   function updateStockInfo(element, sizeName) {
       const stockInfo = document.getElementById('stock-info');
       const stock = element.getAttribute('data-stock');
       selectedStock = stock; // Cập nhật số lượng đã chọn
-  
+
       // Xóa lớp active khỏi tất cả các kích thước
       const sizeItems = document.querySelectorAll('.size-item');
       sizeItems.forEach(item => {
           item.classList.remove('active');
       });
-  
+
       // Thêm lớp active cho kích thước đã chọn
       element.classList.add('active');
-  
+
       // Cập nhật thông tin số lượng
       if (stock == 0) {
           stockInfo.innerHTML = '<span style="color: red;">Đã hết hàng</span>';
@@ -469,8 +461,38 @@
           stockInfo.innerHTML = `Số lượng còn lại: ${stock}`;
           enableAddToCart(); // Kích hoạt nút thêm vào giỏ hàng
       }
+
+      // Cập nhật giá
+      updatePrice(element);
   }
-  
+
+  function updatePrice(element) {
+      const variantId = element.getAttribute('data-variant-id'); // Lấy ID của biến thể
+      const selectedVariant = variants.find(variant => variant.id == variantId); // Tìm biến thể đã chọn
+
+      if (selectedVariant) {
+          const priceOld = document.getElementById('price-old');
+          const priceSep = document.getElementById('price-sep');
+          const priceDisplay = document.getElementById('price');
+
+          // Cập nhật giá
+          if (selectedVariant.sale_price) {
+              priceOld.innerHTML = `${number_format(selectedVariant.listed_price)} VNĐ`;
+              priceOld.style.display = 'inline'; 
+              priceSep.style.display = 'inline';
+              priceDisplay.innerHTML = `${number_format(selectedVariant.sale_price)} VNĐ`;
+          } else {
+              priceOld.style.display = 'none';
+              priceSep.style.display = 'none';
+              priceDisplay.innerHTML = `${number_format(selectedVariant.listed_price)} VNĐ`;
+          }
+      }
+  }
+
+  function number_format(number) {
+      return Math.floor(number).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
   function disableAddToCart() {
       const addToCartBtn = document.getElementById('add-to-cart-btn');
       addToCartBtn.classList.add('disabled');
@@ -480,20 +502,23 @@
           alert('Bạn cần chọn size !');
       };
   }
-  
+
   function enableAddToCart() {
       const addToCartBtn = document.getElementById('add-to-cart-btn');
       addToCartBtn.classList.remove('disabled');
       addToCartBtn.href = "{{ 'shop-cart' }}"; // Khôi phục liên kết
       addToCartBtn.onclick = null; // Khôi phục hành vi click mặc định
   }
-  
+
   function addToCart(event) {
       if (selectedStock === null || selectedStock == 0) {
           event.preventDefault(); // Ngăn không cho chuyển hướng nếu không có hàng
           alert('Bạn cần chọn kích thước!');
       } 
-      // Thêm logic để thêm sản phẩm vào giỏ hàng nếu cần
   }
-  </script>
+
+  
+</script>
+
+
 @endsection
