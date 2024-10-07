@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Models\Product;
+use App\Models\Category;
+use App\Models\ProductSize;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Requests\ProductRequest;
 
 class ProductController extends Controller
 {
@@ -40,15 +43,70 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        $categories = Category::all();
+
+        $productSizes = ProductSize::all();
+
+        return view('admin.products.create', compact('categories', 'productSizes'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            // Lưu sản phẩm
+            $product = new Product();
+            $product->category_id = $request->category_id;
+            $product->name = $request->name;
+            $product->code = $request->code;
+            $product->summary = $request->summary;
+            $product->detailed_description = $request->detailed_description;
+
+            // Xử lý upload ảnh
+            if ($request->hasFile('primary_image_url')) {
+                $image = $request->file('primary_image_url');
+                $path = $image->store('products', 'public');
+                $product->primary_image_url = $path;
+            }
+            $product->save();
+
+            // Lưu các biến thể size
+            foreach ($request->variants as $variant) {
+                $product->variants()->create([
+                    'product_id' => $product->id,
+                    'product_size_id' => $variant['size_id'],
+                    'stock' => $variant['stock'],
+                    'listed_price' => $variant['listed_price'],
+                    'sale_price' => $variant['sale_price'],
+                    'import_price' => $variant['import_price'],
+                    'is_show' => $variant['is_show'],
+                ]);
+            }
+
+            // // Lưu gallery ảnh
+            if ($request->hasFile('product_galleries')) {
+                foreach ($request->file('product_galleries') as $gallery) {
+                    $path = $gallery->store('product_galleries/'. $product->id, 'public');
+                    $product->productImages()->create([
+                        'product_id' => $product->id,
+                        'image_url' => $path,
+                        'image_order' => 1,
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return redirect()->route('products.index')->with('success', 'Sản phẩm được thêm thành công!');
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi thêm sản phẩm mới. Vui lòng thử lại sau.');
+        }
     }
 
     /**
