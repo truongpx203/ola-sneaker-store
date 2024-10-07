@@ -6,6 +6,7 @@ use App\Http\Controllers\client\Account;
 use App\Http\Controllers\client\AccountController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\VariantController;
+use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -77,25 +78,30 @@ Route::get('tt-thanh-cong', function () {
 
 
 // Admin
+Route::middleware(CheckRole::class)->prefix('admin')->group(function(){
 
-Route::get('admin', function() {
-    return view('admin.dashboard');
-})->name('admin.dashboard');
+    Route::get('/', function() {
+        return view('admin.dashboard');
+    })->name('dashboard');
+    
+    Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
+    Route::get('categories/create', [CategoryController::class, 'create'])->name('categories.create');
+    Route::post('categories/store', [CategoryController::class, 'store'])->name('categories.store');
+    Route::get('categories/{id}/show', [CategoryController::class, 'show'])->name('categories.show');
+    Route::get('categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+    Route::put('categories/{id}/update', [CategoryController::class, 'update'])->name('categories.update');
+    Route::delete('categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+    
+    // Manage product variants
+    Route::get('variants',                  [VariantController::class, 'index'])->name('variants.index');
+    Route::get('variants/{variant}/show',   [VariantController::class, 'show'])->name('variants.show');
+    Route::get('variants/{variant}/edit',   [VariantController::class, 'edit'])->name('variants.edit');
+    Route::put('variants/{variant}/update', [VariantController::class, 'update'])->name('variants.update');
+    Route::delete('variants/{variant}',     [VariantController::class, 'destroy'])->name('variants.destroy');
 
-Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
-Route::get('categories/create', [CategoryController::class, 'create'])->name('categories.create');
-Route::post('categories/store', [CategoryController::class, 'store'])->name('categories.store');
-Route::get('categories/{id}/show', [CategoryController::class, 'show'])->name('categories.show');
-Route::get('categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
-Route::put('categories/{id}/update', [CategoryController::class, 'update'])->name('categories.update');
-Route::delete('categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+});
 
-// Manage product variants
-Route::get('variants',                  [VariantController::class, 'index'])->name('variants.index');
-Route::get('variants/{variant}/show',   [VariantController::class, 'show'])->name('variants.show');
-Route::get('variants/{variant}/edit',   [VariantController::class, 'edit'])->name('variants.edit');
-Route::put('variants/{variant}/update', [VariantController::class, 'update'])->name('variants.update');
-Route::delete('variants/{variant}',     [VariantController::class, 'destroy'])->name('variants.destroy');
+
 
 // Client
 
