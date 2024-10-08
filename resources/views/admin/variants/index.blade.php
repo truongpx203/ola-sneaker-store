@@ -91,7 +91,7 @@
                                                     <div class="edit">
                                                         <a href="{{ route('variants.edit', $item->id) }}" class="btn btn-sm btn-success edit-item-btn">Sửa</a>
                                                     </div>
-                                                    <div class="remove">
+                                                    {{-- <div class="remove">
                                                         <form action="{{ route('variants.destroy', $item->id) }}"
                                                             method="POST" class="d-inline"
                                                             onsubmit="return confirm('Xác nhận xóa?')">
@@ -100,7 +100,7 @@
                                                             <button type="submit"
                                                                 class="btn btn-sm btn-danger remove-item-btn">Xóa</button>
                                                         </form>
-                                                    </div>
+                                                    </div> --}}
                                                 </div>
                                             </td>
                                         </tr>
