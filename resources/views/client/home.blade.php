@@ -178,14 +178,14 @@
                                     $variant = $product->variants->first();
                                 @endphp
                                 @if ($variant->sale_price)
-                                    <span class="price-old">{{ number_format($variant->listed_price) }} VNĐ</span>
+                                    <span class="price-old">{{ number_format($variant->listed_price) }} đ</span>
                                     <span class="sep">-</span>
-                                    <span class="price">{{ number_format($variant->sale_price) }} VNĐ</span>
+                                    <span class="price">{{ number_format($variant->sale_price) }} đ</span>
                                 @else
-                                    <span class="price">{{ number_format($variant->listed_price) }} VNĐ</span>
+                                    <span class="price">{{ number_format($variant->listed_price) }} đ</span>
                                 @endif
                             @else
-                                <span class="price">{{ number_format($product->listed_price) }} VNĐ</span>
+                                <span class="price">{{ number_format($product->listed_price) }} đ</span>
                             @endif
                         </div>
                       </div>
