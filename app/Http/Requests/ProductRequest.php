@@ -21,11 +21,10 @@ class ProductRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:50|unique:products,code',
+            'code' => 'required|string|max:50|unique:products,code,' . $this->route('product')->id,
             'category_id' => 'required|exists:categories,id',
-            'primary_image_url' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
             'summary' => 'required|string',
             'detailed_description' => 'required|string',
 
@@ -36,6 +35,14 @@ class ProductRequest extends FormRequest
             'variants.*.import_price' => 'required|numeric|min:0',
             'variants.*.is_show' => 'required|boolean',
         ];
+
+        if ($this->isMethod('post')) {
+            $rules['primary_image_url'] = 'required|image|mimes:jpeg,png,jpg,gif,svg';
+        } elseif ($this->isMethod('put') || $this->isMethod('patch')) {
+            $rules['primary_image_url'] = 'nullable|image|mimes:jpeg,png,jpg,gif,svg';
+        }
+
+        return $rules;
     }
 
     public function messages()

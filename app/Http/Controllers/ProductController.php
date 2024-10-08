@@ -8,6 +8,7 @@ use App\Models\ProductSize;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\ProductRequest;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -90,7 +91,7 @@ class ProductController extends Controller
             // // Lưu gallery ảnh
             if ($request->hasFile('product_galleries')) {
                 foreach ($request->file('product_galleries') as $gallery) {
-                    $path = $gallery->store('product_galleries/'. $product->id, 'public');
+                    $path = $gallery->store('product_galleries/' . $product->id, 'public');
                     $product->productImages()->create([
                         'product_id' => $product->id,
                         'image_url' => $path,
@@ -126,15 +127,81 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        //
+        $product->load(['variants', 'productImages', 'category']);
+
+        $productSizes = ProductSize::all();
+
+        return view('admin.products.edit', compact('product', 'productSizes'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(ProductRequest $request, Product $product)
     {
-        //
+        DB::beginTransaction();
+        try {
+            // Cập nhật thông tin sản phẩm
+            $product->update([
+                'name' => $request->name,
+                'summary' => $request->summary,
+                'detailed_description' => $request->detailed_description,
+                'category_id' => $request->category_id,
+            ]);
+
+            // Xử lý ảnh chính (primary image)
+            if ($request->hasFile('primary_image_url')) {
+                // Lưu ảnh mới và xóa ảnh cũ
+                $imagePath = $request->file('primary_image_url')->store('products', 'public');
+                Storage::disk('public')->delete($product->primary_image_url);
+                $product->update(['primary_image_url' => $imagePath]);
+            }
+
+            // Xử lý cập nhật các biến thể sản phẩm
+            foreach ($request->variants as $size_id => $variantData) {
+                $variant = $product->variants()->where('product_size_id', $size_id)->first();
+                if ($variant) {
+                    $variant->update([
+                        'stock' => $variantData['stock'],
+                        'listed_price' => $variantData['listed_price'],
+                        'sale_price' => $variantData['sale_price'],
+                        'import_price' => $variantData['import_price'],
+                        'is_show' => $variantData['is_show'],
+                    ]);
+                }
+            }
+
+            // Xử lý cập nhật thư viện ảnh (gallery)
+            if ($request->hasFile('product_galleries')) {
+                foreach ($request->file('product_galleries') as $file) {
+                    $imagePath = $file->store('product_galleries/' . $product->id, 'public');
+                    $product->productImages()->create([
+                        'image_url' => $imagePath,
+                        'product_id' => $product->id,
+                        'image_order' => 1,
+                    ]);
+                }
+            }
+
+            // Xóa các ảnh từ thư viện nếu có
+            if ($request->filled('delete_galleries')) {
+                foreach ($request->delete_galleries as $image_id => $image_url) {
+                    $image = $product->productImages()->find($image_id);
+                    if ($image) {
+                        Storage::disk('public')->delete($image_url);
+                        $image->delete();
+                    }
+                }
+            }
+
+            DB::commit();
+
+            return redirect()->route('products.index')->with('success', 'Cập nhật sản phẩm thành công!');
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return back()->withErrors(['error' => 'Cập nhật sản phẩm thất bại. Vui lòng thử lại.'])->withInput();
+        }
     }
 
     /**
