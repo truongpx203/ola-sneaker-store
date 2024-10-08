@@ -32,10 +32,17 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
-        DB::table('categories')->insert([
-            'name' => $request->name
-        ]);
+        $data =  $request->validate([
+            'name' => 'required|unique:categories,name'
+        ],
+        [
+            'unique'   => 'Danh mục đã tồn tại, vui lòng chọn tên danh mục khác.',
+            'required' => 'Tên danh mục không được để trống.',
+        ]
+    );
+
+        Category::create($data);
+
         return redirect()->route('categories.index')->with('message', 'Thêm mới thành công');
     }
 
@@ -65,19 +72,34 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category, $id)
     {
         //
-        DB::table('categories')->where('id', $id)->update([
-            'name'=>$request->name
-        ]);
+        $data =  $request->validate([
+            'name' => 'required|unique:categories,name'
+        ],
+        [
+            'unique'   => 'Danh mục đã tồn tại, vui lòng chọn tên danh mục khác.',
+            'required' => 'Tên danh mục không được để trống.',
+        ]
+    );
+        // DB::table('categories')->where('id', $id)->update([
+        //     'name' => $request->name
+        // ]);
+        $category ->where('id', $id)->update($data);
         return redirect()->route('categories.index')->with('message', 'Cập nhật thành công');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category, $id)
+    public function destroy($id)
     {
-        //
-        DB::table('categories')->where('id', $id)->delete();
-        return back()->with('message', 'Xóa thành công');
+        $category = Category::find($id);
+    
+        // Kiểm tra xem danh mục có sản phẩm hay không
+        if ($category->products()->count() > 0) {
+            return back()->with('error', 'Không thể xóa danh mục này vì có sản phẩm ở trong!');
+        }
+    
+        $category->delete();
+        return back()->with('message', 'Xóa thành công.');
     }
 }
