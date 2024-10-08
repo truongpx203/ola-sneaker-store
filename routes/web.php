@@ -4,6 +4,7 @@ use App\Http\Controllers\admin\ProductController as AdminProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\client\Account;
 use App\Http\Controllers\client\AccountController;
+use App\Http\Controllers\client\ProductController as ClientProductController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\VariantController;
 use App\Http\Middleware\CheckRole;
@@ -19,10 +20,6 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::get('/shop', function () {
-    return view('client.shop');
-})->name('/shop');
 
 Route::get('/blog', function () {
     return view('client.blog');
@@ -127,6 +124,10 @@ require_once __DIR__ . "/product_size.php";
 
 
 // show sp mới limit8
-Route::get('/', [AdminProductController::class, 'showNewProducts'])->name('/');
-
-Route::get('/product/{id}', [AdminProductController::class, 'show'])->name('product-detail');
+Route::get('/', [ClientProductController::class, 'showNewProducts'])->name('/');
+// chi tiết sp
+Route::get('/product/{id}', [ClientProductController::class, 'show'])->name('product-detail');
+// trang sản phẩm (có bộ lọc)
+Route::get('/shop/filter', [ClientProductController::class, 'filterProducts'])->name('shop.filter');
+Route::get('/shop/page', [ClientProductController::class, 'paginateProducts'])->name('shop.paginate');
+Route::get('/shop/filter/price', [ClientProductController::class, 'filterByPrice'])->name('shop.filter.price');

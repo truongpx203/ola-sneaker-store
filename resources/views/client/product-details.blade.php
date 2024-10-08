@@ -72,10 +72,10 @@
                   <h3 class="main-title">{{ $product->name }}</h3>
                   <div class="prices">
                     <span id="price-old" class="price-old" style="text-decoration: line-through; font-weight: 400;">
-                        {{ number_format($lowestSaleVariant->listed_price) }} VNĐ</span>
+                        {{ number_format($lowestSaleVariant->listed_price) }} đ</span>
                     <span class="sep" id="price-sep">-</span>
                     <span id="price" class="price">
-                        {{ number_format($lowestSaleVariant->sale_price) }} VNĐ
+                        {{ number_format($lowestSaleVariant->sale_price) }} đ
                     </span>
                 </div>
                   {{-- <div class="rating-box-wrap">
@@ -398,16 +398,16 @@
                                   @endphp
                                   @if ($lowestSaleVariant)
                                       <span class="price-old" style="text-decoration: line-through;">
-                                          ${{ number_format($lowestSaleVariant->listed_price) }}</span>
+                                          {{ number_format($lowestSaleVariant->listed_price) }} đ</span>
                                       <span class="sep">-</span>
                                       <span class="price">
-                                          ${{ number_format($lowestSaleVariant->sale_price) }}
+                                          {{ number_format($lowestSaleVariant->sale_price) }} đ
                                       </span>
                                   @else
-                                      <span class="price">${{ number_format($relatedProduct->listed_price) }}</span>
+                                      <span class="price">{{ number_format($relatedProduct->listed_price) }} đ</span>
                                   @endif
                               @else
-                                  <span class="price">${{ number_format($relatedProduct->listed_price) }}</span>
+                                  <span class="price">{{ number_format($relatedProduct->listed_price) }} đ</span>
                               @endif
                           </div>
                         </div>
@@ -477,14 +477,14 @@
 
           // Cập nhật giá
           if (selectedVariant.sale_price) {
-              priceOld.innerHTML = `${number_format(selectedVariant.listed_price)} VNĐ`;
+              priceOld.innerHTML = `${number_format(selectedVariant.listed_price)} đ`;
               priceOld.style.display = 'inline'; 
               priceSep.style.display = 'inline';
-              priceDisplay.innerHTML = `${number_format(selectedVariant.sale_price)} VNĐ`;
+              priceDisplay.innerHTML = `${number_format(selectedVariant.sale_price)} đ`;
           } else {
               priceOld.style.display = 'none';
               priceSep.style.display = 'none';
-              priceDisplay.innerHTML = `${number_format(selectedVariant.listed_price)} VNĐ`;
+              priceDisplay.innerHTML = `${number_format(selectedVariant.listed_price)} đ`;
           }
       }
   }
