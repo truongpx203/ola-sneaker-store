@@ -209,6 +209,21 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $product->variants()->delete();
+
+        if ($product->primary_image_url && Storage::disk('public')->exists($product->primary_image_url)) {
+            Storage::disk('public')->delete($product->primary_image_url);
+        }
+
+        $hinhAnhFolder = 'product_galleries/' . $product->id;
+        if (Storage::disk('public')->exists($hinhAnhFolder)) {
+            Storage::disk('public')->deleteDirectory($hinhAnhFolder);
+        }
+
+        $product->productImages()->delete();
+
+        $product->delete();
+
+        return redirect()->route('products.index')->with('success', 'Xóa sản phẩm thành công.');
     }
 }
