@@ -114,7 +114,11 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
+        $product->load(['variants', 'productImages', 'category']);
+
+        $productSizes = ProductSize::all();
+
+        return view('admin.products.show', compact('product', 'productSizes'));
     }
 
     /**

@@ -98,7 +98,7 @@
                     <div class="card-header align-items-center d-flex">
                         <h4 class="card-title mb-0 flex-grow-1">Biến thể</h4>
                     </div><!-- end card header -->
-                    <div class="card-body" style="height: 400px; overflow: scroll">
+                    <div class="card-body">
                         <div class="live-preview">
                             <div class="row gy-4">
                                 <div class="table-responsive">
