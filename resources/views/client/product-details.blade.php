@@ -38,14 +38,14 @@
                   <div class="swiper-container single-product-thumb single-product-thumb-slider">
                     <div class="swiper-wrapper">
                       <div class="swiper-slide">
-                        <a class="lightbox-image" data-fancybox="gallery" href="{{ $product->primary_image_url }}">
-                          <img src="{{ $product->primary_image_url }}" alt="{{ $product->name }}" style="height: 541px; object-fit: cover">
+                        <a class="lightbox-image" data-fancybox="gallery" href="{{ Storage::url ($product->primary_image_url) }}">
+                          <img src="{{ Storage::url ($product->primary_image_url) }}" alt="{{ $product->name }}" style="height: 541px; object-fit: cover">
                         </a>
                       </div>
                       @foreach ($product->productImages as $image)
                       <div class="swiper-slide">
-                        <a class="lightbox-image" data-fancybox="gallery" href="{{ $image->image_url }}">
-                          <img src="{{ $image->image_url }}" alt="{{ $product->name }}" style="height: 541px; object-fit: cover">
+                        <a class="lightbox-image" data-fancybox="gallery" href="{{ Storage::url ($image->image_url) }}">
+                          <img src="{{ Storage::url ($image->image_url) }}" alt="{{ $product->name }}" style="height: 541px; object-fit: cover">
                         </a>
                       </div>
                       @endforeach
@@ -54,11 +54,11 @@
                   <div class="swiper-container single-product-nav single-product-nav-slider">
                     <div class="swiper-wrapper">
                       <div class="swiper-slide">
-                        <img src="{{ $product->primary_image_url }}" alt="{{ $product->name }}" style="height: 127px; object-fit: cover">
+                        <img src="{{ Storage::url ($product->primary_image_url) }}" alt="{{ $product->name }}" style="height: 127px; object-fit: cover">
                       </div>
                       @foreach ($product->productImages as $image) 
                       <div class="swiper-slide">
-                        <img src="{{ $image->image_url }}" alt="{{ $product->name }}" style="height: 127px; object-fit: cover">
+                        <img src="{{ Storage::url ($image->image_url) }}" alt="{{ $product->name }}" style="height: 127px; object-fit: cover">
                       </div>
                       @endforeach
                     </div>
@@ -370,7 +370,7 @@
                     <div class="inner-content">
                         <div class="product-thumb">
                             <a href="{{ route('product-detail', ['id' => $relatedProduct->id]) }}">
-                                <img src="{{ $relatedProduct->primary_image_url }}" alt="{{ $relatedProduct->name }}" style="height: 271px; object-fit: cover">
+                                <img src="{{ Storage::url ($relatedProduct->primary_image_url) }}" alt="{{ $relatedProduct->name }}" style="height: 271px; object-fit: cover">
                             </a>
                             <div class="product-flag">
                                 <ul>

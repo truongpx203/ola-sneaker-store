@@ -102,73 +102,75 @@
                             <div class="row gy-4">
                                 <div class="table-responsive">
                                     <table class="table table-bordered">
-                                        <tr class="text-center">
-                                            <th>Size</th>
-                                            <th>Số lượng</th>
-                                            <th>Giá niêm yết</th>
-                                            <th>Giá khuyến mãi</th>
-                                            <th>Giá nhập</th>
-                                            <th>Trạng thái</th>
-                                        </tr>
+                                        <thead>
+                                            <tr class="text-center">
+                                                <th>Size</th>
+                                                <th>Số lượng</th>
+                                                <th>Giá niêm yết</th>
+                                                <th>Giá khuyến mãi</th>
+                                                <th>Giá nhập</th>
+                                                <th>Hiển thị</th>
+                                                <th>Hành động</th>
+                                            </tr>
+                                        </thead>
 
-                                        @foreach ($productSizes as $size)
-                                            @foreach ($product->variants->where('product_size_id', $size->id) as $variant)
+                                        <tbody id="variantRows">
+                                            @foreach ($product->variants as $index => $variant)
                                                 <tr class="text-center">
                                                     <td style="vertical-align: middle;">
-                                                        <b>{{ $size->name }}</b>
-                                                        <input type="hidden" name="variants[{{ $size->id }}][size_id]"
-                                                            value="{{ $size->id }}">
-                                                    </td>
-                                                    <td>
-                                                        <input type="number"
-                                                            class="form-control @error('variants.' . $size->id . '.stock') is-invalid @enderror"
-                                                            name="variants[{{ $size->id }}][stock]"
-                                                            placeholder="Số lượng" value="{{ $variant->stock }}">
-                                                        @error('variants.' . $size->id . '.stock')
-                                                            <p class="text-danger">{{ $message }}</p>
-                                                        @enderror
-                                                    </td>
-                                                    <td>
-                                                        <input type="number"
-                                                            class="form-control @error('variants.' . $size->id . '.listed_price') is-invalid @enderror"
-                                                            name="variants[{{ $size->id }}][listed_price]"
-                                                            placeholder="Giá niêm yết"
-                                                            value="{{ $variant->listed_price }}">
-                                                        @error('variants.' . $size->id . '.listed_price')
-                                                            <p class="text-danger">{{ $message }}</p>
-                                                        @enderror
-                                                    </td>
-                                                    <td>
-                                                        <input type="number" class="form-control"
-                                                            name="variants[{{ $size->id }}][sale_price]"
-                                                            placeholder="Giá khuyến mãi" value="{{ $variant->sale_price }}">
-                                                    </td>
-                                                    <td>
-                                                        <input type="number"
-                                                            class="form-control @error('variants.' . $size->id . '.import_price') is-invalid @enderror"
-                                                            name="variants[{{ $size->id }}][import_price]"
-                                                            placeholder="Giá nhập"
-                                                            value="{{ $variant->import_price }}">
-                                                        @error('variants.' . $size->id . '.import_price')
-                                                            <p class="text-danger">{{ $message }}</p>
-                                                        @enderror
-                                                    </td>
-                                                    <td>
-                                                        <select class="form-select" id="is_show"
-                                                            name="variants[{{ $size->id }}][is_show]">
-                                                            <option value="1"
-                                                                {{ $variant->is_show == 1 ? 'selected' : '' }}>Show
-                                                            </option>
-                                                            <option value="0"
-                                                                {{ $variant->is_show == 0 ? 'selected' : '' }}>Hide
-                                                            </option>
+                                                        <select class="form-select" name="variants[{{ $index }}][size_id]" onchange="checkDuplicateSize(this)">
+                                                            <option value="">Chọn kích thước</option>
+                                                            @foreach ($productSizes as $size)
+                                                                <option value="{{ $size->id }}" {{ $size->id == $variant->product_size_id ? 'selected' : '' }}>
+                                                                    {{ $size->name }}
+                                                                </option>
+                                                            @endforeach
                                                         </select>
+                                                        @error('variants.' . $index . '.size_id')
+                                                        <p class="text-danger">{{ $message }}</p>
+                                                        @enderror
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" class="form-control" name="variants[{{ $index }}][stock]" placeholder="Số lượng" value="{{ $variant->stock }}">
+                                                        @error('variants.' . $index . '.stock')
+                                                        <p class="text-danger">{{ $message }}</p>
+                                                        @enderror
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" class="form-control" name="variants[{{ $index }}][listed_price]" placeholder="Giá niêm yết" value="{{ $variant->listed_price }}" oninput="checkPrice(this)">
+                                                        @error('variants.' . $index . '.listed_price')
+                                                        <p class="text-danger">{{ $message }}</p>
+                                                        @enderror
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" class="form-control" name="variants[{{ $index }}][sale_price]" placeholder="Giá khuyến mãi" value="{{ $variant->sale_price }}" oninput="checkPrice(this)">
+                                                        @error('variants.' . $index . '.sale_price')
+                                                        <p class="text-danger">{{ $message }}</p>
+                                                        @enderror
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" class="form-control" name="variants[{{ $index }}][import_price]" placeholder="Giá nhập" value="{{ $variant->import_price }}">
+                                                        @error('variants.' . $index . '.import_price')
+                                                        <p class="text-danger">{{ $message }}</p>
+                                                        @enderror
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-select" name="variants[{{ $index }}][is_show]">
+                                                            <option value="1" {{ $variant->is_show == 1 ? 'selected' : '' }}>Hiển thị</option>
+                                                            <option value="0" {{ $variant->is_show == 0 ? 'selected' : '' }}>Ẩn</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-danger btn-remove-variant" onclick="removeVariant(this)">Xóa</button>
                                                     </td>
                                                 </tr>
                                             @endforeach
-                                        @endforeach
-
+                                        </tbody>
                                     </table>
+                                    
+                                    <button type="button" class="btn btn-primary" id="addVariant">Thêm biến thể</button>
+
+
                                 </div>
                             </div>
                         </div>
@@ -237,6 +239,97 @@
             <!--end col-->
         </div>
     </form>
+
+
+    <script>
+        let variantCount = {{ count($product->variants) }}; // Đếm số biến thể đã thêm
+        let selectedSizes = []; // Mảng để lưu kích thước đã chọn
+    
+        document.getElementById('addVariant').addEventListener('click', function() {
+            const variantRows = document.getElementById('variantRows');
+            
+            const newRow = `
+                <tr class="text-center">
+                    <td style="vertical-align: middle;">
+                        <select class="form-select" name="variants[${variantCount}][size_id]" onchange="checkDuplicateSize(this)">
+                            <option value="">Chọn kích thước</option>
+                            @foreach ($productSizes as $size)
+                                <option value="{{ $size->id }}">{{ $size->name }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" name="variants[${variantCount}][stock]" placeholder="Số lượng">
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" name="variants[${variantCount}][listed_price]" placeholder="Giá niêm yết" oninput="checkPrice(this)">
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" name="variants[${variantCount}][sale_price]" placeholder="Giá khuyến mãi" oninput="checkPrice(this)">
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" name="variants[${variantCount}][import_price]" placeholder="Giá nhập">
+                    </td>
+                    <td>
+                        <select class="form-select" name="variants[${variantCount}][is_show]">
+                            <option value="1">Hiển thị</option>
+                            <option value="0">Ẩn</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-remove-variant" onclick="removeVariant(this)">Xóa</button>
+                    </td>
+                </tr>
+            `;
+            variantRows.insertAdjacentHTML('beforeend', newRow);
+            variantCount++; // Tăng biến đếm
+        });
+    
+        function checkDuplicateSize(select) {
+            const currentSize = select.value;
+    
+            // Kiểm tra kích thước đã chọn
+            if (currentSize) {
+                if (selectedSizes.includes(currentSize)) {
+                    alert('Kích thước này đã được chọn. Vui lòng chọn kích thước khác.');
+                    select.value = ''; // Đặt lại chọn
+                } else {
+                    // Thêm kích thước vào mảng đã chọn
+                    selectedSizes.push(currentSize);
+                }
+            }
+    
+            // Cập nhật lại mảng kích thước đã chọn khi xóa
+            const options = document.querySelectorAll('select[name*="[size_id]"]');
+            selectedSizes = [];
+            options.forEach(option => {
+                if (option.value) {
+                    selectedSizes.push(option.value);
+                }
+            });
+        }
+    
+        function checkPrice(input) {
+            const row = input.closest('tr');
+            const listedPriceInput = row.querySelector('input[name*="[listed_price]"]');
+            const salePriceInput = row.querySelector('input[name*="[sale_price]"]');
+    
+            const listedPrice = parseFloat(listedPriceInput.value) || 0;
+            const salePrice = parseFloat(salePriceInput.value) || 0;
+    
+            if (salePrice >= listedPrice && listedPrice > 0) {
+                alert('Giá khuyến mãi phải nhỏ hơn giá niêm yết.');
+                salePriceInput.value = ''; // Đặt lại giá khuyến mãi
+            }
+        }
+    
+        function removeVariant(button) {
+            button.closest('tr').remove();
+            checkDuplicateSize({ value: '' }); // Cập nhật lại mảng khi xóa
+        }
+        
+    </script>
+    
 @endsection
 
 @section('script-libs')

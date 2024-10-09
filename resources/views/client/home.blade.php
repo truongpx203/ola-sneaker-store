@@ -152,7 +152,7 @@
                   <div class="inner-content">
                       <div class="product-thumb">
                           <a href="{{ route('product-detail', ['id' => $product->id]) }}">
-                              <img src="{{ $product->primary_image_url }}" alt="{{ $product->name }}" style="height: 271px; object-fit: cover">
+                              <img src="{{Storage::url ($product->primary_image_url) }}" alt="{{ $product->name }}" style="height: 271px; object-fit: cover">
                           </a>
                           <div class="product-flag">
                               <ul>
