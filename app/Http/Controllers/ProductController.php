@@ -65,7 +65,7 @@ class ProductController extends Controller
             $product->name = $request->name;
             $product->code = $request->code;
             $product->summary = $request->summary;
-            $product->detailed_description = $request->detailed_description;
+            $product->detailed_description = html_entity_decode(strip_tags($request->detailed_description));
 
             // Xử lý upload ảnh
             if ($request->hasFile('primary_image_url')) {
@@ -145,32 +145,58 @@ class ProductController extends Controller
             $product->update([
                 'name' => $request->name,
                 'summary' => $request->summary,
-                'detailed_description' => $request->detailed_description,
+                'detailed_description' => html_entity_decode(strip_tags($request->detailed_description)),
                 'category_id' => $request->category_id,
             ]);
-
+    
             // Xử lý ảnh chính (primary image)
             if ($request->hasFile('primary_image_url')) {
-                // Lưu ảnh mới và xóa ảnh cũ
                 $imagePath = $request->file('primary_image_url')->store('products', 'public');
                 Storage::disk('public')->delete($product->primary_image_url);
                 $product->update(['primary_image_url' => $imagePath]);
             }
-
-            // Xử lý cập nhật các biến thể sản phẩm
-            foreach ($request->variants as $size_id => $variantData) {
-                $variant = $product->variants()->where('product_size_id', $size_id)->first();
-                if ($variant) {
-                    $variant->update([
-                        'stock' => $variantData['stock'],
-                        'listed_price' => $variantData['listed_price'],
-                        'sale_price' => $variantData['sale_price'],
-                        'import_price' => $variantData['import_price'],
-                        'is_show' => $variantData['is_show'],
-                    ]);
+    
+            // Lưu danh sách các biến thể hiện có
+            $currentVariants = $product->variants()->pluck('product_size_id')->toArray();
+    
+            // Xử lý cập nhật và thêm mới các biến thể
+            $updatedVariantIds = []; // Lưu các ID biến thể đã cập nhật
+    
+            foreach ($request->variants as $variantData) {
+                if (isset($variantData['size_id'])) {
+                    $updatedVariantIds[] = $variantData['size_id'];
+    
+                    // Cập nhật biến thể đã tồn tại
+                    $variant = $product->variants()->where('product_size_id', $variantData['size_id'])->first();
+                    if ($variant) {
+                        $variant->update([
+                            'stock' => $variantData['stock'],
+                            'listed_price' => $variantData['listed_price'],
+                            'sale_price' => $variantData['sale_price'],
+                            'import_price' => $variantData['import_price'],
+                            'is_show' => $variantData['is_show'],
+                        ]);
+                    } else {
+                        // Thêm biến thể mới nếu chưa tồn tại
+                        $product->variants()->create([
+                            'product_size_id' => $variantData['size_id'],
+                            'stock' => $variantData['stock'],
+                            'listed_price' => $variantData['listed_price'],
+                            'sale_price' => $variantData['sale_price'],
+                            'import_price' => $variantData['import_price'],
+                            'is_show' => $variantData['is_show'],
+                        ]);
+                    }
                 }
             }
-
+    
+            // Xóa các biến thể không còn tồn tại trong request
+            foreach ($currentVariants as $currentVariantId) {
+                if (!in_array($currentVariantId, $updatedVariantIds)) {
+                    $product->variants()->where('product_size_id', $currentVariantId)->delete();
+                }
+            }
+    
             // Xử lý cập nhật thư viện ảnh (gallery)
             if ($request->hasFile('product_galleries')) {
                 foreach ($request->file('product_galleries') as $file) {
@@ -182,7 +208,7 @@ class ProductController extends Controller
                     ]);
                 }
             }
-
+    
             // Xóa các ảnh từ thư viện nếu có
             if ($request->filled('delete_galleries')) {
                 foreach ($request->delete_galleries as $image_id => $image_url) {
@@ -193,13 +219,11 @@ class ProductController extends Controller
                     }
                 }
             }
-
+    
             DB::commit();
-
             return redirect()->route('products.index')->with('success', 'Cập nhật sản phẩm thành công!');
         } catch (\Exception $e) {
             DB::rollback();
-
             return back()->withErrors(['error' => 'Cập nhật sản phẩm thất bại. Vui lòng thử lại.'])->withInput();
         }
     }

@@ -141,9 +141,9 @@ require_once __DIR__ . "/product_size.php";
 
 // show sp mới limit8
 
-Route::get('/', [AdminProductController::class, 'showNewProducts'])->name('/');
+Route::get('/', [ClientProductController::class, 'showNewProducts'])->name('/');
 
-Route::get('/product/{id}', [AdminProductController::class, 'show'])->name('product-detail');
+Route::get('/product/{id}', [ClientProductController::class, 'show'])->name('product-detail');
 
 Route::get('/', [ClientProductController::class, 'showNewProducts'])->name('/');
 // chi tiết sp

@@ -23,12 +23,21 @@ class ProductRequest extends FormRequest
     {
         $rules = [
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:50|unique:products,code,' . $this->route('product')->id,
+            'code' => 'required|string|max:50|unique:products,code,' . ($this->route('product') ? $this->route('product')->id : 'NULL'),
             'category_id' => 'required|exists:categories,id',
             'summary' => 'required|string',
             'detailed_description' => 'required|string',
 
-            'variants.*.size_id' => 'required|exists:product_sizes,id',
+          'variants.*.size_id' => [
+            'required',
+            'exists:product_sizes,id',
+            function($attribute, $value, $fail) {
+                $sizeIds = collect($this->variants)->pluck('size_id');
+                if ($sizeIds->count() !== $sizeIds->unique()->count()) {
+                    $fail('Kích thước không được trùng lặp.');
+                }
+            },
+        ],
             'variants.*.stock' => 'required|integer|min:0',
             'variants.*.listed_price' => 'required|numeric|min:0',
             'variants.*.sale_price' => 'nullable|numeric|min:0',
@@ -58,7 +67,7 @@ class ProductRequest extends FormRequest
             'primary_image_url.mimes' => 'Ảnh phải có định dạng: jpeg, png, jpg, gif, svg.',
             'summary.required' => 'Vui lòng điền mô tả ngắn.',
             'detailed_description.required' => 'Vui lòng điền mô tả chi tiết.',
-            'variants.*.size_id.required' => 'Kích thước sản phẩm là bắt buộc.',
+            'variants.*.size_id.required' => 'Kích thước là bắt buộc.',
             'variants.*.stock.required' => 'Số lượng là bắt buộc.',
             'variants.*.listed_price.required' => 'Giá niêm yết là bắt buộc.',
             'variants.*.import_price.required' => 'Giá nhập là bắt buộc.',
