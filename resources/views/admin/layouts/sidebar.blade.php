@@ -107,12 +107,12 @@
                     <div class="collapse menu-dropdown" id="sidebarProductsizes">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="{{route('dashboard.size.index')}}" target="_blank" class="nav-link"
+                                <a href="{{route('productsize.index')}}" target="_blank" class="nav-link"
                                     data-key="t-horizontal">Danh sách</a>
                              
                             </li>
                             <li class="nav-item">
-                                <a href="{{route('dashboard.size.create')}}" target="_blank" class="nav-link"
+                                <a href="{{route('productsize.create')}}" target="_blank" class="nav-link"
                                     data-key="t-horizontal">Thêm mới </a>
                              
                             </li>
