@@ -75,8 +75,8 @@ Route::get('tt-thanh-cong', function () {
 });
 
 
-// Admin  middleware(CheckRole::class)->
-Route::prefix('admin')->group(function () {
+// Admin  
+Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
 
     Route::get('/', function () {
         return view('admin.dashboard');
