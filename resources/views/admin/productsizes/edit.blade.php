@@ -38,7 +38,7 @@
         </div>
     @endif
 
-    <form action="{{ route('dashboard.size.update', $productSize->id) }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('productsize.update', $productSize->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="row">
@@ -67,7 +67,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header align-items-center d-flex">
-                        <a href="{{ route('dashboard.size.index') }}" class="btn btn-primary mx-3" type="submit">Quay
+                        <a href="{{ route('productsize.index') }}" class="btn btn-primary mx-3" type="submit">Quay
                             lại</a>
                         <button class="btn btn-primary" type="submit">Sửa</button>
                     </div>

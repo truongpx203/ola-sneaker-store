@@ -19,13 +19,17 @@
             </div>
         </div>
     </div>
-
+    @if ($errors->has('size_error'))
+        <div class="alert alert-danger">
+            {{ $errors->first('size_error') }}
+        </div>
+    @endif
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between ">
                     <h5 class="card-title mb-0 "> Danh Sách</h5>
-                    <a href="{{ route('dashboard.size.create') }}" class="btn btn-primary mb-3">Thêm Mới </a>
+                    <a href="{{ route('productsize.create') }}" class="btn btn-primary mb-3">Thêm Mới </a>
                 </div>
                 <div class="card-body">
                     <table id="example" class="table table-bordered dt-responsive nowrap table-striped align-middle"
@@ -43,9 +47,9 @@
                                     <td>{{ $item->id }}</td>
                                     <td>{{ $item->name }}</td>
                                     <td>
-                                        <a href="{{ route('dashboard.size.edit', $item->id) }}" type="submit"
+                                        <a href="{{ route('productsize.edit', $item->id) }}" type="submit"
                                             class="btn btn-warning">Sửa</a>
-                                        <form action="{{ route('dashboard.size.destroy', $item->id) }}" method="post">
+                                        <form action="{{ route('productsize.destroy', $item->id) }}" method="post">
                                             @csrf
                                             @method('DELETE')
                                             <button onclick="return confirm('Chắc chắn không?')" type="submit"

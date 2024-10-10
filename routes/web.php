@@ -6,6 +6,7 @@ use App\Http\Controllers\client\Account;
 use App\Http\Controllers\client\AccountController;
 use App\Http\Controllers\client\ProductController as ClientProductController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductSizeController;
 use App\Http\Controllers\VariantController;
 use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
@@ -74,8 +75,8 @@ Route::get('tt-thanh-cong', function () {
 });
 
 
-// Admin
-Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
+// Admin  middleware(CheckRole::class)->
+Route::prefix('admin')->group(function () {
 
     Route::get('/', function () {
         return view('admin.dashboard');
@@ -112,6 +113,18 @@ Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
             Route::put('{variant}/update',      [VariantController::class, 'update'])->name('update');
             Route::delete('{variant}/destroy',  [VariantController::class, 'destroy'])->name('destroy');
         });
+
+    // Route quản lý kích thước sản phẩm
+    Route::prefix('productsize')
+        ->as('productsize.')
+        ->group(function () {
+            Route::get('/',                     [ProductSizeController::class, 'index'])->name('index');
+            Route::get('/create',               [ProductSizeController::class, 'create'])->name('create');
+            Route::post('/store',               [ProductSizeController::class, 'store'])->name('store');
+            Route::get('/edit/{id}',            [ProductSizeController::class, 'edit'])->name('edit');
+            Route::put('/update/{id}',          [ProductSizeController::class, 'update'])->name('update');
+            Route::delete('/delete/{id}',       [ProductSizeController::class, 'destroy'])->name('destroy');
+        });
 });
 
 
@@ -136,7 +149,6 @@ Route::get('/logout', [AccountController::class, 'logout'])->name('logout');
 Route::get('/account', [AccountController::class, 'account'])
     ->name('account')
     ->middleware('auth');
-require_once __DIR__ . "/product_size.php";
 
 
 // show sp mới limit8
