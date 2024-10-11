@@ -77,13 +77,12 @@
             $paymentStatusMapping = [
                 'pending' => 'Chưa thanh toán',
                 'completed' => 'Đã thanh toán',
-                'failed' => 'Thất bại',
+                // 'failed' => 'Thất bại',
             ];
 
             $paymentTypeMapping = [
-                'online_transfer' => 'Chuyển khoản trực tuyến',
-                'cash' => 'Tiền mặt',
-                'bank_transfer' => 'Chuyển khoản ngân hàng',
+                'online' => 'Chuyển khoản trực tuyến',
+                'cod' => 'Thanh toán khi nhận hàng',
             ];
         @endphp
         <div class="card mb-4">

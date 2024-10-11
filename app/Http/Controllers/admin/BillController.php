@@ -24,24 +24,24 @@ class BillController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $statusList = ['pending', 'confirmed', 'in_delivery', 'delivered', 'failed', 'canceled', 'completed'];
-    
+
         // Xác thực yêu cầu đầu vào
         $request->validate([
             'status' => 'required|string|in:' . implode(',', $statusList),
             'note' => 'nullable|string|max:255',
         ]);
-    
+
         // Kiểm tra nếu trạng thái được cập nhật thành "canceled" mà không có lý do
         if ($request->input('status') === 'canceled' && empty($request->input('note'))) {
             return redirect()->route('bills.show', $id)->with('error', 'Vui lòng nhập lý do hủy đơn hàng.');
         }
-    
+
         // Tìm hóa đơn
         $bill = Bill::findOrFail($id);
-    
+
         // Lưu trạng thái cũ
         $oldStatus = $bill->bill_status;
-    
+
         // Định nghĩa quy tắc chuyển đổi trạng thái
         $validTransitions = [
             'pending' => ['confirmed', 'canceled'],
@@ -52,16 +52,22 @@ class BillController extends Controller
             'canceled' => [],
             'completed' => []
         ];
-    
+
         // Kiểm tra xem trạng thái mới có hợp lệ không
         if (!in_array($request->input('status'), $validTransitions[$oldStatus])) {
             return redirect()->route('bills.show', $id)->with('error', 'Chuyển đổi trạng thái không hợp lệ.');
         }
-    
+
         // Cập nhật trạng thái hóa đơn
         $bill->bill_status = $request->input('status');
+
+        // Nếu trạng thái được cập nhật thành "delivered", cập nhật trạng thái thanh toán
+        if ($bill->bill_status === 'delivered') {
+            $bill->payment_status = 'completed'; // Cập nhật trạng thái thanh toán
+        }
+
         $bill->save();
-    
+
         // Tạo một mục lịch sử mới
         $bill->histories()->create([
             'from_status' => $oldStatus,
@@ -70,15 +76,13 @@ class BillController extends Controller
             'by_user' => auth()->user()->id,
             'at_datetime' => now(),
         ]);
-    
+
         // Nếu trạng thái được cập nhật thành "delivered"
         if ($bill->bill_status === 'delivered' && $oldStatus !== 'completed') {
-            UpdateOrderStatus::dispatch($bill->id)->delay(now()->addMinutes(1));
             // UpdateOrderStatus::dispatch($bill->id)->delay(now()->addDays(3));
+            UpdateOrderStatus::dispatch($bill->id)->delay(now()->addMinutes(1));
         }
-    
+
         return redirect()->route('bills.show', $id)->with('success', 'Trạng thái đơn hàng đã được cập nhật.');
     }
-
-
 }
