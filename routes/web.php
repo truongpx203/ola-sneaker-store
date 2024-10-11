@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\admin\BillController;
 use App\Http\Controllers\admin\ProductController as AdminProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\client\Account;
@@ -114,6 +115,7 @@ Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
             Route::delete('{variant}/destroy',  [VariantController::class, 'destroy'])->name('destroy');
         });
 
+
     // Route quản lý kích thước sản phẩm
     Route::prefix('productsize')
         ->as('productsize.')
@@ -125,6 +127,11 @@ Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
             Route::put('/update/{id}',          [ProductSizeController::class, 'update'])->name('update');
             Route::delete('/delete/{id}',       [ProductSizeController::class, 'destroy'])->name('destroy');
         });
+
+    // bills
+    Route::get('/bills', [BillController::class, 'index'])->name('bills.index');
+    Route::get('/bills/{id}', [BillController::class, 'show'])->name('bills.show');
+    Route::post('/bills/{id}/update-status', [BillController::class, 'updateStatus'])->name('bills.updateStatus');
 });
 
 
@@ -165,3 +172,9 @@ Route::get('/shop/filter', [ClientProductController::class, 'filterProducts'])->
 Route::get('/shop/page', [ClientProductController::class, 'paginateProducts'])->name('shop.paginate');
 Route::get('/shop/filter/price', [ClientProductController::class, 'filterByPrice'])->name('shop.filter.price');
 
+
+
+
+Route::get('show-bill-item', function () {
+    return view('admin.bills.show-bill-item');
+});

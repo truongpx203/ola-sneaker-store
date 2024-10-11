@@ -51,14 +51,14 @@
                                         </nav>
                                     </div>
                                     <div class="shop-top-right">
-                                        <div class="shop-sort">
+                                        {{-- <div class="shop-sort">
                                             <span>sắp xếp</span>
                                             <select class="form-select" id="sort-select" aria-label="Sort select example">
                                                 <option value="default" selected>Mặc định</option>
                                                 <option value="asc">Giá thấp đến cao</option>
                                                 <option value="desc">Giá cao đến thấp</option>
                                             </select>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
                             </div>
