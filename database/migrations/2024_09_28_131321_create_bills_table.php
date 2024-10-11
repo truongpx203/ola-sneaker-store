@@ -25,8 +25,8 @@ return new class extends Migration
                 'canceled',                // Đã hủy
                 'completed'                // Hoàn thành
             ]);
-            $table->enum('payment_type', ['online_transfer', 'cash', 'bank_transfer']); // Loại thanh toán
-            $table->enum('payment_status', ['pending', 'completed', 'failed']); // Trạng thái thanh toán
+            $table->enum('payment_type', ['cod', 'online']); // Loại thanh toán
+            $table->enum('payment_status', ['pending', 'completed']); // Trạng thái thanh toán
             $table->decimal('total_price', 10, 2);
             $table->string('full_name');
             $table->string('phone_number');
