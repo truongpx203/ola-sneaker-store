@@ -120,6 +120,22 @@
                         </ul>
                     </div>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#bills" data-bs-toggle="collapse"
+                        role="button" aria-expanded="false" aria-controls="bills">
+                        <i class="ri-layout-3-line"></i> <span data-key="t-layouts">Hóa đơn</span> 
+                    </a>
+                    <div class="collapse menu-dropdown" id="bills">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="{{route('bills.index')}}" target="_blank" class="nav-link"
+                                    data-key="t-horizontal">Danh sách</a>
+                             
+                            </li>
+                        </ul>
+                    </div>
+                </li>
                 
 
             </ul>
