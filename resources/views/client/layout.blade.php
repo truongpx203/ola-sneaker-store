@@ -114,6 +114,11 @@
                       <i class="pe-7s-like icon"></i>
                     </a>
                   </div>
+                  <div class="shopping-order">
+                    <a class="shopping-cart-btn" type="button" href="{{ route('bills.index') }}">
+                      <i class="pe-7s-cart icon"></i>
+                    </a>
+                  </div>
                   <div class="shopping-cart">
                     <button class="shopping-cart-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#AsideOffcanvasCart" aria-controls="offcanvasRightLabel">
                       <i class="pe-7s-shopbag icon"></i>

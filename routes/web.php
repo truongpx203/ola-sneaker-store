@@ -4,6 +4,7 @@ use App\Http\Controllers\admin\ProductController as AdminProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\client\Account;
 use App\Http\Controllers\client\AccountController;
+use App\Http\Controllers\client\BillController;
 use App\Http\Controllers\client\ProductController as ClientProductController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductSizeController;
@@ -165,3 +166,5 @@ Route::get('/shop/filter', [ClientProductController::class, 'filterProducts'])->
 Route::get('/shop/page', [ClientProductController::class, 'paginateProducts'])->name('shop.paginate');
 Route::get('/shop/filter/price', [ClientProductController::class, 'filterByPrice'])->name('shop.filter.price');
 
+// Trang lịch sử mua hàng
+Route::get('bills/', [BillController::class, 'index'])->name('bills.index')->middleware('auth');
