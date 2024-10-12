@@ -4,9 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\client\Cart;
+use App\Models\ProductSize;
 
 class Variant extends Model
 {
+    // Trong model Variant.php
+public function productSize()
+{
+    return $this->belongsTo(ProductSize::class, 'product_size_id');
+}
+
     use HasFactory;
 
     protected $fillable = [
