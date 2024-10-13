@@ -5,6 +5,7 @@ use App\Http\Controllers\admin\ProductController as AdminProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\client\Account;
 use App\Http\Controllers\client\AccountController;
+use App\Http\Controllers\client\BillController;
 use App\Http\Controllers\client\ProductController as ClientProductController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductSizeController;
@@ -177,15 +178,12 @@ Route::post('/cart/voucher', [CartController::class, 'applyVoucher'])->name('car
 
 
 
-
-
-
-
-
-
+// Trang lịch sử mua hàng
+Route::get('bills/', [BillController::class, 'index'])->name('bills.index')->middleware('auth');
 
 
 
 Route::get('show-bill-item', function () {
     return view('admin.bills.show-bill-item');
 });
+
