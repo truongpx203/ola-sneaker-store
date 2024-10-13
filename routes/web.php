@@ -5,7 +5,7 @@ use App\Http\Controllers\admin\ProductController as AdminProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\client\Account;
 use App\Http\Controllers\client\AccountController;
-use App\Http\Controllers\client\BillController;
+use App\Http\Controllers\client\HomeController;
 use App\Http\Controllers\client\ProductController as ClientProductController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductSizeController;
@@ -175,6 +175,9 @@ Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
 Route::post('/cart/update/{id}', [CartController::class, 'updateCart'])->name('cart.update');
 Route::post('/cart/voucher', [CartController::class, 'applyVoucher'])->name('cart.voucher');
 
+// chi tiết đơn hàng truyền id bảng bill
+Route::get('order-details/{id}', [HomeController::class, 'detailBill'])->name('order-details');
+Route::post('order-details/{id}', [HomeController::class, 'cancelOrder'])->name('cancelOrder');
 
 
 

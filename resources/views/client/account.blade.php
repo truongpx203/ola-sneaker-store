@@ -143,21 +143,21 @@
                             <td>30/9/2024</td>
                             <td>giao thành công</td>
                             <td>450.000</td>
-                            <td><a href="{{route('order-details')}}" class="check-btn sqr-btn ">View</a></td>
+                            <td><a href="" class="check-btn sqr-btn ">View</a></td>
                           </tr>
                           <tr>
                             <td>code125</td>
                             <td>15/5/2024</td>
                             <td>giao thành công</td>
                             <td>500.000</td>
-                            <td><a href="{{route('order-details')}}" class="check-btn sqr-btn ">View</a></td>
+                            <td><a href="" class="check-btn sqr-btn ">View</a></td>
                           </tr>
                           <tr>
                             <td>code125</td>
                             <td>15/5/2024</td>
                             <td>giao thành công</td>
                             <td>500.000</td>
-                            <td><a href="{{route('order-details')}}" class="check-btn sqr-btn ">View</a></td>
+                            <td><a href="" class="check-btn sqr-btn ">View</a></td>
                           </tr>
                         </tbody>
                       </table>
