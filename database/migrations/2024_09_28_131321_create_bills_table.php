@@ -14,13 +14,20 @@ return new class extends Migration
     {
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class)->constrained();   
+            $table->foreignIdFor(User::class)->constrained();
             $table->string('code')->unique();
-            $table->string('bill_status');
-            $table->string('payment_type');
-            $table->string('payment_status');
+            $table->enum('bill_status', [
+                'pending',                 // Chờ xác nhận
+                'confirmed',               // Đã xác nhận
+                'in_delivery',             // Đang giao
+                'delivered',               // Giao hàng thành công
+                'failed',                  // Giao hàng thất bại
+                'canceled',                // Đã hủy
+                'completed'                // Hoàn thành
+            ]);
+            $table->enum('payment_type', ['cod', 'online']); // Loại thanh toán
+            $table->enum('payment_status', ['pending', 'completed']); // Trạng thái thanh toán
             $table->decimal('total_price', 10, 2);
-            
             $table->string('full_name');
             $table->string('phone_number');
             $table->text('address');
