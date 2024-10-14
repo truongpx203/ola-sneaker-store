@@ -100,54 +100,54 @@
                       <li data-bg-color="#c7bb9b"></li>
                     </ul>
                   </div> --}}
-                  <div class="product-size">
-                    <h6 class="title">Size</h6>
-                    <ul class="size-list">
-                      @foreach ($product->variants as $variant)
-                          <li class="size-item {{ $variant->stock == 0 ? 'out-of-stock' : '' }}" 
-                              data-stock="{{ $variant->stock }}" 
-                              data-variant-id="{{ $variant->id }}"
-                              onclick="updateStockInfo(this, '{{ $variant->size ? $variant->size->name : 'Không xác định' }}')">
-                              {{ $variant->size ? $variant->size->name : 'Không xác định' }}
-                          </li>
-                      @endforeach
-                  </ul>
-                </div>
-                <div id="stock-info" class="stock-info mb-2"></div>
-                  <div class="product-quick-action">
-                    <div class="qty-wrap">
-                      <form action="{{ route('cart.add') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="variant_id" value="{{ $variant->id }}">
-                      <div class="pro-qty">
-                        <input type="text" title="Quantity" name="variant_quantity" value="1" min="1">
-                      </div>
-                    </div>
                   
-                    <button type="submit" id="add-to-cart-btn" class="btn-theme" >Thêm vào giỏ hàng</button>
-                  </form>
-                    <style>
-                      .btn-theme.disabled {
-                        background-color: #fff;
-                        color: #eb3e32;
-                        cursor: not-allowed;
-                      }
-                    </style>
-                  </div>
-                  <div class="product-wishlist-compare">
-                    {{-- <a href="shop-wishlist.html"><i class="pe-7s-like"></i>Thêm vào sản phẩm yêu thích</a> --}}
-                    {{-- <a href="shop-compare.html"><i class="pe-7s-shuffle"></i>Add to Compare</a> --}}
-                  </div>
-                  <div class="product-info-footer">
-                    <h6 class="code"><span>Mã số :</span>{{$product->code}}</h6>
-                    {{-- <div class="social-icons">
-                      <span>Chia sẻ</span>
-                      <a href="#/"><i class="fa fa-facebook"></i></a>
-                      <a href="#/"><i class="fa fa-dribbble"></i></a>
-                      <a href="#/"><i class="fa fa-pinterest-p"></i></a>
-                    </div> --}}
-                  </div>
+                  <form action="{{ route('cart.add') }}" method="POST">
+                    @csrf
+                    
+                    <!-- Hidden input để lưu variant_id đã chọn -->
+                    <input type="hidden" name="variant_id" id="variant-id" value="{{ $product->variants->first()->id }}">
+                
+                    <div class="product-size">
+                        <h6 class="title">Size</h6>
+                        <ul class="size-list">
+                            @foreach ($product->variants as $variant)
+                                <li class="size-item {{ $variant->stock == 0 ? 'out-of-stock' : '' }}" 
+                                    data-variant-id="{{ $variant->id }}" 
+                                    data-stock="{{ $variant->stock }}" 
+                                    onclick="updateStockInfo(this, '{{ $variant->size ? $variant->size->name : 'Không xác định' }}')">
+                                    {{ $variant->size ? $variant->size->name : 'Không xác định' }}
+                                    {{-- ({{ $variant->stock > 0 ? 'Còn hàng' : 'Hết hàng' }}) --}}
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                
+                    <div class="pro-qty">
+                        <input type="number" title="Quantity" name="variant_quantity" value="1" min="1">
+                    </div>
+                    
+                    <button type="submit" id="add-to-cart-btn" class="btn-theme" onclick="addToCart(event)">Thêm vào giỏ hàng</button>
+                </form>
+                <br>
+                <div class="product-info-footer">
+                  <h6 class="code"><span>Mã số :</span>{{$product->code}}</h6>
                 </div>
+                <script>
+                    function selectSize(element) {
+                        // Xóa class 'selected' khỏi tất cả các size-item
+                        document.querySelectorAll('.size-item').forEach(item => {
+                            item.classList.remove('selected');
+                        });
+                
+                        // Thêm class 'selected' cho size-item được chọn
+                        element.classList.add('selected');
+                
+                        // Cập nhật giá trị variant_id của input hidden
+                        const variantId = element.getAttribute('data-variant-id');
+                        document.getElementById('variant-id').value = variantId;
+                    }
+                </script>
+                
                 <!--== End Product Info Area ==-->
               </div>
             </div>
@@ -368,7 +368,6 @@
             <div class="swiper-container product-slider-col4-container">
               <div class="swiper-wrapper">
                 @foreach ($relatedProducts as $relatedProduct)   
-
                 <div class="swiper-slide">
                   <!--== Start Product Item ==-->
                   <div class="product-item">
@@ -496,16 +495,6 @@
 
   function number_format(number) {
       return Math.floor(number).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  }
-
-  function disableAddToCart() {
-      const addToCartBtn = document.getElementById('add-to-cart-btn');
-      addToCartBtn.classList.add('disabled');
-      addToCartBtn.href = '#'; // Ngăn không cho chuyển hướng
-      addToCartBtn.onclick = function(event) {
-          event.preventDefault();
-          alert('Bạn cần chọn size !');
-      };
   }
 
   function enableAddToCart() {
