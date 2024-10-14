@@ -9,6 +9,7 @@ use App\Models\ProductSize;
 
 class Variant extends Model
 {
+
     // Trong model Variant.php
 public function productSize()
 {
@@ -29,11 +30,18 @@ public function productSize()
 
     public function product()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class,);
     }
 
     public function size()
     {
         return $this->belongsTo(ProductSize::class,  'product_size_id');
+    }
+
+    // ngày 14/10
+
+    public function cart(){
+        // return $this->hasMany(Cart::class);
+        return $this->belongsTo(Cart::class);
     }
 }

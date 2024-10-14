@@ -3,6 +3,7 @@
 use App\Http\Controllers\admin\BillController;
 use App\Http\Controllers\admin\ProductController as AdminProductController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\client\Account;
 use App\Http\Controllers\client\AccountController;
 use App\Http\Controllers\client\HomeController;
@@ -174,6 +175,11 @@ Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.dele
 Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear'); 
 Route::post('/cart/update/{id}', [CartController::class, 'updateCart'])->name('cart.update');
 Route::post('/cart/voucher', [CartController::class, 'applyVoucher'])->name('cart.voucher');
+
+// Trang thanh toán (Checkout)
+Route::get('/checkouts', [CheckoutController::class, 'checkout'])->name('checkouts');
+Route::post('/checkouts', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
+
 
 // chi tiết đơn hàng truyền id bảng bill
 Route::get('order-details/{id}', [HomeController::class, 'detailBill'])->name('order-details');
