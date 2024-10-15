@@ -114,7 +114,7 @@
                                 <li class="size-item {{ $variant->stock == 0 ? 'out-of-stock' : '' }}" 
                                     data-variant-id="{{ $variant->id }}" 
                                     data-stock="{{ $variant->stock }}" 
-                                    onclick="updateStockInfo(this, '{{ $variant->size ? $variant->size->name : 'Không xác định' }}')">
+                                    onclick="selectSize(this)">
                                     {{ $variant->size ? $variant->size->name : 'Không xác định' }}
                                     {{-- ({{ $variant->stock > 0 ? 'Còn hàng' : 'Hết hàng' }}) --}}
                                 </li>
@@ -126,8 +126,8 @@
                         <input type="number" title="Quantity" name="variant_quantity" value="1" min="1">
                     </div>
                     
-                    <button type="submit" id="add-to-cart-btn" class="btn-theme" onclick="addToCart(event)">Thêm vào giỏ hàng</button>
-                </form>
+                    <button type="submit" id="add-to-cart-btn" class="btn-theme"href="{{ 'shop.cart' }}" onclick="addToCart(event)">Thêm vào giỏ hàng</button>
+                </form>                
                 <br>
                 <div class="product-info-footer">
                   <h6 class="code"><span>Mã số :</span>{{$product->code}}</h6>
@@ -138,13 +138,33 @@
                         document.querySelectorAll('.size-item').forEach(item => {
                             item.classList.remove('selected');
                         });
-                
                         // Thêm class 'selected' cho size-item được chọn
                         element.classList.add('selected');
                 
                         // Cập nhật giá trị variant_id của input hidden
                         const variantId = element.getAttribute('data-variant-id');
                         document.getElementById('variant-id').value = variantId;
+                        const stockInfo = document.getElementById('stock-info');
+      const stock = element.getAttribute('data-stock');
+      selectedStock = stock; // Cập nhật số lượng đã chọn
+  
+      // Xóa lớp active khỏi tất cả các kích thước
+      const sizeItems = document.querySelectorAll('.size-item');
+      sizeItems.forEach(item => {
+          item.classList.remove('active');
+      });
+  
+      // Thêm lớp active cho kích thước đã chọn
+      element.classList.add('active');
+  
+      // Cập nhật thông tin số lượng
+      if (stock == 0) {
+          stockInfo.innerHTML = '<span style="color: red;">Đã hết hàng</span>';
+          disableAddToCart(); // Vô hiệu hóa nút thêm vào giỏ hàng
+      } else {
+          stockInfo.innerHTML = `Số lượng còn lại: ${stock}`;
+          enableAddToCart(); // Kích hoạt nút thêm vào giỏ hàng
+      }
                     }
                 </script>
                 

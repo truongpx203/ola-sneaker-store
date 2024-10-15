@@ -18,6 +18,27 @@ use League\CommonMark\Extension\CommonMark\Node\Inline\Strong;
 class CartController extends Controller
 {
 
+    public function updateAll(Request $request){
+        $body = $request->all();
+        $listId = $body['id'];
+        $listQuantity = $body['variant_quantity'];
+        $listVariantId = $body['variant_id'];
+        Cart::where('user_id', Auth::id())->delete();
+
+        for ($i=0; $i < count($listId); $i++) { 
+            // $cart = Cart::find(id: $listId[$i]);
+            // // Cập nhật số lượng sản phẩm trong giỏ hàng
+            // $cart->variant_quantity = $listQuantity[$i];
+            // $cart->save();
+            Cart::create([
+                'user_id' => Auth::id(),
+                'variant_id' => $listVariantId[$i],
+                'variant_quantity' => $listQuantity[$i],
+            ]);
+        }
+        return redirect()->back()->with('success', 'Giỏ hàng được cập nhật thành công');
+    }
+
     public function showCart()
     {
         $productSizes = ProductSize::all();
@@ -31,7 +52,7 @@ class CartController extends Controller
         $discount = 0; 
         if (session()->has('coupon')) {
             $voucher = session('coupon');
-            $discount =$voucher->value; // Giả sử value là phần trăm
+            $discount =$voucher->value; 
             $discountAmount = $provisional * ($discount / 100); // Tính số tiền giảm giá
             // Nếu có giới hạn số tiền giảm tối đa
             if ($discountAmount >$voucher->max_price) {
@@ -66,45 +87,12 @@ class CartController extends Controller
         return redirect()->back()->with('success', 'Sản phẩm đã được thêm vào giỏ hàng.');
     } 
 
-// xóa sản phẩm
-public function destroy($id)
-    {
-        $cart = Cart::find($id);
-            $cart->delete();
-            return redirect()->back()->with('success', 'Sản phẩm đã được xóa thành công.');
-    
-    }
-
 //  xóa toàn bộ giỏ hàng
 public function clear()
 {
     Cart::truncate(); 
 
     return redirect()->route('cart.show')->with('success', 'Giỏ hàng đã được xóa.');
-}
-
-public function updateCart(Request $request, $id)
-{
-    // Xác thực dữ liệu đầu vào
-    $validatedData = $request->validate([
-        'variant_quantity' => 'required|integer|min:1', // Kiểm tra số lượng sản phẩm
-    ], [
-        'variant_quantity.required' => 'Số lượng không được để trống.',
-        'variant_quantity.integer' => 'Số lượng phải là một số nguyên.',
-        'variant_quantity.min' => 'Số lượng phải lớn hơn hoặc bằng 1.',
-    ]);
-
-    $cart = Cart::find($id);
-
-    if (!$cart) {
-        return redirect()->back()->with('error', 'Không tìm thấy sản phẩm trong giỏ hàng.');
-    }
-
-    // Cập nhật số lượng sản phẩm trong giỏ hàng
-    $cart->variant_quantity = $validatedData['variant_quantity'];
-    $cart->save();
-
-    return redirect()->back()->with('success', 'Giỏ hàng đã được cập nhật.');
 }
  
 public function applyVoucher(Request $request)

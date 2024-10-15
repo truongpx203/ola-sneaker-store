@@ -171,10 +171,9 @@ Route::get('/shop/filter/price', [ClientProductController::class, 'filterByPrice
 //trang giỏ hàng
 Route::get('/cart', [CartController::class, 'showCart'])->name('cart.show');
 Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
-Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.delete');
 Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear'); 
-Route::post('/cart/update/{id}', [CartController::class, 'updateCart'])->name('cart.update');
 Route::post('/cart/voucher', [CartController::class, 'applyVoucher'])->name('cart.voucher');
+Route::post('/cart/update-all', [CartController::class, 'updateAll'])->name('cart.updateAll');
 
 // Trang thanh toán (Checkout)
 Route::get('/checkouts', [CheckoutController::class, 'checkout'])->name('checkouts');
