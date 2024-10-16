@@ -197,7 +197,7 @@
                                                 </td>
                                                 <td>
                                                     <p class="price">{{ isset($discount) ? $discount . '%' : '0%' }}</p>
-                                                    <!-- Hiển thị phần trăm giảm giá -->
+                                                   
                                                 </td>
                                             </tr>
                                             <tr class="order-total">

@@ -134,7 +134,6 @@
                 </div>
                 <script>
                     function selectSize(element) {
-                        // Xóa class 'selected' khỏi tất cả các size-item
                         document.querySelectorAll('.size-item').forEach(item => {
                             item.classList.remove('selected');
                         });
