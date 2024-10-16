@@ -114,11 +114,17 @@
                       <i class="pe-7s-like icon"></i>
                     </a>
                   </div>
+                  <div class="shopping-order">
+                    <a class="shopping-cart-btn" type="button" href="{{ route('bills.index') }}">
+                      <i class="pe-7s-cart icon"></i>
+                    </a>
+                  </div>
                   <div class="shopping-cart">
-                    <button class="shopping-cart-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#AsideOffcanvasCart" aria-controls="offcanvasRightLabel">
+                    <a class="shopping-cart-btn" href="{{route('cart.show')}}">
+                    <button class="shopping-cart-btn" type="button">
                       <i class="pe-7s-shopbag icon"></i>
                       <sup class="shop-count">02</sup>
-                    </button>
+                    </button></a>
                   </div>
                   <button class="btn-menu" type="button" data-bs-toggle="offcanvas" data-bs-target="#AsideOffcanvasMenu" aria-controls="AsideOffcanvasMenu">
                     <i class="pe-7s-menu"></i>
@@ -221,7 +227,7 @@
                     <ul class="nav-menu">
                       <li><a href="account-login.html">Tài khoản của tôi</a></li>
                       <li><a href="contact.html">Liên hệ</a></li>
-                      <li><a href="shop-cart.html">Giỏ hàng</a></li>
+                      <li><a href="{{route('cart.show')}}">Giỏ hàng</a></li>
                       <li><a href="shop.html">Cửa hàng</a></li>
                       {{-- <li><a href="account-login.html">Services Login</a></li> --}}
                     </ul>

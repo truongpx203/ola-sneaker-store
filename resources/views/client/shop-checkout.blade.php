@@ -28,7 +28,10 @@
   <!--== Start Shopping Checkout Area Wrapper ==-->
   <section class="shopping-checkout-wrap">
     <div class="container">
-      <div class="row">
+    <form action="{{route('checkout.process')}}" method="post">
+      @csrf
+      <input type="hidden" name="user_id" value="{{ Auth::id() }}">
+      {{-- <div class="row">
         <div class="col-12">
           <div class="checkout-page-login-wrap">
             <!--== Start Checkout Login Accordion ==-->
@@ -42,7 +45,7 @@
                 <div id="loginaccordion" class="collapse" data-bs-parent="#LoginAccordion">
                   <div class="card-body">
                     <div class="login-wrap">
-                      {{-- <p>If you have shopped with us before, please enter your details below. If you are a new customer, please proceed to the Billing & Shipping section.</p> --}}
+                      <!-- <p>If you have shopped with us before, please enter your details below. If you are a new customer, please proceed to the Billing & Shipping section.</p> -->
                       <form action="#" method="post">
                         <div class="row">
                           <div class="col-md-6">
@@ -73,8 +76,8 @@
             <!--== End Checkout Login Accordion ==-->
           </div>
         </div>
-      </div>
-      <div class="row">
+      </div> --}}
+      {{-- <div class="row">
         <div class="col-12">
           <div class="checkout-page-coupon-wrap">
             <!--== Start Checkout Coupon Accordion ==-->
@@ -109,48 +112,59 @@
             <!--== End Checkout Coupon Accordion ==-->
           </div>
         </div>
-      </div>
+      </div> --}}
       <div class="row">
         <div class="col-lg-6">
           <!--== Start Billing Accordion ==-->
           <div class="checkout-billing-details-wrap">
             <h2 class="title">Chi tiết thanh toán</h2>
             <div class="billing-form-wrap">
-              <form action="#" method="post">
+              {{-- <form action="#" method="post"> --}}
                 <div class="row">
                   <div class="col-md-12">
                     <div class="form-group">
-                      <label for="f_name">Họ tên<abbr class="required" title="required">*</abbr></label>
-                      <input id="f_name" type="text"  class="form-control">
+                      <label for="full_name">Họ tên<abbr class="required" title="required">*</abbr></label>
+                      <input id="full_name" type="text" name="full_name"  class="form-control" placeholder="Nhập họ tên người nhận" value="{{ old('name', $user->full_name) }}">
+                      @error('full_name')
+                          <span class="text-danger">{{$message}}</span>
+                      @enderror
                     </div>
                   </div>
                   <div class="col-md-12">
                     <div class="form-group">
-                      <label for="phone">Số điện thoại<abbr class="required" title="required">*</abbr></label>
-                      <input id="phone" type="text"  class="form-control">
+                      <label for="phone_number">Số điện thoại<abbr class="required" title="required">*</abbr></label>
+                      <input id="phone_number" type="text" name="phone_number"  class="form-control" placeholder="Nhập số điện thoại người nhận" value="{{ old('name', $user->phone_number) }}">
+                      @error('phone_number')
+                          <span class="text-danger">{{$message}}</span>
+                      @enderror
                     </div>
                   </div>
                   <div class="col-md-12">
                     <div class="form-group" data-margin-bottom="30">
                       <label for="email">Email<abbr class="required" title="required">*</abbr></label>
-                      <input id="email" type="text"  class="form-control">
+                      <input id="email" type="text" name="email"  class="form-control" placeholder="Nhập email người nhận" value="{{ old('name', $user->email) }}">
+                      @error('email')
+                          <span class="text-danger">{{$message}}</span>
+                      @enderror
                     </div>
                   </div>
                   <div class="col-md-12">
                     <div class="form-group">
                       <label for="street-address">Địa chỉ <abbr class="required" title="required">*</abbr></label>
-                      <input id="street-address" type="text"  class="form-control" placeholder="House number and street name">
+                      <input id="street-address" type="text" name="address"  class="form-control" placeholder="Nhập địa chỉ người nhận" value="{{ old('name', $user->address) }}">
+                      @error('address')
+                          <span class="text-danger">{{$message}}</span>
+                      @enderror
                     </div>
-                  </div>
-                  
-                  <div class="col-md-12">
+                  </div>        
+                  {{-- <div class="col-md-12">
                     <div class="form-group mb--0">
                       <label for="order-notes">Ghi chú đơn hàng (tùy chọn)</label>
                       <textarea id="order-notes" class="form-control" placeholder="Ghi chú về đơn hàng của bạn, ví dụ ghi chú đặc biệt về việc giao hàng."></textarea>
                     </div>
-                  </div>
+                  </div> --}}
                 </div>
-              </form>
+              {{-- </form> --}}
             </div>
           </div>
           <!--== End Billing Accordion ==-->
@@ -160,6 +174,7 @@
           <div class="checkout-order-details-wrap">
             <div class="order-details-table-wrap table-responsive">
               <h2 class="title mb-25">Đơn hàng của bạn</h2>
+              {{-- @if (isset($cartItems) && count($cartItems) > 0) --}}
               <table class="table">
                 <thead>
                   <tr>
@@ -168,14 +183,20 @@
                   </tr>
                 </thead>
                 <tbody class="table-body">
-                  <tr class="cart-item">
+                  @foreach ($cartItems as $item)
+                      <tr class="cart-item">
+                        <td class="product-name">{{$item->variants->product->name}}<span class="product-quantity">× {{ $item->variant_quantity }}</span></td>
+                        <td class="product-total">{{ number_format($item->variants->sale_price * $item->variant_quantity, 2) }} VNĐ</td>
+                      </tr>
+                  @endforeach
+                  {{-- <tr class="cart-item">
                     <td class="product-name">Satin gown <span class="product-quantity">× 1</span></td>
                     <td class="product-total">£69.99</td>
                   </tr>
                   <tr class="cart-item">
                     <td class="product-name">Printed cotton t-shirt <span class="product-quantity">× 1</span></td>
                     <td class="product-total">£20.00</td>
-                  </tr>
+                  </tr> --}}
                 </tbody>
                 <tfoot class="table-foot">
                   {{-- <tr class="cart-subtotal">
@@ -188,13 +209,17 @@
                   </tr>
                   <tr class="order-total">
                     <th>Tổng cộng</th>
-                    <td>£91.99</td>
+                    {{-- <td>£91.99</td> --}}
+                    <td>{{number_format($total_price, 2)}} VND</td>
                   </tr>
                 </tfoot>
               </table>
+              {{-- @else
+                <p>Giỏ hàng của bạn hiện đang trống.</p>
+              @endif --}}
               <div class="shop-payment-method">
                 <div id="PaymentMethodAccordion">
-                  <div class="card">
+                  {{-- <div class="card">
                     <div class="card-header" id="check_payments">
                       <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemOne" aria-controls="itemOne" aria-expanded="true">Chuyển khoản ngân hàng trực tiếp</h5>
                     </div>
@@ -203,9 +228,9 @@
                         <p>Thanh toán trực tiếp vào tài khoản ngân hàng của chúng tôi. Vui lòng sử dụng Mã đơn hàng của bạn làm tham chiếu thanh toán. Đơn hàng của bạn sẽ không được giao cho đến khi tiền được chuyển vào tài khoản của chúng tôi.</p>
                       </div>
                     </div>
-                  </div>
-                  <div class="card">
-                    <div class="card-header" id="check_payments3">
+                  </div> --}}
+                  {{-- <div class="card">
+                    <div class="card-header" id="payment_cod" >
                       <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemThree" aria-controls="itemTwo" aria-expanded="false">Thanh toán khi nhận hàng</h5>
                     </div>
                     <div id="itemThree" class="collapse" aria-labelledby="check_payments3" data-bs-parent="#PaymentMethodAccordion">
@@ -216,22 +241,34 @@
                   </div>
                   <div class="card">
                     <div class="card-header" id="check_payments4">
-                      <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemFour" aria-controls="itemTwo" aria-expanded="false">Thanh toán nhanh Paypal<img src="assets/img/photos/paypal2.webp" width="40" height="26" alt="Image-HasTech"></h5>
+                      <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemFour" aria-controls="itemTwo" aria-expanded="false">Thanh toán nhanh Vnpay <img src="assets/img/photos/Logo-VNPAY-QR.webp" width="60" height="46" alt="Image-HasTech"></h5>
                     </div>
                     <div id="itemFour" class="collapse" aria-labelledby="check_payments4" data-bs-parent="#PaymentMethodAccordion">
                       <div class="card-body">
                         <p>Thanh toán qua PayPal; bạn có thể thanh toán bằng thẻ tín dụng nếu bạn không có tài khoản PayPal.</p>
                       </div>
                     </div>
-                  </div>
+                  </div>         --}}
+                    <div>
+                      <input type="radio" id="payment_cod" name="payment_type" value="COD" >
+                      <label for="payment_cod">Thanh toán khi nhận hàng (COD)</label>
+                    </div> 
+                    <div>
+                      <input type="radio" id="payment_online" name="payment_type" value="Online" >
+                      <label for="payment_bank_transfer">Thanh toán với VNPAY</label>
+                    </div>
                 </div>
-                <a href="account-login.html" class="btn-theme">Đặt hàng</a>
+                @error('payment_type')
+                    <span class="text-danger">{{ $message }}</span>
+                @enderror
+                <a href="" ><button type="submit"class="btn-theme">Đặt hàng</button></a>
               </div>
             </div>
           </div>
           <!--== End Order Details Accordion ==-->
         </div>
       </div>
+    </form>
     </div>
   </section>
   <!--== End Shopping Checkout Area Wrapper ==-->

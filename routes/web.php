@@ -3,14 +3,17 @@
 use App\Http\Controllers\admin\BillController;
 use App\Http\Controllers\admin\ProductController as AdminProductController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\client\Account;
 use App\Http\Controllers\client\AccountController;
+use App\Http\Controllers\client\HomeController;
 use App\Http\Controllers\client\ProductController as ClientProductController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductSizeController;
 use App\Http\Controllers\VariantController;
 use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\client\CartController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,9 +32,6 @@ Route::get('/blog', function () {
 Route::get('/product-detail', function () {
     return view('client.product-details');
 })->name('product-detail');
-Route::get('/product-details', function () {
-    return view('client.product-details');
-})->name('/product-detail');
 // ...
 
 Route::get('page-not-found', function () {
@@ -43,9 +43,9 @@ Route::get('contact', function () {
 Route::get('shop-wishlist', function () {
     return view('client.shop-wishlist');
 });
-Route::get('shop-cart', function () {
-    return view('client.shop-cart');
-});
+// Route::get('shop-cart', function () {
+//     return view('client.shop-cart');
+// });
 Route::get('shop-checkout', function () {
     return view('client.shop-checkout');
 });
@@ -67,9 +67,6 @@ Route::get('shop-compare', function () {
 });
 Route::get('account', function () {
     return view('client.account');
-});
-Route::get('shop-cart', function () {
-    return view('client.shop-cart');
 });
 Route::get('tt-thanh-cong', function () {
     return view('client.tt-thanh-cong');
@@ -171,10 +168,31 @@ Route::get('/product/{id}', [ClientProductController::class, 'show'])->name('pro
 Route::get('/shop/filter', [ClientProductController::class, 'filterProducts'])->name('shop.filter');
 Route::get('/shop/page', [ClientProductController::class, 'paginateProducts'])->name('shop.paginate');
 Route::get('/shop/filter/price', [ClientProductController::class, 'filterByPrice'])->name('shop.filter.price');
+//trang giỏ hàng
+Route::get('/cart', [CartController::class, 'showCart'])->name('cart.show');
+Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.delete');
+Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear'); 
+Route::post('/cart/update/{id}', [CartController::class, 'updateCart'])->name('cart.update');
+Route::post('/cart/voucher', [CartController::class, 'applyVoucher'])->name('cart.voucher');
 
+// Trang thanh toán (Checkout)
+Route::get('/checkouts', [CheckoutController::class, 'checkout'])->name('checkouts');
+Route::post('/checkouts', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
+
+
+// chi tiết đơn hàng truyền id bảng bill
+Route::get('order-details/{id}', [HomeController::class, 'detailBill'])->name('order-details');
+Route::post('order-details/{id}', [HomeController::class, 'cancelOrder'])->name('cancelOrder');
+
+
+
+// Trang lịch sử mua hàng
+Route::get('bills/', [BillController::class, 'index'])->name('bills.index')->middleware('auth');
 
 
 
 Route::get('show-bill-item', function () {
     return view('admin.bills.show-bill-item');
 });
+

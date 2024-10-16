@@ -116,11 +116,16 @@
                 <div id="stock-info" class="stock-info mb-2"></div>
                   <div class="product-quick-action">
                     <div class="qty-wrap">
+                      <form action="{{ route('cart.add') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="variant_id" value="{{ $variant->id }}">
                       <div class="pro-qty">
-                        <input type="text" title="Quantity" value="1">
+                        <input type="text" title="Quantity" name="variant_quantity" value="1" min="1">
                       </div>
                     </div>
-                    <a id="add-to-cart-btn" class="btn-theme" href="{{ 'shop-cart' }}" onclick="addToCart(event)">Thêm vào giỏ hàng</a>
+                  
+                    <button type="submit" id="add-to-cart-btn" class="btn-theme" >Thêm vào giỏ hàng</button>
+                  </form>
                     <style>
                       .btn-theme.disabled {
                         background-color: #fff;
@@ -506,7 +511,7 @@
   function enableAddToCart() {
       const addToCartBtn = document.getElementById('add-to-cart-btn');
       addToCartBtn.classList.remove('disabled');
-      addToCartBtn.href = "{{ 'shop-cart' }}"; // Khôi phục liên kết
+      addToCartBtn.href = "{{ '/add-to-cart' }}"; // Khôi phục liên kết
       addToCartBtn.onclick = null; // Khôi phục hành vi click mặc định
   }
 
