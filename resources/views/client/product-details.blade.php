@@ -255,6 +255,7 @@
                     {{-- <a href="shop-compare.html"><i class="pe-7s-shuffle"></i>Add to Compare</a> --}}
                   </div>
                   <div class="product-info-footer">
+                    <hr style="border-top: 3px solid black">
                     <h6 class="code"><span>Mã số :</span>{{$product->code}}</h6>
                     {{-- <div class="social-icons">
                       <span>Chia sẻ</span>
@@ -278,6 +279,7 @@
               <li role="presentation">
                 <a class="active" id="information-tab" data-bs-toggle="pill" href="#information" role="tab" aria-controls="information" aria-selected="true">Thông tin</a>
               </li>
+              <br>
               {{-- <li role="presentation">
                 <a id="description-tab" data-bs-toggle="pill" href="#description" role="tab" aria-controls="description" aria-selected="false">Sự miêu tả</a>
               </li> --}}
@@ -471,6 +473,7 @@
       <div class="row">
         <div class="col-12">
           <div class="section-title text-center">
+            <br>
             <h3 class="title">Sản phẩm liên quan</h3>
             {{-- <div class="desc">
               <p>There are many variations of passages of Lorem Ipsum available</p>
@@ -541,13 +544,13 @@
               </div>
             </div>
             <!--== Add Swiper Arrows ==-->
-            <div class="product-swiper-btn-wrap">
+            {{-- <div class="product-swiper-btn-wrap">
               <div class="product-swiper-btn-prev">
                 <i class="fa fa-arrow-left"></i>
               </div>
               <div class="product-swiper-btn-next">
                 <i class="fa fa-arrow-right"></i>
-              </div>
+              </div> --}}
             </div>
           </div>
         </div>

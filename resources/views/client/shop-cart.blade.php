@@ -75,8 +75,8 @@
                                                     }
                                                 </style>
                                                 <td class="product-thumb">
-                                                    <a href="{{ route('cart.show', $cart->variant->product_id) }}">
-                                                        <img src="{{ $cart->variant->product->primary_image_url }}" width="90" height="110" alt="{{ $cart->variant->product->name }}">
+                                                    <a href="{{ route('cart.show', $cart->variant->product_id) }}"> 
+                                                        <img src="{{ Storage::url($cart->variant->product->primary_image_url) }}" width="90" height="110" alt="{{ $cart->variant->product->name }}">
                                                     </a>
                                                 </td>
                                                 <td class="product-name">
@@ -219,17 +219,6 @@
                         </div>
                     </div>
                 @endif
-
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-
                
             </div>
         </section>
