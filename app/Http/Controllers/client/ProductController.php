@@ -22,13 +22,14 @@ class ProductController extends Controller
     public function show($id)
     {
         $product = Product::with(['variants' => function($query) {
-            $query->where('is_show', 1);
+            $query->where('is_show', 1)->join('product_sizes', 'variants.product_size_id', '=', 'product_sizes.id')
+                                       ->orderBy('product_sizes.name');
         }, 'productImages'])->findOrFail($id);
     
         // Sắp xếp các biến thể theo kích thước từ bé đến lớn
-        $product->variants = $product->variants->sortBy(function ($variant) {
-            return $variant->size->name;
-        });
+        // $product->variants = $product->variants->sortBy(function ($variant) {
+        //     return $variant->size->name;
+        // });
     
         // Tìm biến thể có giá sale thấp nhất
         $lowestSaleVariant = $product->variants->whereNotNull('sale_price')->sortBy('sale_price')->first();
