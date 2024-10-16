@@ -17,7 +17,9 @@ class AdminAccountSeeder extends Seeder
         User::create([
             'full_name' => 'Admin DZ',
             'email' => 'admin@gmail.com',
-            'password' => Hash::make('admin001'),
+            'email_verified_at' => now(),
+            'email_verification_sent_at' => now(),
+            'password' => Hash::make('adminno1'),
             'phone_number' => '0328902188',
             'role' => 'admin',
             'status' => 'active',

@@ -1,6 +1,6 @@
 @extends('client.layout')
 
-@section('title', 'Account')
+@section('title', 'Tài khoản')
 
 @section('content')
     <main class="main-content">
@@ -267,7 +267,7 @@
               <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="account-info" role="tabpanel" aria-labelledby="account-info-tab">
                   <div class="myaccount-content">
-                    <h3>Account Details</h3>
+                    <h3>Thôn tin tài khoản</h3>
                     @if (Session('success'))
                     <div class="alert alert-success" role="alert">
                         {{Session('success')}}
@@ -343,48 +343,48 @@
                 </div>
                 <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
                   <div class="myaccount-content">
-                    <h3>Orders</h3>
+                    <h3>Đơn hàng</h3>
                     <div class="myaccount-table table-responsive text-center">
                       <table class="table table-bordered">
                         <thead class="thead-light">
                           <tr>
-                            <th>Order</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Total</th>
-                            <th>Action</th>
+                            <th>Code</th>
+                            <th>Ngày</th>
+                            <th>Trạng thái</th>
+                            <th>Tổng cộng</th>
+                            <th></th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr>
-                            <td>1</td>
-                            <td>Aug 22, 2022</td>
-                            <td>Pending</td>
-                            <td>$3000</td>
-                            <td><a href="{{route('order-details')}}" class="check-btn sqr-btn ">View</a></td>
+                            <td>ab12c</td>
+                            <td>30/9/2024</td>
+                            <td>giao thành công</td>
+                            <td>450.000</td>
+                            <td><a href="" class="check-btn sqr-btn ">View</a></td>
                           </tr>
                           <tr>
-                            <td>2</td>
-                            <td>July 22, 2022</td>
-                            <td>Approved</td>
-                            <td>$200</td>
-                            <td><a href="{{route('order-details')}}" class="check-btn sqr-btn ">View</a></td>
+                            <td>code125</td>
+                            <td>15/5/2024</td>
+                            <td>giao thành công</td>
+                            <td>500.000</td>
+                            <td><a href="" class="check-btn sqr-btn ">View</a></td>
                           </tr>
                           <tr>
-                            <td>3</td>
-                            <td>June 12, 2022</td>
-                            <td>On Hold</td>
-                            <td>$990</td>
-                            <td><a href="{{route('order-details')}}" class="check-btn sqr-btn ">View</a></td>
+                            <td>code125</td>
+                            <td>15/5/2024</td>
+                            <td>giao thành công</td>
+                            <td>500.000</td>
+                            <td><a href="" class="check-btn sqr-btn ">View</a></td>
                           </tr>
                         </tbody>
                       </table>
                     </div>
                   </div>
                 </div>
-                <div class="tab-pane fade" id="download" role="tabpanel" aria-labelledby="download-tab">
+                {{-- <div class="tab-pane fade" id="download" role="tabpanel" aria-labelledby="download-tab">
                   <div class="myaccount-content">
-                    <h3>Downloads</h3>
+                    <h3>Tải xuống</h3>
                     <div class="myaccount-table table-responsive text-center">
                       <table class="table table-bordered">
                         <thead class="thead-light">
@@ -412,23 +412,23 @@
                       </table>
                     </div>
                   </div>
-                </div>
-                <div class="tab-pane fade" id="payment-method" role="tabpanel" aria-labelledby="payment-method-tab">
+                </div> --}}
+                {{-- <div class="tab-pane fade" id="payment-method" role="tabpanel" aria-labelledby="payment-method-tab">
                   <div class="myaccount-content">
                     <h3>Payment Method</h3>
                     <p class="saved-message">You Can't Saved Your Payment Method yet.</p>
                   </div>
-                </div>
+                </div> --}}
                 <div class="tab-pane fade" id="address-edit" role="tabpanel" aria-labelledby="address-edit-tab">
                   <div class="myaccount-content">
-                    <h3>Billing Address</h3>
+                    <h3>Địa chỉ thanh toán</h3>
                     <address>
                       <p><strong>Alex Tuntuni</strong></p>
                       <p>1355 Market St, Suite 900 <br>
                         San Francisco, CA 94103</p>
                       <p>Mobile: (123) 456-7890</p>
                     </address>
-                    <a href="#/" class="check-btn sqr-btn"><i class="fa fa-edit"></i> Edit Address</a>
+                    <a href="#/" class="check-btn sqr-btn"><i class="fa fa-edit"></i>Sửa Địa Chỉ</a>
                   </div>
                 </div>
                

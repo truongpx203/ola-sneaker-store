@@ -17,13 +17,14 @@
                       <div class="slider-content">
                         <div class="content">
                           <div class="desc-box">
-                            <p class="desc">Sale đến  30% </p>
+                            {{-- <p class="desc">Up To 30% Off</p> --}}
                           </div>
                           <div class="title-box">
-                            <h2 class="title"><span class="font-weight-400">Độc Quyền <br> </span>New</h2>
+                            <h2 class="title"><span class="font-weight-600">Phong cách mới, đẳng cấp mới</span></h2>
+                            <h4 class="font-weight-400 text-white mb-4">Thiết kế đột phá cho bước đi tự tin</h4>
                           </div>
                           <div class="btn-box">
-                            <a class="btn-slider" href="shop.html">Mua Ngay</a>
+                            <a class="btn-slider" href="shop.html">Xem ngay</a>
                           </div>
                         </div>
                       </div>
@@ -136,7 +137,7 @@
         <div class="row">
           <div class="col-12">
             <div class="section-title text-center">
-              <h3 class="title">Sản Phẩm Nổi Bật</h3>
+              <h3 class="title">Sản Phẩm Mới nhất</h3>
               <div class="desc">
                 <p>Khám phá bộ sưu tập giày thể thao hàng đầu của chúng tôi.</p>
               </div>
@@ -144,18 +145,50 @@
           </div>
         </div>
         <div class="row">
+          @foreach ($products as $product)
           <div class="col-sm-6 col-lg-3">
-            <!--== Start Product Item ==-->
-            <div class="product-item">
-              <div class="inner-content">
-                <div class="product-thumb">
-                  <a href="{{route('product-detail')}}">
-                    <img src="assets/img/shop/1.webp" width="270" height="274" alt="Image-HasTech">
-                  </a>
-                  <div class="product-flag">
-                    <ul>
-                      <li class="discount">-10%</li>
-                    </ul>
+              <!--== Start Product Item ==-->
+              <div class="product-item">
+                  <div class="inner-content">
+                      <div class="product-thumb">
+                          <a href="{{ route('product-detail', ['id' => $product->id]) }}">
+                              <img src="{{Storage::url ($product->primary_image_url) }}" alt="{{ $product->name }}" style="height: 271px; object-fit: cover">
+                          </a>
+                          <div class="product-flag">
+                              <ul>
+                                  @if ($product->variants->isNotEmpty() && $product->variants->first()->sale_price)
+                                      <li class="discount">-{{ round((($product->variants->first()->listed_price - $product->variants->first()->sale_price) / $product->variants->first()->listed_price) * 100) }}%</li>
+                                  @endif
+                              </ul>
+                          </div>
+                          <div class="product-action">
+                              <a class="btn-product-wishlist" href=""><i class="fa fa-heart"></i></a>
+                              <a class="btn-product-cart" href=""><i class="fa fa-shopping-cart"></i></a>
+                              <button type="button" class="btn-product-quick-view-open">
+                                  <i class="fa fa-arrows"></i>
+                              </button>
+                          </div>
+                          <a class="banner-link-overlay" href="{{ route('product-detail', ['id' => $product->id]) }}"></a>
+                      </div>
+                      <div class="product-info">
+                          <h4 class="title"><a href="{{ route('product-detail', ['id' => $product->id]) }}">{{ $product->name }}</a></h4>
+                          <div class="prices">
+                            @if ($product->variants->isNotEmpty())
+                                @php
+                                    $variant = $product->variants->first();
+                                @endphp
+                                @if ($variant->sale_price)
+                                    <span class="price-old">{{ number_format($variant->listed_price) }} đ</span>
+                                    <span class="sep">-</span>
+                                    <span class="price">{{ number_format($variant->sale_price) }} đ</span>
+                                @else
+                                    <span class="price">{{ number_format($variant->listed_price) }} đ</span>
+                                @endif
+                            @else
+                                <span class="price">{{ number_format($product->listed_price) }} đ</span>
+                            @endif
+                        </div>
+                      </div>
                   </div>
                   <div class="product-action">
                     <a class="btn-product-wishlist" href="shop-wishlist.html"><i class="fa fa-heart"></i></a>
@@ -184,7 +217,7 @@
             <div class="product-item">
               <div class="inner-content">
                 <div class="product-thumb">
-                  <a href="{{route('product-detail')}}">
+                  <a href="{{ route('product-detail', ['id' => $product->id]) }}">
                     <img src="assets/img/shop/2.webp" width="270" height="274" alt="Image-HasTech">
                   </a>
                   <div class="product-action">
@@ -215,7 +248,7 @@
             <div class="product-item">
               <div class="inner-content">
                 <div class="product-thumb">
-                  <a href="{{route('product-detail')}}">
+                  <a href="{{ route('product-detail', ['id' => $product->id]) }}">
                     <img src="assets/img/shop/3.webp" width="270" height="274" alt="Image-HasTech">
                   </a>
                   <div class="product-flag">
@@ -412,6 +445,8 @@
             </div>
             <!--== End prPduct Item ==-->
           </div>
+          @endforeach
+
         </div>
       </div>
     </section>
@@ -434,10 +469,10 @@
           </div>
           <div class="col-lg-6">
             <div class="divider-content">
-              <h4 class="sub-title">Tiết Kiệm Đến 50%</h4>
-              <h2 class="title">Áp Dụng Cho Tất Cả Các Sản Phẩm </h2>
-              {{-- <p class="desc">Áp Dụng Cho Tất Cả Các Sản Phẩm</p> --}}
-              <a class="btn-theme" href="shop.html">Mua Ngay</a>
+              {{-- <h4 class="sub-title">Saving 50%</h4> --}}
+              <h2 class="title">Cảm nhận sự khác biệt</h2>
+              <p class="desc">Giày thể thao thời trang cho phong cách sống năng động</p>
+              <a class="btn-theme" href="shop.html">Xem ngay</a>
             </div>
           </div>
         </div>
@@ -515,7 +550,7 @@
     <!--== End Feature Area Wrapper ==-->
 
     <!--== Start Product Area Wrapper ==-->
-    <section class="product-area product-best-seller-area">
+    {{-- <section class="product-area product-best-seller-area">
       <div class="container">
         <div class="row">
           <div class="col-12">
@@ -532,6 +567,7 @@
             <div class="product-slider-wrap">
               <div class="swiper-container product-slider-col4-container">
                 <div class="swiper-wrapper">
+                  
                   <div class="swiper-slide">
                     <!--== Start Product Item ==-->
                     <div class="product-item">
@@ -551,8 +587,7 @@
                     <button type="button" class="btn-product-quick-view-open">
                       <i class="fa fa-arrows"></i>
                     </button>
-                    {{-- <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a> --}}
-                  </div>
+                   </div>
                           <a class="banner-link-overlay" href="shop.html"></a>
                         </div>
                         <div class="product-info">
@@ -576,207 +611,7 @@
                     </div>
                     <!--== End prPduct Item ==-->
                   </div>
-                  <div class="swiper-slide">
-                    <!--== Start Product Item ==-->
-                    <div class="product-item">
-                      <div class="inner-content">
-                        <div class="product-thumb">
-                          <a href="single-product.html">
-                            <img src="assets/img/shop/7.webp" width="270" height="274" alt="Image-HasTech">
-                          </a>
-                          <div class="product-action">
-                    <a class="btn-product-wishlist" href="shop-wishlist.html"><i class="fa fa-heart"></i></a>
-                    <a class="btn-product-cart" href="shop-cart.html"><i class="fa fa-shopping-cart"></i></a>
-                    <button type="button" class="btn-product-quick-view-open">
-                      <i class="fa fa-arrows"></i>
-                    </button>
-                    {{-- <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a> --}}
-                  </div>
-                          <a class="banner-link-overlay" href="shop.html"></a>
-                        </div>
-                        <div class="product-info">
-
-                          <div class="category">
-                    <ul>
-                      <li><a href="shop.html">Nam</a></li>
-                              <li class="sep">/</li>
-                              <li><a href="shop.html">Nữ</a></li>
-                            </ul>
-                          </div>
-                          <h4 class="title"><a href="single-product.html">Nike Revolution 7 EasyOn</a></h4>
-
-                          <div class="prices">
-                            <span class="price">400.000đ</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <!--== End prPduct Item ==-->
-                  </div>
-                  <div class="swiper-slide">
-                    <!--== Start Product Item ==-->
-                    <div class="product-item">
-                      <div class="inner-content">
-                        <div class="product-thumb">
-                          <a href="single-product.html">
-                            <img src="assets/img/shop/3.webp" width="270" height="274" alt="Image-HasTech">
-                          </a>
-                          <div class="product-flag">
-                            <ul>
-                              <li class="discount">-10%</li>
-                            </ul>
-                          </div>
-                          <div class="product-action">
-                    <a class="btn-product-wishlist" href="shop-wishlist.html"><i class="fa fa-heart"></i></a>
-                    <a class="btn-product-cart" href="shop-cart.html"><i class="fa fa-shopping-cart"></i></a>
-                    <button type="button" class="btn-product-quick-view-open">
-                      <i class="fa fa-arrows"></i>
-                    </button>
-                    {{-- <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a> --}}
-                  </div>
-                          <a class="banner-link-overlay" href="shop.html"></a>
-                        </div>
-                        <div class="product-info">
-
-                          <div class="category">
-                    <ul>
-                      <li><a href="shop.html">Nam</a></li>
-                              <li class="sep">/</li>
-                              <li><a href="shop.html">Nữ</a></li>
-                            </ul>
-                          </div>
-                          <h4 class="title"><a href="single-product.html">Nike Revolution 7 EasyOn</a></h4>
-
-                          <div class="prices">
-                            <span class="price-old">450.000đ<span>
-                            <span class="sep">-</span>
-                            <span class="price">350.000đ</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <!--== End prPduct Item ==-->
-                  </div>
-                  <div class="swiper-slide">
-                    <!--== Start Product Item ==-->
-                    <div class="product-item">
-                      <div class="inner-content">
-                        <div class="product-thumb">
-                          <a href="single-product.html">
-                            <img src="assets/img/shop/4.webp" width="270" height="274" alt="Image-HasTech">
-                          </a>
-                          <div class="product-action">
-                    <a class="btn-product-wishlist" href="shop-wishlist.html"><i class="fa fa-heart"></i></a>
-                    <a class="btn-product-cart" href="shop-cart.html"><i class="fa fa-shopping-cart"></i></a>
-                    <button type="button" class="btn-product-quick-view-open">
-                      <i class="fa fa-arrows"></i>
-                    </button>
-                    {{-- <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a> --}}
-                  </div>
-                          <a class="banner-link-overlay" href="shop.html"></a>
-                        </div>
-                        <div class="product-info">
-
-                          <div class="category">
-                    <ul>
-                      <li><a href="shop.html">Nam</a></li>
-                              <li class="sep">/</li>
-                              <li><a href="shop.html">Nữ</a></li>
-                            </ul>
-                          </div>
-                          <h4 class="title"><a href="single-product.html">Nike Revolution 7 EasyOn</a></h4>
-
-                          <div class="prices">
-                            <span class="price">450.000đ</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <!--== End prPduct Item ==-->
-                  </div>
-                  <div class="swiper-slide">
-                    <!--== Start Product Item ==-->
-                    <div class="product-item">
-                      <div class="inner-content">
-                        <div class="product-thumb">
-                          <a href="single-product.html">
-                            <img src="assets/img/shop/5.webp" width="270" height="274" alt="Image-HasTech">
-                          </a>
-                          <div class="product-action">
-                    <a class="btn-product-wishlist" href="shop-wishlist.html"><i class="fa fa-heart"></i></a>
-                    <a class="btn-product-cart" href="shop-cart.html"><i class="fa fa-shopping-cart"></i></a>
-                    <button type="button" class="btn-product-quick-view-open">
-                      <i class="fa fa-arrows"></i>
-                    </button>
-                    {{-- <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a> --}}
-                  </div>
-                          <a class="banner-link-overlay" href="shop.html"></a>
-                        </div>
-                        <div class="product-info">
-
-                          <div class="category">
-                    <ul>
-                      <li><a href="shop.html">Nam</a></li>
-                              <li class="sep">/</li>
-                              <li><a href="shop.html">Nữ</a></li>
-                            </ul>
-                          </div>
-                          <h4 class="title"><a href="single-product.html">Nike Revolution 7 EasyOn</a></h4>
-
-                          <div class="prices">
-                            <pan class="price-old">450.000đ</pan>
-                            <span class="sep">-</span>
-                            <span class="price">250.000đ</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <!--== End prPduct Item ==-->
-                  </div>
-                  <div class="swiper-slide">
-                    <!--== Start Product Item ==-->
-                    <div class="product-item">
-                      <div class="inner-content">
-                        <div class="product-thumb">
-                          <a href="single-product.html">
-                            <img src="assets/img/shop/6.webp" width="270" height="274" alt="Image-HasTech">
-                          </a>
-                          <div class="product-flag">
-                            <ul>
-                              <li class="discount">-10%</li>
-                            </ul>
-                          </div>
-                          <div class="product-action">
-                    <a class="btn-product-wishlist" href="shop-wishlist.html"><i class="fa fa-heart"></i></a>
-                    <a class="btn-product-cart" href="shop-cart.html"><i class="fa fa-shopping-cart"></i></a>
-                    <button type="button" class="btn-product-quick-view-open">
-                      <i class="fa fa-arrows"></i>
-                    </button>
-                    {{-- <a class="btn-product-compare" href="shop-compare.html"><i class="fa fa-random"></i></a> --}}
-                  </div>
-                          <a class="banner-link-overlay" href="shop.html"></a>
-                        </div>
-                        <div class="product-info">
-
-                          <div class="category">
-                    <ul>
-                      <li><a href="shop.html">Nam</a></li>
-                              <li class="sep">/</li>
-                              <li><a href="shop.html">Nữ</a></li>
-                            </ul>
-                          </div>
-                          <h4 class="title"><a href="single-product.html">Nike Revolution 7 EasyOn</a></h4>
-
-                          <div class="prices">
-                            <span class="price-old">450.000đ<span>
-                            <span class="sep">-</span>
-                            <span class="price">350.000đ</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <!--== End prPduct Item ==-->
-                  </div>
+               
                 </div>
               </div>
               <!--== Add Swiper Arrows ==-->
@@ -792,7 +627,7 @@
           </div>
         </div>
       </div>
-    </section>
+    </section> --}}
     <!--== End Product Area Wrapper ==-->
 
     <!--== Start Product Collection Area Wrapper ==-->

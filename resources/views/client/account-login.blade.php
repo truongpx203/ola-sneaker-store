@@ -82,7 +82,7 @@
                         <label class="form-check-label" for="remember">Ghi nhớ tài khoản</label>
                       </div> --}}
                     </div>
-                    <a class="lost-password" href="#/">Quên mật khẩu?</a>
+                    <a class="lost-password" href="{{route('account.forgot_password')}}">Bạn quên mật khẩu?</a>
                   </div>
                 </div>
                 <div class="mt-5 text-center">
