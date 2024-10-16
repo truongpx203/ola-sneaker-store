@@ -58,6 +58,7 @@ class CartController extends Controller
             if ($discountAmount >$voucher->max_price) {
                 $discountAmount = $voucher->max_price;
             }
+            //
             // Cập nhật tổng tiền sau khi trừ giảm giá
             $cartTotal = $provisional - $discountAmount;
         }

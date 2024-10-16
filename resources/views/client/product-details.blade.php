@@ -147,7 +147,7 @@
                         const stockInfo = document.getElementById('stock-info');
       const stock = element.getAttribute('data-stock');
       selectedStock = stock; // Cập nhật số lượng đã chọn
-  
+  //
       // Xóa lớp active khỏi tất cả các kích thước
       const sizeItems = document.querySelectorAll('.size-item');
       sizeItems.forEach(item => {
