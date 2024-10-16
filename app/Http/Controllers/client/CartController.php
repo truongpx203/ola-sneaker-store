@@ -26,10 +26,6 @@ class CartController extends Controller
         Cart::where('user_id', Auth::id())->delete();
 
         for ($i=0; $i < count($listId); $i++) { 
-            // $cart = Cart::find(id: $listId[$i]);
-            // // Cập nhật số lượng sản phẩm trong giỏ hàng
-            // $cart->variant_quantity = $listQuantity[$i];
-            // $cart->save();
             Cart::create([
                 'user_id' => Auth::id(),
                 'variant_id' => $listVariantId[$i],
