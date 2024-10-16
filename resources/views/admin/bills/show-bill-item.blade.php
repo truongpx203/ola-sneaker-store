@@ -5,8 +5,8 @@
 @section('content')
     <style>
         /* .container {
-                    padding: 20px;
-                } */
+                        padding: 20px;
+                    } */
         .section-title {
             font-weight: bold;
             margin-top: 20px;
@@ -160,13 +160,13 @@
         </div>
         @php
             $statusMapping = [
-                'pending' => ['text' => 'Chờ xác nhận', 'class' => 'badge bg-gray'], 
-                'confirmed' => ['text' => 'Đã xác nhận', 'class' => 'badge bg-blue'], 
-                'in_delivery' => ['text' => 'Đang giao', 'class' => 'badge bg-lightblue'], 
-                'delivered' => ['text' => 'Giao hàng thành công', 'class' => 'badge bg-green'], 
-                'failed' => ['text' => 'Giao hàng thất bại', 'class' => 'badge bg-red'], 
-                'canceled' => ['text' => 'Đã hủy', 'class' => 'badge bg-orange'], 
-                'completed' => ['text' => 'Hoàn thành', 'class' => 'badge bg-darkgray'], 
+                'pending' => ['text' => 'Chờ xác nhận', 'class' => 'badge bg-gray'],
+                'confirmed' => ['text' => 'Đã xác nhận', 'class' => 'badge bg-blue'],
+                'in_delivery' => ['text' => 'Đang giao', 'class' => 'badge bg-lightblue'],
+                'delivered' => ['text' => 'Giao hàng thành công', 'class' => 'badge bg-green'],
+                'failed' => ['text' => 'Giao hàng thất bại', 'class' => 'badge bg-red'],
+                'canceled' => ['text' => 'Đã hủy', 'class' => 'badge bg-orange'],
+                'completed' => ['text' => 'Hoàn thành', 'class' => 'badge bg-darkgray'],
             ];
         @endphp
         <div class="card mb-4">
@@ -219,7 +219,8 @@
                     @csrf
                     <div class="mb-3">
                         <label for="status" class="form-label">Trạng Thái</label>
-                        <select name="status" class="form-select">
+                        <select name="status" class="form-select" id="bill_status"
+                            {{ in_array($bill->bill_status, ['completed', 'canceled', 'failed']) ? 'disabled' : '' }}>
                             <option value="pending" {{ $bill->bill_status == 'pending' ? 'selected' : '' }}>Chờ xác nhận
                             </option>
                             <option value="confirmed" {{ $bill->bill_status == 'confirmed' ? 'selected' : '' }}>Đã xác nhận
@@ -236,14 +237,58 @@
                             </option>
                         </select>
                     </div>
+
+                    @if ($bill->bill_status === 'completed')
+                        <div class="alert alert-warning" role="alert">
+                            Hóa đơn đã hoàn thành. Không thể đổi trạng thái.
+                        </div>
+                    @elseif ($bill->bill_status === 'canceled')
+                        <div class="alert alert-warning" role="alert">
+                            Hóa đơn đã bị hủy. Không thể đổi trạng thái.
+                        </div>
+                    @elseif ($bill->bill_status === 'failed')
+                        <div class="alert alert-warning" role="alert">
+                            Giao hàng thất bại. Không thể đổi trạng thái.
+                        </div>
+                    @endif
+
                     <div class="mb-3">
                         <label for="note" class="form-label">Ghi chú</label>
-                        <textarea name="note" class="form-control" id="note" rows="3"></textarea>
+                        <textarea name="note" class="form-control" id="note" rows="3"
+                            {{ in_array($bill->bill_status, ['completed', 'canceled', 'failed']) ? 'disabled' : '' }}></textarea>
                     </div>
-                    <button type="button" class="btn btn-secondary">Hủy</button>
-                    <button type="submit" class="btn btn-primary">Lưu</button>
+                    <a href="{{ route('bills.index') }}"><button type="button" class="btn btn-secondary">Quay
+                            lại</button></a>
+                    <button type="submit" class="btn btn-primary" id="submit-btn"
+                        {{ in_array($bill->bill_status, ['completed', 'canceled', 'failed']) ? 'disabled' : '' }}>Lưu</button>
                 </form>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const statusSelect = document.getElementById('bill_status');
 
+                        const validTransitions = {
+                            'pending': ['confirmed', 'canceled'],
+                            'confirmed': ['in_delivery'],
+                            'in_delivery': ['delivered', 'failed'],
+                            'delivered': ['completed'],
+                            'failed': [],
+                            'canceled': [],
+                            'completed': []
+                        };
+
+                        // Lấy trạng thái hiện tại
+                        const currentStatus = "{{ $bill->bill_status }}";
+
+                        // Disable các tùy chọn không hợp lệ
+                        const options = statusSelect.options;
+                        for (let i = 0; i < options.length; i++) {
+                            const optionValue = options[i].value;
+                            if (validTransitions[currentStatus].indexOf(optionValue) === -1) {
+                                options[i].disabled = true; // Disable tùy chọn
+                            }
+                        }
+                    });
+                </script>
             </div>
         </div>
     </div>
