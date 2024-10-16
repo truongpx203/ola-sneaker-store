@@ -37,7 +37,7 @@
                         <div class="col-md-12">
                             <div class="shopping-cart-form table-responsive">
                                 <form action="{{ route('cart.updateAll') }}" method="POST">
-
+                                    @csrf
                                 <table class="table text-center">
                                     <thead>
                                         <tr>
@@ -57,13 +57,6 @@
                                                 <input type="hidden" name="id[]" value="{{ $cart->id }}" />
                                                 <input type="hidden" name="variant_id[]" value="{{ $cart->variant_id }}" />
                                                 <td class="product-remove">
-                                                    {{-- <form action="{{ route('cart.delete', $cart->id) }}" method="POST">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn-remove" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?');">
-                                                            <i class="fa fa-trash-o"></i>
-                                                        </button>
-                                                    </form> --}}
                                                     <button type="button" class="btn-remove">
                                                         <i class="fa fa-trash-o"></i>
                                                     </button>
@@ -98,7 +91,6 @@
                                                     <span>{{ number_format($cart->variant->sale_price, 2) }} VNĐ</span>
                                                 </td>
                                                 <td class="product-quantity">
-                                                        @csrf
                                                         <div class="pro-qty">
                                                             <input type="number" name="variant_quantity[]" value="{{ $cart->variant_quantity }}"
                                                                 min="1" required>
