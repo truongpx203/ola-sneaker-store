@@ -20,7 +20,7 @@ class CartController extends Controller
 
     public function updateAll(Request $request){
         $body = $request->all();
-        $listId = $body['id'];
+        $listId = $body['id']; 
         $listQuantity = $body['variant_quantity'];
         $listVariantId = $body['variant_id'];
         Cart::where('user_id', Auth::id())->delete();
@@ -36,53 +36,70 @@ class CartController extends Controller
     }
 
     public function showCart()
-    {
-        $productSizes = ProductSize::all();
-        $carts = Cart::where('user_id', Auth::id())->with('variant')->get();
-
-        // Tính tổng tiền giỏ hàng
-        $provisional = $carts->sum(function ($cart) {
-            return $cart->variant->sale_price * $cart->variant_quantity;
-        });
-    
-        $discount = 0; 
-        if (session()->has('coupon')) {
-            $voucher = session('coupon');
-            $discount =$voucher->value; 
-            $discountAmount = $provisional * ($discount / 100); // Tính số tiền giảm giá
-            // Nếu có giới hạn số tiền giảm tối đa
-            if ($discountAmount >$voucher->max_price) {
-                $discountAmount = $voucher->max_price;
-            }
-            //
-            // Cập nhật tổng tiền sau khi trừ giảm giá
-            $cartTotal = $provisional - $discountAmount;
-        }
-            return view('client.shop-cart', compact('carts', 'discount','provisional','cartTotal'));
-    }
-    public function addToCart(Request $request)
 {
-        $request->validate([
-            'variant_id' => 'required|exists:variants,id',
-            'variant_quantity' => 'required|integer|min:1',
-        ]);
-        $cart= Cart::where('user_id', Auth::id())
-                        ->where('variant_id', $request->variant_id)
-                        ->first();
+    $productSizes = ProductSize::all();
+    $carts = Cart::where('user_id', Auth::id())->with('variant')->get();
 
-        if ($cart) {
-            $cart->variant_quantity += $request->variant_quantity;
-            $cart->save();
-        } else {
-            Cart::create([
-                'user_id' => Auth::id(),
-                'variant_id' => $request->variant_id,
-                'variant_quantity' => $request->variant_quantity,
-            ]);
+    // Tính tổng tiền giỏ hàng
+    $provisional = $carts->sum(function ($cart) {
+        return $cart->variant->sale_price * $cart->variant_quantity;
+    });
+
+    $discount = 0;
+    $cartTotal = $provisional;
+
+    if (session()->has('coupon')) {
+        $voucher = session('coupon');
+        $discount = $voucher->value;
+        $discountAmount = $provisional * ($discount / 100); // Tính số tiền giảm giá
+
+        // Nếu có giới hạn số tiền giảm tối đa
+        if ($discountAmount > $voucher->max_price) {
+            $discountAmount = $voucher->max_price;
         }
 
-        return redirect()->back()->with('success', 'Sản phẩm đã được thêm vào giỏ hàng.');
-    } 
+        // Cập nhật tổng tiền sau khi trừ giảm giá
+        $cartTotal = $provisional - $discountAmount;
+    }
+
+    return view('client.shop-cart', compact('carts', 'discount', 'provisional', 'cartTotal'));
+}
+public function addToCart(Request $request)
+{
+    // Kiểm tra nếu người dùng chưa đăng nhập
+    if (!Auth::check()) {
+        return redirect()->route('login')->with('message', 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.');
+    }
+
+    // Validate dữ liệu từ request
+    $request->validate([
+        'variant_id' => 'required|exists:variants,id',
+        'variant_quantity' => 'required|integer|min:1',
+    ]);
+
+    // Tìm sản phẩm đã có trong giỏ hàng của user
+    $cart = Cart::where('user_id', Auth::id())
+                ->where('variant_id', $request->variant_id)
+                ->first();
+
+    // Nếu sản phẩm đã có trong giỏ hàng thì cập nhật số lượng
+    if ($cart) {
+        $cart->variant_quantity += $request->variant_quantity;
+        $cart->save();
+    } else {
+        // Nếu chưa có thì tạo mới
+        Cart::create([
+            'user_id' => Auth::id(),
+            'variant_id' => $request->variant_id,
+            'variant_quantity' => $request->variant_quantity,
+        ]);
+    }
+
+    // Chuyển hướng sang trang giỏ hàng và thông báo thành công
+    return redirect()->route('cart.show')->with('success', 'Sản phẩm đã được thêm vào giỏ hàng.');
+}
+
+ 
 
 //  xóa toàn bộ giỏ hàng
 public function clear()

@@ -168,8 +168,7 @@ Route::get('/product/{id}', [ClientProductController::class, 'show'])->name('pro
 Route::get('/shop/filter', [ClientProductController::class, 'filterProducts'])->name('shop.filter');
 Route::get('/shop/page', [ClientProductController::class, 'paginateProducts'])->name('shop.paginate');
 Route::get('/shop/filter/price', [ClientProductController::class, 'filterByPrice'])->name('shop.filter.price');
-//trang giỏ hàng(shop-cart)
-
+//trang giỏ hàng
 Route::get('/cart', [CartController::class, 'showCart'])->name('cart.show');
 Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
 Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear'); 
