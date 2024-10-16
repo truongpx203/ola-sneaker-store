@@ -236,18 +236,18 @@
     });
 
   // Slider Range Js
-    $('#price-range').slider({
-      range: true,
-      min: 0,
-      max: 350,
-      values: [ 16, 300 ],
-      slide: function( event, ui ) {
-        $('.ui-slider-handle:eq(0)').html( '<span>' + '$' + ui.values[ 0 ] + '</span>');
-        $('.ui-slider-handle:eq(1)').html( '<span>' + '$' + ui.values[ 1 ] + '</span>');
-      }
-    });
-    $('.ui-slider-handle:eq(0)').html( '<span>' + '$' + $( "#price-range" ).slider( "values", 0 ) + '</span>' );
-    $('.ui-slider-handle:eq(1)').html( '<span>' + '$' + $( "#price-range" ).slider( "values", 1 ) + '</span>' );
+    // $('#price-range').slider({
+    //   range: true,
+    //   min: 0,
+    //   max: 350,
+    //   values: [ 16, 300 ],
+    //   slide: function( event, ui ) {
+    //     $('.ui-slider-handle:eq(0)').html( '<span>' + '$' + ui.values[ 0 ] + '</span>');
+    //     $('.ui-slider-handle:eq(1)').html( '<span>' + '$' + ui.values[ 1 ] + '</span>');
+    //   }
+    // });
+    // $('.ui-slider-handle:eq(0)').html( '<span>' + '$' + $( "#price-range" ).slider( "values", 0 ) + '</span>' );
+    // $('.ui-slider-handle:eq(1)').html( '<span>' + '$' + $( "#price-range" ).slider( "values", 1 ) + '</span>' );
     
   // Review Form JS
     $(".review-write-btn").on('click', function() {

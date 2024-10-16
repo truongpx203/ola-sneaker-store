@@ -14,7 +14,7 @@
     <title>@yield('title')</title>
 
     <!--== Favicon ==-->
-    <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="{{asset('assets/img/favicon.ico')}}" type="image/x-icon" />
 
     <!--== Google Fonts ==-->
     <link rel="preconnect" href="https://fonts.googleapis.com/">
@@ -145,7 +145,7 @@
                     </ul>
                   </li> --}}
                   <li><a href="#"><span>GIỚI THIỆU</span></a></li>
-                  <li><a href="{{route('/shop')}}"><span>SẢN PHẨM</span></a></li>
+                  <li><a href="{{route('shop.filter')}}"><span>SẢN PHẨM</span></a></li>
                   <li><a href="{{route('/blog')}}"><span>Blog</span></a></li>
                   <li><a href="{{route('contact')}}"><span>LIÊN HỆ</span></a></li>
                 </ul>

@@ -39,7 +39,7 @@
         </div>
     @endif
 
-    <form action="{{ route('dashboard.size.store') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('productsize.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('POST')
         <div class="row">
@@ -67,7 +67,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header align-items-center d-flex">
-                        <a href="{{ route('dashboard.size.index') }}" class="btn btn-primary mx-3" type="submit">Quay
+                        <a href="{{ route('productsize.index') }}" class="btn btn-primary mx-3" type="submit">Quay
                             lại</a>
                         <button class="btn btn-primary" type="submit">Thêm</button>
                     </div>

@@ -17,10 +17,27 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Bill::class)->constrained()->onDelete('cascade');
             $table->foreignId('by_user')->constrained('users')->onDelete('cascade');
-            $table->string('from_status');
-            $table->string('to_status');
+
+            // Sử dụng enum cho trạng thái
+            $table->enum('from_status', [
+                'pending',
+                'confirmed',
+                'in_delivery',
+                'delivered',
+                'failed',
+                'canceled',
+                'completed'
+            ]);
+            $table->enum('to_status', [
+                'pending',
+                'confirmed',
+                'in_delivery',
+                'delivered',
+                'failed',
+                'canceled',
+                'completed'
+            ]);
             $table->text('note')->nullable();
-            
             $table->timestamp('at_datetime');
             $table->timestamps();
         });

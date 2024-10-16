@@ -23,8 +23,8 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrap();
 
-        view()->composer('*', function($view){
-            $categories = Category::withCount('products')->get();
+        view()->composer('*', function ($view) {
+            $categories = Category::withCount('products')->orderBy('id', 'desc')->get();
             $view->with(compact('categories'));
         });
     }

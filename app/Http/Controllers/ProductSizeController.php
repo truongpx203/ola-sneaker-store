@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ProductSize;
 use Illuminate\Http\Request;
 use App\Http\Requests\ProductSizeRequest;
+use App\Models\Variant;
 
 class ProductSizeController extends Controller
 {
@@ -31,7 +32,7 @@ class ProductSizeController extends Controller
     public function store(ProductSizeRequest $request)
     {
         $productSizes = ProductSize::create($request->all());
-        return redirect()->route('dashboard.size.index');
+        return redirect()->route('productsize.index');
     }
 
     /**
@@ -52,7 +53,7 @@ class ProductSizeController extends Controller
         $productSize->update([
             'name' => $request->name
         ]);
-        return redirect()->route('dashboard.size.index');
+        return redirect()->route('productsize.index');
     }
 
     /**
@@ -61,7 +62,12 @@ class ProductSizeController extends Controller
     public function destroy($id)
     {
         $productSizes = ProductSize::find($id);
-        $productSizes->delete();
-        return redirect()->route('dashboard.size.index');
+        $variants = Variant::query()->where('product_size_id', $id)->first();
+        if ($variants) {
+            return redirect()->route('productsize.index')->withErrors(['size_error' => 'Kích thước "' . $productSizes->name . '" đang được sử dụng không thể xóa']);
+        } else {
+            $productSizes->delete();
+            return redirect()->route('productsize.index');
+        }
     }
 }
