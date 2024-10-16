@@ -123,7 +123,7 @@
                     <a class="shopping-cart-btn" href="{{route('cart.show')}}">
                     <button class="shopping-cart-btn" type="button">
                       <i class="pe-7s-shopbag icon"></i>
-                      <sup class="shop-count">02</sup>
+                      {{-- <sup class="shop-count"></sup> --}}
                     </button></a>
                   </div>
                   <button class="btn-menu" type="button" data-bs-toggle="offcanvas" data-bs-target="#AsideOffcanvasMenu" aria-controls="AsideOffcanvasMenu">
