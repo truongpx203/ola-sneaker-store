@@ -206,7 +206,7 @@
                                                 </td>
                                                 <td>
                                                     <p class="price">{{ number_format($cartTotal, 2) }} VNĐ</p>
-                                                    <!-- Hiển thị tổng tiền sau giảm giá -->
+                                                    
                                                 </td>
                                             </tr>
 

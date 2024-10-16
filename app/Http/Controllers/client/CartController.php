@@ -49,7 +49,7 @@ class CartController extends Controller
         if (session()->has('coupon')) {
             $voucher = session('coupon');
             $discount =$voucher->value; 
-            $discountAmount = $provisional * ($discount / 100);
+            $discountAmount = $provisional * ($discount / 100); // Tính số tiền giảm giá
             // Nếu có giới hạn số tiền giảm tối đa
             if ($discountAmount >$voucher->max_price) {
                 $discountAmount = $voucher->max_price;
