@@ -1,11 +1,11 @@
 <?php
 
 use App\Http\Controllers\admin\BillController;
-use App\Http\Controllers\admin\ProductController as AdminProductController;
+use App\Http\Controllers\BillController as ControllersBillController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\client\Account;
 use App\Http\Controllers\client\AccountController;
+use App\Http\Controllers\client\BillController as ClientBillController;
 use App\Http\Controllers\client\HomeController;
 use App\Http\Controllers\client\ProductController as ClientProductController;
 use App\Http\Controllers\ProductController;
@@ -150,9 +150,11 @@ Route::post('/reset-password/{token}', [AccountController::class, 'check_reset_p
 
 Route::get('/logout', [AccountController::class, 'logout'])->name('logout');
 
-Route::get('/account', [AccountController::class, 'account'])
-    ->name('account')
-    ->middleware('auth');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/account', [AccountController::class, 'account'])->name('account');
+});
+
+
 
 
 // show sp mới limit8
@@ -171,7 +173,7 @@ Route::get('/shop/filter/price', [ClientProductController::class, 'filterByPrice
 //trang giỏ hàng
 Route::get('/cart', [CartController::class, 'showCart'])->name('cart.show');
 Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
-Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear'); 
+Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
 Route::post('/cart/voucher', [CartController::class, 'applyVoucher'])->name('cart.voucher');
 Route::post('/cart/update-all', [CartController::class, 'updateAll'])->name('cart.updateAll');
 
@@ -186,12 +188,9 @@ Route::post('order-details/{id}', [HomeController::class, 'cancelOrder'])->name(
 
 
 
-// Trang lịch sử mua hàng
-Route::get('bills/', [BillController::class, 'index'])->name('bills.index')->middleware('auth');
 
 
 
 Route::get('show-bill-item', function () {
     return view('admin.bills.show-bill-item');
 });
-
