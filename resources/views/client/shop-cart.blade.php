@@ -210,7 +210,7 @@
                         </table>
                     </div>
                 </div>
-                <a class="btn-theme btn-flat" >Tiến hành thanh toán</a>
+                <a class="btn-theme btn-flat" href="{{route('checkout.process')}}">Tiến hành thanh toán</a>
             </div>
         </div>
         

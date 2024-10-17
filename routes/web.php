@@ -177,8 +177,11 @@ Route::post('/cart/update/{id}', [CartController::class, 'updateCart'])->name('c
 Route::post('/cart/voucher', [CartController::class, 'applyVoucher'])->name('cart.voucher');
 
 // Trang thanh toán (Checkout)
+// Route::get('/checkouts', [CheckoutController::class, 'checkout'])->name('checkouts');
+// Route::post('/checkouts', [CheckoutController::class, 'processCheckout'])->name('checkoutProcess');
 Route::get('/checkouts', [CheckoutController::class, 'checkout'])->name('checkouts');
 Route::post('/checkouts', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
+// Route::post('/checkouts', [CheckoutController::class, 'paymentVNPAY'])->name('checkout.process');
 
 
 // chi tiết đơn hàng truyền id bảng bill
