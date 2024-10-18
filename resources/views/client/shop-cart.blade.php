@@ -88,7 +88,7 @@
                                                     <span>{{ $cart->variant->productSize->name }}</span>
                                                 </td>
                                                 <td class="product-price">
-                                                    <span>{{ number_format($cart->variant->sale_price, 2) }} VNĐ</span>
+                                                    <span>{{ number_format($cart->variant->sale_price) }} VNĐ</span>
                                                 </td>
                                                 <td class="product-quantity">
                                                         <div class="pro-qty">
@@ -98,7 +98,7 @@
                                                       
                                                 </td>
                                                 <td class="product-subtotal">
-                                                    <span>{{ number_format($cart->variant->sale_price * $cart->variant_quantity, 2) }} VNĐ</span>
+                                                    <span>{{ number_format($cart->variant->sale_price * $cart->variant_quantity) }} VNĐ</span>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -188,7 +188,7 @@
                                                     <p class="value">Tạm tính</p>
                                                 </td>
                                                 <td>
-                                                    <p class="price">{{ number_format($provisional, 2) }} VNĐ</p>
+                                                    <p class="price">{{ number_format($provisional) }} VNĐ</p>
                                                 </td>
                                             </tr>
                                             <tr class="cart-subtotal">
@@ -205,7 +205,7 @@
                                                     <p class="value">Tổng tiền</p>
                                                 </td>
                                                 <td>
-                                                    <p class="price">{{ number_format($cartTotal, 2) }} VNĐ</p>
+                                                    <p class="price">{{ number_format($cartTotal) }} VNĐ</p>
                                                     
                                                 </td>
                                             </tr>
