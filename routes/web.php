@@ -152,6 +152,11 @@ Route::get('/logout', [AccountController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/account', [AccountController::class, 'account'])->name('account');
+
+    // chi tiết đơn hàng truyền id bảng bill
+    Route::get('order-details/{id}', [HomeController::class, 'detailBill'])->name('order-details');
+    Route::post('/bills/{id}/cancel', [HomeController::class, 'cancelOrder'])->name('cancelOrder');
+    Route::post('/bills/{bill}/complete', [HomeController::class, 'completeOrder'])->name('completeOrder');
 });
 
 
@@ -183,13 +188,6 @@ Route::post('/cart/update-all', [CartController::class, 'updateAll'])->name('car
 Route::get('/checkouts', [CheckoutController::class, 'checkout'])->name('checkouts');
 Route::post('/checkouts', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
 // Route::post('/checkouts', [CheckoutController::class, 'paymentVNPAY'])->name('checkout.process');
-
-
-// chi tiết đơn hàng truyền id bảng bill
-Route::get('order-details/{id}', [HomeController::class, 'detailBill'])->name('order-details');
-Route::post('order-details/{id}', [HomeController::class, 'cancelOrder'])->name('cancelOrder');
-
-
 
 
 

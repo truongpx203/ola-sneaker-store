@@ -5,7 +5,7 @@
 @section('content')
     <main class="main-content">
         <!--== Start Page Header Area Wrapper ==-->
-        <div class="page-header-area" data-bg-img="{{ asset('assets/img/photos/bg3.webp')}}">   
+        <div class="page-header-area" data-bg-img="{{ asset('assets/img/photos/bg3.webp') }}">
             <div class="container pt--0 pb--0">
                 <div class="row">
                     <div class="col-12">
@@ -30,18 +30,34 @@
             <div class="container pt--0 pb--0">
                 <div class="row">
                     <div class="col-lg-12 col-md-12">
-                        @if ($errors->has('cancelBill'))
-                            <div class="alert alert-danger">
-                                {{ $errors->first('cancelBill') }}
+                        @if (Session('error'))
+                            <div class="alert alert-danger" role="alert">
+                                {{ Session('error') }}
+                            </div>
+                        @endif
+                        @error('note')
+                            <div class="alert alert-danger" role="alert">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                        @if (Session('success'))
+                            <div class="alert alert-success" role="alert">
+                                {{ Session('success') }}
                             </div>
                         @endif
                         <div class="myaccount-content">
                             <h3>Thông tin vận chuyển</h3>
-                            @if (Session('success'))
-                                <div class="alert alert-success" role="alert">
-                                    {{ Session('success') }}
-                                </div>
-                            @endif
+                            @php
+                                $paymentTypeMapping = [
+                                    'online' => 'Chuyển khoản trực tuyến',
+                                    'cod' => 'Thanh toán khi nhận hàng',
+                                ];
+                                $paymentStatusMapping = [
+                                    'pending' => 'Chưa thanh toán',
+                                    'completed' => 'Đã thanh toán',
+                                    // 'failed' => 'Thất bại',
+                                ];
+                            @endphp
                             <div class="account-details-form">
                                 <div class="row">
                                     <div class="col-lg-12">
@@ -53,14 +69,15 @@
                                     <div class="col-lg-6">
                                         <div class="single-input-item">
                                             <label for="fullname" class="required">Phương thức thanh toán</label>
-                                            <input type="text" id="fullname" value="{{ $bill->payment_type }}" disabled>
+                                            <input type="text" id="fullname"
+                                                value="{{ $paymentTypeMapping[$bill->payment_type] }}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="single-input-item">
                                             <label for="email" class="required">Trạng thái thanh toán</label>
-                                            <input type="email" id="email" value="{{ $bill->payment_status }}"
-                                                disabled>
+                                            <input type="email" id="email"
+                                                value="{{ $paymentStatusMapping[$bill->payment_status] }}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
@@ -95,7 +112,8 @@
                                         <tr>
                                             <th>STT</th>
                                             <th>Tên sản phẩm</th>
-                                            <th>Biến thể</th>
+                                            {{-- <th>Hình ảnh</th> --}}
+                                            <th>Size</th>
                                             <th>Số lượng</th>
                                             <th>Giá bán</th>
                                             <th>Tổng tiền</th>
@@ -106,23 +124,22 @@
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
                                                 <td>{{ $item->product_name }}</td>
+                                                {{-- <td> <img src="{{ Storage::url($bill->primary_image_url) }}" width="90" height="110" alt="{{$bill->primary_image_url}}"></td> --}}
                                                 <td>{{ $item->variant->size->name }}</td>
                                                 <td>{{ $item->variant_quantity }}</td>
-                                                <td>{{ $item->listed_price }}</td>
-                                                <td>{{ $item->import_price }}</td>
+                                                <td>{{ number_format($item->sale_price, 0, ',', '.') }}</td>
+                                                <td>{{ number_format($bill->total_price, 0, ',', '.') }}</td>
                                             </tr>
-                                            @php
-                                                $tongTien += $item->import_price;
-                                            @endphp
                                         @endforeach
 
                                     </tbody>
                                 </table>
                                 <div class="myaccount-content">
                                     {{-- <p class="saved-message">Giảm giá: <span class="text-danger">-$1000</span></p> --}}
-                                    <p class="saved-message">Tiền ship: <span class="text-danger">30.000đ</span></p>
+                                    {{-- <p class="saved-message">Tiền ship: <span class="text-danger">30.000đ</span></p> --}}
                                     <strong>
-                                        <p class="saved-message">Tổng tiền hàng: <span class="text-danger"
+                                        <p class="saved-message">Tổng tiền hàng:
+                                            {{ number_format($bill->total_price, 0, ',', '.') }}<span class="text-danger"
                                                 id="formattedTotal"></span></p>
                                     </strong>
                                 </div>
@@ -135,37 +152,78 @@
                                     <thead class="thead-light">
                                         <tr>
                                             <th>STT</th>
-                                            <th>Trạng thái thay đổi</th>
+                                            <th>Trạng thái</th>
                                             <th>Ghi chú</th>
                                             <th>Thời gian</th>
                                         </tr>
                                     </thead>
+                                    @php
+                                        $statusMapping = [
+                                            'pending' => 'Chờ xác nhận',
+                                            'confirmed' => 'Đã xác nhận',
+                                            'in_delivery' => 'Đang giao',
+                                            'delivered' => 'Giao hàng thành công',
+                                            'failed' => 'Giao hàng thất bại',
+                                            'canceled' => 'Đã hủy',
+                                            'completed' => 'Hoàn thành',
+                                        ];
+                                    @endphp
+
                                     <tbody>
                                         @foreach ($bill->histories as $index => $history)
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
-                                                <td>{{ $history->to_status }}</td>
-                                                @if ($history->note == null)
-                                                    <td>-</td>
-                                                @else
-                                                    <td>{{ $history->note }}</td>
-                                                @endif
-                                                <td>{{ $history->at_datetime }}</td>
+                                                <td>{{ $statusMapping[$history->to_status] }}</td>
+                                                <td>{{ $history->note ?? '-' }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($history->at_datetime)->format('d/m/Y H:i') }}
+                                                </td>
                                             </tr>
                                         @endforeach
 
                                     </tbody>
+                                    @if ($bill->bill_status === 'completed')
+                                        <div class="alert alert-success" role="alert">
+                                            Hóa đơn đã hoàn thành.
+                                        </div>
+                                    @endif
                                 </table>
                             </div>
                         </div>
+                        <!-- Kiểm tra trạng thái để hiển thị form hoàn thành -->
+                        @if ($bill->bill_status === 'delivered')
+                            <div class="complete-order-form m-4 text-center">
+                                <form action="{{ route('completeOrder', $bill->id) }}" method="POST">
+                                    @csrf
+                                    <div class="single-input-item">
+                                        <button type="submit" class="btn btn-primary">Đánh dấu hoàn thành đơn hàng</button>
+                                    </div>
+                                </form>
+                            </div>
+                        @endif
                         <div class="myaccount-content">
                             <div class="account-details-form">
                                 <form action="{{ route('cancelOrder', $bill->id) }}" method="POST">
                                     @csrf
+                                    <div class="form-floating mb-4">
+                                        <textarea class="form-control" name="note" placeholder="Nhập lý do hủy đơn hàng tại đây" id="floatingTextarea2"
+                                            style="height: 100px"></textarea>
+                                        <label for="floatingTextarea2">Ghi chú</label>
+                                    </div>
                                     <div class="single-input-item">
                                         <button type="submit" class="check-btn sqr-btn">Hủy đơn</button>
                                     </div>
                                 </form>
+
+                                <style>
+                                    .form-control {
+                                        border-radius: 0;
+                                        border: 1px solid #ced4da;
+                                    }
+                                    .alert-success{
+                                        border-radius: 0;
+                                        border: 1px solid #ced4da;
+                                    }
+                                </style>
                             </div>
                         </div>
                     </div>
@@ -174,7 +232,7 @@
         </section>
         <!--== End My Account Wrapper ==-->
     </main>
-    <script>
+    {{-- <script>
         function FromatNumberVIE(val) {
             var sign = 1;
             if (val < 0) {
@@ -203,5 +261,5 @@
         }
         const total = {{ $tongTien + 30000 }};
         document.getElementById('formattedTotal').innerText = FromatNumberVIE(total) + "đ";
-    </script>
+    </script> --}}
 @endsection
