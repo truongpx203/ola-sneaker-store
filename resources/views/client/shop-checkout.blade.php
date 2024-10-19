@@ -27,8 +27,16 @@
 
         <!--== Start Shopping Checkout Area Wrapper ==-->
         <section class="shopping-checkout-wrap">
+           
             <div class="container">
-                <form action="{{ route('checkout.process') }}" method="post">
+                @if ($errors->any())
+                <div class="alert alert-danger">
+                        @foreach ($errors->all() as $error)
+                            {{ $error }}
+                        @endforeach
+                </div>
+            @endif
+                <form id="checkout-form" action="{{ route('checkout.process') }}" method="post">
                     @csrf
                     <input type="hidden" name="user_id" value="{{ Auth::id() }}">
 
@@ -153,38 +161,42 @@
                                                 </div>
                                             </div> --}}
                                             <div>
-                                                <input type="radio" id="payment_cod" name="payment_type"
-                                                    value="COD">
+                                                <input type="radio" id="payment_cod" name="payment_type" value="cod">
                                                 <label for="payment_cod">Thanh toán khi nhận hàng (COD)</label>
                                             </div>
 
                                             <div>
                                                 <input type="radio" id="payment_vnpay" name="payment_type"
-                                                    value="Online">
-                                                <label for="payment_vnpay"  aria-labelledby="check_payments4"
-                                                data-bs-parent="#PaymentMethodAccordion">Thanh toán với VNPAY</label>
+                                                    value="online">
+                                                <label for="payment_vnpay" aria-labelledby="check_payments4"
+                                                    data-bs-parent="#PaymentMethodAccordion">Thanh toán với VNPAY</label>
                                             </div>
-                                            <div id="bankSelectionModal" class="modal">
-                                              <div class="modal-content">
-                                                  <h4>Chọn ngân hàng</h4>
-                                                  <div class="bank-options">
-                                                      <label>
-                                                          <input type="radio" name="bank_code" value="NCB">
-                                                          <img src="/images/banks/ncb_logo.png" alt="NCB" class="bank-logo"> Ngân hàng NCB
-                                                      </label>
-                                                      <label>
-                                                          <input type="radio" name="bank_code" value="VCB">
-                                                          <img src="/images/banks/vcb_logo.png" alt="Vietcombank" class="bank-logo"> Ngân hàng Vietcombank
-                                                      </label>
-                                                      <label>
-                                                          <input type="radio" name="bank_code" value="ACB">
-                                                          <img src="/images/banks/acb_logo.png" alt="ACB" class="bank-logo"> Ngân hàng ACB
-                                                      </label>
-                                                      <!-- Add other banks as needed -->
-                                                  </div>
-                                                  <button type="button" id="confirmBankButton" class="btn-theme">Xác nhận</button>
-                                              </div>
-                                          </div>
+                                            
+                                            {{-- <div id="bankSelectionModal" class="modal">
+                                                <div class="modal-content">
+                                                    <h4>Chọn ngân hàng</h4>
+                                                    <div class="bank-options">
+                                                        <label>
+                                                            <input type="radio" name="bank_code" value="NCB">
+                                                            <img src="/images/banks/ncb_logo.png" alt="NCB"
+                                                                class="bank-logo"> Ngân hàng NCB
+                                                        </label>
+                                                        <label>
+                                                            <input type="radio" name="bank_code" value="VCB">
+                                                            <img src="/images/banks/vcb_logo.png" alt="Vietcombank"
+                                                                class="bank-logo"> Ngân hàng Vietcombank
+                                                        </label>
+                                                        <label>
+                                                            <input type="radio" name="bank_code" value="ACB">
+                                                            <img src="/images/banks/acb_logo.png" alt="ACB"
+                                                                class="bank-logo"> Ngân hàng ACB
+                                                        </label>
+                                                        <!-- Add other banks as needed -->
+                                                    </div>
+                                                    <button type="button" id="confirmBankButton" class="btn-theme">Xác
+                                                        nhận</button>
+                                                </div>
+                                            </div> --}}
                                         </div>
                                         @error('payment_type')
                                             <span class="text-danger">{{ $message }}</span>
@@ -197,6 +209,16 @@
                         </div>
                     </div>
                 </form>
+                <script>
+                    document.getElementById('checkout-form').addEventListener('submit', function(event) {
+                        const paymentType = document.querySelector('input[name="payment_type"]:checked').value;
+                        
+                        // Nếu chọn thanh toán online, chuyển hướng đến route VNPAY
+                        if (paymentType === 'online') {
+                            this.action = "{{ route('checkout.vnpay') }}"; // Chuyển đến route thanh toán VNPAY
+                        }
+                    });
+                </script>
             </div>
         </section>
         <!--== End Shopping Checkout Area Wrapper ==-->

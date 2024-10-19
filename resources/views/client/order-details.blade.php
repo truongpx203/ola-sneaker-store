@@ -112,7 +112,7 @@
                                         <tr>
                                             <th>STT</th>
                                             <th>Tên sản phẩm</th>
-                                            {{-- <th>Hình ảnh</th> --}}
+                                            <th>Hình ảnh</th>
                                             <th>Size</th>
                                             <th>Số lượng</th>
                                             <th>Giá bán</th>
@@ -124,7 +124,7 @@
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
                                                 <td>{{ $item->product_name }}</td>
-                                                {{-- <td> <img src="{{ Storage::url($bill->primary_image_url) }}" width="90" height="110" alt="{{$bill->primary_image_url}}"></td> --}}
+                                                <td> <img src="{{ Storage::url($item->product_image_url) }}" width="90" height="110" alt="img"></td>
                                                 <td>{{ $item->variant->size->name }}</td>
                                                 <td>{{ $item->variant_quantity }}</td>
                                                 <td>{{ number_format($item->sale_price, 0, ',', '.') }}</td>
@@ -206,11 +206,11 @@
                                     @csrf
                                     <div class="form-floating mb-4">
                                         <textarea class="form-control" name="note" placeholder="Nhập lý do hủy đơn hàng tại đây" id="floatingTextarea2"
-                                            style="height: 100px"></textarea>
+                                            style="height: 100px" {{ $bill->bill_status !== 'pending' ? 'disabled' : '' }}></textarea>
                                         <label for="floatingTextarea2">Ghi chú</label>
                                     </div>
                                     <div class="single-input-item">
-                                        <button type="submit" class="check-btn sqr-btn">Hủy đơn</button>
+                                        <button type="submit" class="check-btn sqr-btn" {{ $bill->bill_status !== 'pending' ? 'disabled' : '' }}>Hủy đơn</button>
                                     </div>
                                 </form>
 
