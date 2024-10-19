@@ -53,9 +53,6 @@ Route::get('order-details', function () {
     return view('client.order-details');
 })->name('order-details');
 
-Route::get('tt-thanhcong', function () {
-    return view('client.tt-thanh-cong');
-});
 Route::get('check-outCart', function () {
     return view('client.shop-checkout');
 });
@@ -68,9 +65,7 @@ Route::get('shop-compare', function () {
 Route::get('account', function () {
     return view('client.account');
 });
-Route::get('tt-thanh-cong', function () {
-    return view('client.tt-thanh-cong');
-});
+
 
 
 // Admin  
@@ -160,6 +155,23 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
+// Thanh toán
+
+Route::get('tt-that-bai', function () {
+return view('client.tt-that-bai');
+})->name('tt-that-bai');
+
+Route::get('tt-thanh-cong', function () {
+    return view('client.tt-thanh-cong');
+})->name('tt-thanh-cong');
+
+Route::get('/payment/return', [CheckoutController::class, 'returnFromVNPAY'])->name('checkout.vnpay.return');
+Route::post('/checkout/vnpay', [CheckoutController::class, 'processVNPAY'])->name('checkout.vnpay');
+
+// Route::post('/checkout/cod', [CheckoutController::class, 'processCheckout'])->name('checkout.cod');
+Route::post('/checkouts', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
+Route::get('/checkouts', [CheckoutController::class, 'checkout'])->name('checkouts');
+
 
 
 // show sp mới limit8
@@ -182,12 +194,6 @@ Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
 Route::post('/cart/voucher', [CartController::class, 'applyVoucher'])->name('cart.voucher');
 Route::post('/cart/update-all', [CartController::class, 'updateAll'])->name('cart.updateAll');
 
-// Trang thanh toán (Checkout)
-// Route::get('/checkouts', [CheckoutController::class, 'checkout'])->name('checkouts');
-// Route::post('/checkouts', [CheckoutController::class, 'processCheckout'])->name('checkoutProcess');
-Route::get('/checkouts', [CheckoutController::class, 'checkout'])->name('checkouts');
-Route::post('/checkouts', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
-// Route::post('/checkouts', [CheckoutController::class, 'paymentVNPAY'])->name('checkout.process');
 
 
 
