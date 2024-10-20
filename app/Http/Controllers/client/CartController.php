@@ -38,7 +38,7 @@ class CartController extends Controller
     public function showCart()
 {
     $productSizes = ProductSize::all();
-    $carts = Cart::where('user_id', Auth::id())->with('variant')->get();
+    $carts = Cart::where('user_id', Auth::id())->with('variant.product')->get();
 
     // Tính tổng tiền giỏ hàng
     $provisional = $carts->sum(function ($cart) {
