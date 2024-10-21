@@ -77,6 +77,13 @@ public function addToCart(Request $request)
         'variant_quantity' => 'required|integer|min:1',
     ]);
 
+    // Tìm variant từ cơ sở dữ liệu
+    $variant = Variant::find($request->variant_id);
+
+    // Kiểm tra số lượng tồn kho
+    if ($variant->stock < $request->variant_quantity) {
+        return redirect()->back()->with('error', 'Số lượng sản phẩm trong kho không đủ.');
+    }
     // Tìm sản phẩm đã có trong giỏ hàng của user
     $cart = Cart::where('user_id', Auth::id())
                 ->where('variant_id', $request->variant_id)
@@ -84,6 +91,10 @@ public function addToCart(Request $request)
 
     // Nếu sản phẩm đã có trong giỏ hàng thì cập nhật số lượng
     if ($cart) {
+        // Kiểm tra nếu tổng số lượng không vượt quá tồn kho
+        if (($cart->variant_quantity + $request->variant_quantity) > $variant->stock) {
+            return redirect()->back()->with('error', 'Số lượng sản phẩm trong kho không đủ.');
+        }
         $cart->variant_quantity += $request->variant_quantity;
         $cart->save();
     } else {
@@ -98,6 +109,7 @@ public function addToCart(Request $request)
     // Chuyển hướng sang trang giỏ hàng và thông báo thành công
     return redirect()->route('cart.show')->with('success', 'Sản phẩm đã được thêm vào giỏ hàng.');
 }
+
 
  
 
