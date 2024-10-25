@@ -132,13 +132,15 @@
                 padding: 5px;
             }
 
-            .date-filter button {
+            .date-filter a {
                 width: 150px;
                 text-align: center;
                 margin-left: 10px;
                 border-radius: 5px;
                 border: 1px solid #ced4da;
                 padding: 5px;
+                text-decoration: none;
+                color: #000;
             }
         </style>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -188,17 +190,14 @@
             </div>
             <div class="revenue-statistics">
                 <div class="section-header">
-                    Thống Kê Doanh Thu theo năm
+                    Thống Kê Doanh Thu Theo Năm
                 </div>
                 <div class="date-filter">
-                    <form action="" method="post">
-                        @csrf
-                        <select name="yearDasboard" id="year"></select>
-                        <button type="submit">Thống kê</button>
-                    </form>
+                    <select name="yearDasboard" id="year"></select>
+                    <a href="#" id="statsLink">Thống kê</a>
                 </div>
                 <div class="section-header">
-                    Doanh Thu: {{ $doanhthu }} VNĐ
+                    Doanh Thu: {{ number_format($doanhthu, 0, ',', '.') }} VNĐ
                 </div>
                 <div class="chart">
                     <canvas id="revenueChart" width="1139" height="200"></canvas>
@@ -467,6 +466,7 @@
                 }
             }
         });
+        //
         const currentYear = new Date().getFullYear();
         const yearSelect = document.getElementById('year');
         for (let year = 2000; year <= currentYear; year++) {
@@ -475,5 +475,19 @@
             option.textContent = year;
             yearSelect.appendChild(option);
         }
+        const urlParams = new URLSearchParams(window.location.search);
+        const selectedYear = urlParams.get('yearDasboard');
+        if (selectedYear) {
+            yearSelect.value = selectedYear;
+        } else {
+            yearSelect.value = currentYear;
+        }
+        const statsLink = document.getElementById('statsLink');
+        statsLink.addEventListener('click', function(event) {
+            event.preventDefault();
+            const selectedYear = yearSelect.value;
+            const url = `{{ route('dashboard') }}?yearDasboard=${selectedYear}`;
+            window.location.href = url;
+        });
     </script>
 @endsection
