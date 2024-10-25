@@ -26,6 +26,12 @@
   <!--== End Page Header Area Wrapper ==-->
 
   <!--== Start Product Single Area Wrapper ==-->
+  @if (session('message'))
+    <div class="alert alert-warning">
+        {{ session('message') }}
+    </div>
+@endif
+
   <section class="product-area product-single-area">
     <div class="container">
       <div class="row">
@@ -100,32 +106,142 @@
                       <li data-bg-color="#c7bb9b"></li>
                     </ul>
                   </div> --}}
-                  <div class="product-size">
-                    <h6 class="title">Size</h6>
-                    <ul class="size-list">
-                      @foreach ($product->variants as $variant)
-                          <li class="size-item {{ $variant->stock == 0 ? 'out-of-stock' : '' }}" 
-                              data-stock="{{ $variant->stock }}" 
-                              data-variant-id="{{ $variant->id }}"
-                              onclick="updateStockInfo(this, '{{ $variant->size ? $variant->size->name : 'Không xác định' }}')">
-                              {{ $variant->size ? $variant->size->name : 'Không xác định' }}
-                          </li>
-                      @endforeach
-                  </ul>
-                </div>
-                <div id="stock-info" class="stock-info mb-2"></div>
-                  <div class="product-quick-action">
-                    <div class="qty-wrap">
-                      <form action="{{ route('cart.add') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="variant_id" value="{{ $variant->id }}">
-                      <div class="pro-qty">
-                        <input type="text" title="Quantity" name="variant_quantity" value="1" min="1">
-                      </div>
+                  <form action="{{ route('cart.add') }}" method="POST">
+                    @csrf
+                    <div class="product-size">
+                        <h6 class="title">Size</h6>
+                        <ul class="size-list">
+                            @foreach ($product->variants as $variant)
+                                <li class="size-item {{ $variant->stock == 0 ? 'out-of-stock' : '' }}" 
+                                    data-stock="{{ $variant->stock }}" 
+                                    data-variant-id="{{ $variant->id }}"
+                                    onclick="updateStockInfo(this, '{{ $variant->size ? $variant->size->name : 'Không xác định' }}')">
+                                    {{ $variant->size ? $variant->size->name : 'Không xác định' }}
+                                </li>
+                            @endforeach
+                        </ul>
                     </div>
-                  
-                    <button type="submit" id="add-to-cart-btn" class="btn-theme" >Thêm vào giỏ hàng</button>
-                  </form>
+                
+                    <div id="stock-info" class="stock-info mb-2"></div>
+                
+                    <div class="product-quick-action">
+                        <div class="qty-wrap">
+                            <!-- Cập nhật `variant_id` đã chọn vào đây -->
+                            <input type="hidden" name="variant_id" id="selected-variant-id" value="">
+                            <div class="pro-qty">
+                                <input type="number" title="Quantity" name="variant_quantity" value="1" min="1">
+                            </div>
+                        </div>
+                
+                        <button type="submit" id="add-to-cart-btn" onclick="addToCart(event)" class="btn-theme">
+                            Thêm vào giỏ hàng
+                        </button>
+                    </div>
+                </form>
+                
+                <script>
+                  let selectedStock = null;
+                  let selectedVariantId = null;
+                  let variants = @json($product->variants);
+                
+                  function updateStockInfo(element, sizeName) {
+                      const stockInfo = document.getElementById('stock-info');
+                      const stock = element.getAttribute('data-stock');
+                      selectedStock = stock;
+                      selectedVariantId = element.getAttribute('data-variant-id');
+                
+                      // Cập nhật input ẩn với variant ID đã chọn
+                      document.getElementById('selected-variant-id').value = selectedVariantId;
+                
+                      // Xóa lớp active khỏi tất cả các kích thước
+                      document.querySelectorAll('.size-item').forEach(item => item.classList.remove('active'));
+                      element.classList.add('active');
+                
+                      // Cập nhật thông tin số lượng
+                      if (stock == 0) {
+                          stockInfo.innerHTML = '<span style="color: red;">Đã hết hàng</span>';
+                          disableAddToCart();
+                      } else {
+                          stockInfo.innerHTML = `Số lượng còn lại: ${stock}`;
+                          enableAddToCart();
+                      }
+                
+                      updatePrice(element);
+                  }
+                
+                  function updatePrice(element) {
+                      const variantId = element.getAttribute('data-variant-id');
+                      const selectedVariant = variants.find(variant => variant.id == variantId);
+                
+                      if (selectedVariant) {
+                          const priceOld = document.getElementById('price-old');
+                          const priceSep = document.getElementById('price-sep');
+                          const priceDisplay = document.getElementById('price');
+                
+                          if (selectedVariant.sale_price) {
+                              priceOld.innerHTML = `${number_format(selectedVariant.listed_price)} đ`;
+                              priceOld.style.display = 'inline'; 
+                              priceSep.style.display = 'inline';
+                              priceDisplay.innerHTML = `${number_format(selectedVariant.sale_price)} đ`;
+                          } else {
+                              priceOld.style.display = 'none';
+                              priceSep.style.display = 'none';
+                              priceDisplay.innerHTML = `${number_format(selectedVariant.listed_price)} đ`;
+                          }
+                      }
+                  }
+                
+                  function number_format(number) {
+                      return Math.floor(number).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                  }
+                
+                  function disableAddToCart() {
+                      const addToCartBtn = document.getElementById('add-to-cart-btn');
+                      addToCartBtn.classList.add('disabled');
+                      addToCartBtn.href = '#';
+                      addToCartBtn.onclick = function(event) {
+                          event.preventDefault();
+                          alert('Sản phẩm đã hết hàng hoặc chưa chọn size!');
+                      };
+                  }
+                
+                  function enableAddToCart() {
+                      const addToCartBtn = document.getElementById('add-to-cart-btn');
+                      addToCartBtn.classList.remove('disabled');
+                      addToCartBtn.href = "{{ route('cart.add') }}";
+                      addToCartBtn.onclick = null;
+                  }
+                
+                  function addToCart(event) {
+    if (!selectedVariantId || selectedStock == 0) {
+        event.preventDefault();
+        alert('Bạn cần chọn kích thước trước khi thêm vào giỏ hàng!');
+    } else {
+        // Optional: send data via AJAX instead of form submit
+        let formData = new FormData();
+        formData.append('variant_id', selectedVariantId);
+        formData.append('variant_quantity', document.querySelector('input[name="variant_quantity"]').value);
+
+        fetch('{{ route('cart.add') }}', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Nếu thêm vào giỏ hàng thành công, chuyển hướng đến trang giỏ hàng
+                window.location.href = '{{ route("cart.show") }}'; // Đường dẫn tới trang giỏ hàng
+            } else {
+                alert('Đã xảy ra lỗi khi thêm vào giỏ hàng.');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+}
+                </script>                
                     <style>
                       .btn-theme.disabled {
                         background-color: #fff;
@@ -139,6 +255,7 @@
                     {{-- <a href="shop-compare.html"><i class="pe-7s-shuffle"></i>Add to Compare</a> --}}
                   </div>
                   <div class="product-info-footer">
+                    <hr style="border-top: 3px solid black">
                     <h6 class="code"><span>Mã số :</span>{{$product->code}}</h6>
                     {{-- <div class="social-icons">
                       <span>Chia sẻ</span>
@@ -162,6 +279,7 @@
               <li role="presentation">
                 <a class="active" id="information-tab" data-bs-toggle="pill" href="#information" role="tab" aria-controls="information" aria-selected="true">Thông tin</a>
               </li>
+              <br>
               {{-- <li role="presentation">
                 <a id="description-tab" data-bs-toggle="pill" href="#description" role="tab" aria-controls="description" aria-selected="false">Sự miêu tả</a>
               </li> --}}
@@ -355,6 +473,7 @@
       <div class="row">
         <div class="col-12">
           <div class="section-title text-center">
+            <br>
             <h3 class="title">Sản phẩm liên quan</h3>
             {{-- <div class="desc">
               <p>There are many variations of passages of Lorem Ipsum available</p>
@@ -425,13 +544,13 @@
               </div>
             </div>
             <!--== Add Swiper Arrows ==-->
-            <div class="product-swiper-btn-wrap">
+            {{-- <div class="product-swiper-btn-wrap">
               <div class="product-swiper-btn-prev">
                 <i class="fa fa-arrow-left"></i>
               </div>
               <div class="product-swiper-btn-next">
                 <i class="fa fa-arrow-right"></i>
-              </div>
+              </div> --}}
             </div>
           </div>
         </div>
@@ -440,90 +559,5 @@
   </section>
   <!--== End Product Area Wrapper ==-->
 </main>
-<script>
-  let selectedStock = null; // Biến để lưu số lượng còn lại
-  let variants = @json($product->variants); // Lưu trữ tất cả biến thể vào biến JavaScript
-
-  function updateStockInfo(element, sizeName) {
-      const stockInfo = document.getElementById('stock-info');
-      const stock = element.getAttribute('data-stock');
-      selectedStock = stock; // Cập nhật số lượng đã chọn
-
-      // Xóa lớp active khỏi tất cả các kích thước
-      const sizeItems = document.querySelectorAll('.size-item');
-      sizeItems.forEach(item => {
-          item.classList.remove('active');
-      });
-
-      // Thêm lớp active cho kích thước đã chọn
-      element.classList.add('active');
-
-      // Cập nhật thông tin số lượng
-      if (stock == 0) {
-          stockInfo.innerHTML = '<span style="color: red;">Đã hết hàng</span>';
-          disableAddToCart(); // Vô hiệu hóa nút thêm vào giỏ hàng
-      } else {
-          stockInfo.innerHTML = `Số lượng còn lại: ${stock}`;
-          enableAddToCart(); // Kích hoạt nút thêm vào giỏ hàng
-      }
-
-      // Cập nhật giá
-      updatePrice(element);
-  }
-
-  function updatePrice(element) {
-      const variantId = element.getAttribute('data-variant-id'); // Lấy ID của biến thể
-      const selectedVariant = variants.find(variant => variant.id == variantId); // Tìm biến thể đã chọn
-
-      if (selectedVariant) {
-          const priceOld = document.getElementById('price-old');
-          const priceSep = document.getElementById('price-sep');
-          const priceDisplay = document.getElementById('price');
-
-          // Cập nhật giá
-          if (selectedVariant.sale_price) {
-              priceOld.innerHTML = `${number_format(selectedVariant.listed_price)} đ`;
-              priceOld.style.display = 'inline'; 
-              priceSep.style.display = 'inline';
-              priceDisplay.innerHTML = `${number_format(selectedVariant.sale_price)} đ`;
-          } else {
-              priceOld.style.display = 'none';
-              priceSep.style.display = 'none';
-              priceDisplay.innerHTML = `${number_format(selectedVariant.listed_price)} đ`;
-          }
-      }
-  }
-
-  function number_format(number) {
-      return Math.floor(number).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  }
-
-  function disableAddToCart() {
-      const addToCartBtn = document.getElementById('add-to-cart-btn');
-      addToCartBtn.classList.add('disabled');
-      addToCartBtn.href = '#'; // Ngăn không cho chuyển hướng
-      addToCartBtn.onclick = function(event) {
-          event.preventDefault();
-          alert('Bạn cần chọn size !');
-      };
-  }
-
-  function enableAddToCart() {
-      const addToCartBtn = document.getElementById('add-to-cart-btn');
-      addToCartBtn.classList.remove('disabled');
-      addToCartBtn.href = "{{ '/add-to-cart' }}"; // Khôi phục liên kết
-      addToCartBtn.onclick = null; // Khôi phục hành vi click mặc định
-  }
-
-  function addToCart(event) {
-      if (selectedStock === null || selectedStock == 0) {
-          event.preventDefault(); // Ngăn không cho chuyển hướng nếu không có hàng
-          alert('Bạn cần chọn kích thước!');
-      } 
-  }
-
-  
-</script>
-
 
 @endsection
