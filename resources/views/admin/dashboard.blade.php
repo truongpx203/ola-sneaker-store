@@ -122,7 +122,26 @@
                 border: 1px solid #ced4da;
                 padding: 5px;
             }
+
+            .date-filter select {
+                width: 150px;
+                text-align: center;
+                margin-left: 10px;
+                border-radius: 5px;
+                border: 1px solid #ced4da;
+                padding: 5px;
+            }
+
+            .date-filter button {
+                width: 150px;
+                text-align: center;
+                margin-left: 10px;
+                border-radius: 5px;
+                border: 1px solid #ced4da;
+                padding: 5px;
+            }
         </style>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </head>
 
     <body>
@@ -169,32 +188,20 @@
             </div>
             <div class="revenue-statistics">
                 <div class="section-header">
-                    Thống Kê Doanh Thu
+                    Thống Kê Doanh Thu theo năm
                 </div>
                 <div class="date-filter">
-                    <label for="month">Theo Năm</label>
-                    <input id="year" type="number" value="2024" max="now" />
+                    <form action="" method="post">
+                        @csrf
+                        <select name="yearDasboard" id="year"></select>
+                        <button type="submit">Thống kê</button>
+                    </form>
                 </div>
                 <div class="section-header">
-                    Doanh Thu: 10,000,000 VNĐ (Tăng 10%)
-                </div>
-                <div>
-                    Số đơn: 200 đơn
+                    Doanh Thu: {{ $doanhthu }} VNĐ
                 </div>
                 <div class="chart">
-                    <div class="chart-bar text-center text-white" style="height: 50%;">1</div>
-                    <div class="chart-bar text-center text-white" style="height: 70%;">2</div>
-                    <div class="chart-bar text-center text-white" style="height: 60%;">3</div>
-                    <div class="chart-bar text-center text-white" style="height: 80%;">4</div>
-                    <div class="chart-bar text-center text-white" style="height: 90%;">5</div>
-                    <div class="chart-bar text-center text-white" style="height: 40%;">6</div>
-                    <div class="chart-bar text-center text-white" style="height: 30%;">7</div>
-                    <div class="chart-bar text-center text-white" style="height: 50%;">8</div>
-                    <div class="chart-bar text-center text-white" style="height: 70%;">9</div>
-                    <div class="chart-bar text-center text-white" style="height: 60%;">10</div>
-                    <div class="chart-bar text-center text-white" style="height: 80%;">11</div>
-                    <div class="chart-bar text-center text-white" style="height: 90%;">12</div>
-
+                    <canvas id="revenueChart" width="1139" height="200"></canvas>
                 </div>
             </div>
         </div>
@@ -432,4 +439,41 @@
                     <div class="chart-bar" style="height: 60%;"></div>
                 </div>
             </div> --}}
+
+    <script>
+        const revenueData = @json($revenueByMonth);
+
+        const labels = revenueData.map(item => `Tháng ${item.month}`);
+        const data = revenueData.map(item => item.total_revenue);
+
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Doanh thu hàng tháng',
+                    data: data,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        const currentYear = new Date().getFullYear();
+        const yearSelect = document.getElementById('year');
+        for (let year = 2000; year <= currentYear; year++) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            yearSelect.appendChild(option);
+        }
+    </script>
 @endsection
