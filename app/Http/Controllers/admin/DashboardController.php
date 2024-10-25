@@ -70,7 +70,7 @@ class DashboardController extends Controller
             ->get();
 
 
-        return view('admin.dashboard', compact(
+        return view('admin.dashboardThongke', compact(
             'choXacNhan',
             'daXacNhan',
             'dangGiao',
