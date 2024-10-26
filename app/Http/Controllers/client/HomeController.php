@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Bill;
 use App\Models\BillHistory;
 use App\Models\BillItem;
+use App\Models\ProductReview;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,7 +14,16 @@ class HomeController extends Controller
 {
     public function detailBill($id)
     {
-        $bill = Bill::query()->with(['items', 'histories'])->findOrFail($id);;
+        $bill = Bill::query()->with(['items.variant', 'histories'])->findOrFail($id);;
+
+        // Kiểm tra các đánh giá của người dùng
+        $userId = auth()->id();
+        foreach ($bill->items as $item) {
+            $item->has_reviewed = ProductReview::where('variant_id', $item->variant->id)
+                ->where('user_id', $userId)
+                ->exists();
+        }
+
         return view('client.order-details', compact('bill'));
     }
     public function cancelOrder(Request $request, $id)
@@ -21,7 +31,7 @@ class HomeController extends Controller
         $bill = Bill::findOrFail($id);
 
         if ($bill->bill_status !== 'pending') {
-            return redirect()->back()->with('error', 'Chỉ có thể hủy đơn hàng đang chờ xác nhận.');
+            return redirect()->back()->with('error', 'Bạn không thể hủy đơn hàng vì đơn hàng đang được xử lý.');
         }
 
         $request->validate([

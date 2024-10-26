@@ -97,14 +97,14 @@
                                         </div>
                                         <div class="rating-box-wrap">
                                             <div class="rating-box">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    <i
+                                                        class="fa fa-star{{ $i <= $product->average_rating ? '' : '-o' }}"></i>
+                                                @endfor
                                             </div>
                                             <div class="review-status">
-                                                <a href="javascript:void(0)">(5 Đánh giá của khách hàng )</a>
+                                                <a href="javascript:void(0)">({{ $product->reviews->count() }} Đánh giá của
+                                                    khách hàng)</a>
                                             </div>
                                         </div>
                                         <p>{{ $product->summary }}</p>
@@ -292,7 +292,8 @@
 
                                 <li role="presentation">
                                     <a id="reviews-tab" data-bs-toggle="pill" href="#reviews" role="tab"
-                                        aria-controls="reviews" aria-selected="false">Đánh giá <span>(05)</span></a>
+                                        aria-controls="reviews" aria-selected="false">Đánh giá
+                                        <span>({{ $product->reviews->count() }}) </span></a>
                                 </li>
                             </ul>
                             <div class="tab-content product-tab-content" id="ReviewTabContent">
@@ -313,14 +314,15 @@
                                             <h3>Đánh giá của khách hàng</h3>
                                             <div class="review-info">
                                                 <ul class="review-rating">
-                                                    <li class="fa fa-star"></li>
-                                                    <li class="fa fa-star"></li>
-                                                    <li class="fa fa-star"></li>
-                                                    <li class="fa fa-star"></li>
-                                                    <li class="fa fa-star-o"></li>
+                                                    @for ($i = 1; $i <= 5; $i++)
+                                                        <li
+                                                            class="fa fa-star{{ $i <= $product->average_rating ? '' : '-o' }}">
+                                                        </li>
+                                                    @endfor
                                                 </ul>
-                                                <span class="review-caption">Dựa trên đánh giá</span>
-                                                <span class="review-write-btn">Viết bài đánh giá</span>
+                                                <span class="review-caption">Dựa trên {{ $product->reviews->count() }}
+                                                    đánh giá</span>
+                                                {{-- <span class="review-write-btn">Viết bài đánh giá</span> --}}
                                             </div>
                                         </div>
 
@@ -383,101 +385,139 @@
 
                                         <div class="reviews-content-body">
                                             <!--== Start Reviews Content Item ==-->
-                                            <div class="review-item">
-                                                <ul class="review-rating">
-                                                    <li class="fa fa-star"></li>
-                                                    <li class="fa fa-star"></li>
-                                                    <li class="fa fa-star"></li>
-                                                    <li class="fa fa-star"></li>
-                                                    <li class="fa fa-star"></li>
-                                                </ul>
-                                                <h3 class="title">Dịch vụ vận chuyển tuyệt vời!</h3>
-                                                <h5 class="sub-title"><span>Nantu Nayal</span> vào <span>ngày 30 tháng 9
-                                                        năm
-                                                        2022</span></h5>
-                                                <p>Nó không chỉ tồn tại qua năm thế kỷ mà còn vượt qua cả bước nhảy vọt vào
-                                                    sắp
-                                                    chữ điện tử, về cơ bản vẫn không thay đổi. Nó đã trở nên phổ biến vào
-                                                    những
-                                                    năm 1960 với việc phát hành các tờ Letraset chứa các đoạn văn Lorem
-                                                    Ipsum,
-                                                    và gần đây hơn là với phần mềm xuất bản trên máy tính để bàn như Aldus
-                                                    PageMaker bao gồm các phiên bản của Lorem Ipsum.</p>
-                                                <a href="#/">Report as Inappropriate</a>
+                                            <!-- Modal để hiển thị ảnh lớn -->
+                                            <div id="imageModal" class="modal">
+                                                <span class="close" onclick="closeModal()">&times;</span>
+                                                <img class="modal-content" id="modalImage" alt="Large Review Image">
                                             </div>
+
+                                            @forelse ($reviews as $review)
+                                                <div class="review-item">
+                                                    <ul class="review-rating">
+                                                        @for ($i = 1; $i <= 5; $i++)
+                                                            <li class="fa fa-star{{ $i <= $review->rating ? '' : '-o' }}">
+                                                            </li>
+                                                        @endfor
+                                                    </ul>
+                                                    <h3 class="title">{{ $review->user->full_name }}</h3>
+                                                    <!-- Hiển thị nội dung đánh giá -->
+                                                    <h5 class="sub-title">
+                                                        <span>{{ $review->user->name }}</span> Đánh giá vào
+                                                        <span>{{ \Carbon\Carbon::parse($review->review_date)->format('d/m/Y') }}</span>
+                                                    </h5>
+                                                    @if ($review->image_url)
+                                                        <img src="{{ Storage::url($review->image_url) }}"
+                                                            alt="Review Image" width="200"
+                                                            onclick="openModal('{{ Storage::url($review->image_url) }}')">
+                                                    @endif
+                                                    <p>{{ $review->comment }}</p> <!-- Hiển thị nội dung đánh giá -->
+
+                                                    {{-- <a href="#/">Report as Inappropriate</a> --}}
+                                                </div>
+                                            @empty
+                                                <p>Chưa có đánh giá nào cho sản phẩm này.</p>
+                                            @endforelse
+
+                                            <style>
+                                                .modal {
+                                                    display: none;
+                                                    position: fixed;
+                                                    z-index: 1000;
+                                                    left: 0;
+                                                    top: 0;
+                                                    width: 100%;
+                                                    height: 100%;
+                                                    overflow: auto;
+                                                    background-color: rgba(0, 0, 0, 0.8);
+                                                }
+
+                                                .modal-content {
+                                                    margin: auto;
+                                                    display: block;
+                                                    width: 80%;
+                                                    max-width: 700px;
+                                                }
+
+                                                .close {
+                                                    position: absolute;
+                                                    top: 10px;
+                                                    right: 25px;
+                                                    color: #fff;
+                                                    font-size: 35px;
+                                                    font-weight: bold;
+                                                    cursor: pointer;
+                                                }
+                                            </style>
+
+                                            <script>
+                                                function openModal(imageUrl) {
+                                                    var modal = document.getElementById("imageModal");
+                                                    var modalImage = document.getElementById("modalImage");
+                                                    modal.style.display = "block";
+                                                    modalImage.src = imageUrl;
+                                                }
+
+                                                function closeModal() {
+                                                    var modal = document.getElementById("imageModal");
+                                                    modal.style.display = "none";
+                                                }
+                                            </script>
                                             <!--== End Reviews Content Item ==-->
 
-                                            <!--== Start Reviews Content Item ==-->
-                                            {{-- <div class="review-item">
-                        <ul class="review-rating">
-                          <li class="fa fa-star"></li>
-                          <li class="fa fa-star-o"></li>
-                          <li class="fa fa-star-o"></li>
-                          <li class="fa fa-star-o"></li>
-                          <li class="fa fa-star-o"></li>
-                        </ul>
-                        <h3 class="title">Low Quality</h3>
-                        <h5 class="sub-title"><span>Oliv hala</span> no <span>Sep 30, 2022</span></h5>
-                        <p>My Favorite White Sneakers From Splurge To Save the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.</p>
-                        <a href="#/">Report as Inappropriate</a>
-                      </div> --}}
-                                            <!--== End Reviews Content Item ==-->
-
-                                            <!--== Start Reviews Content Item ==-->
-                                            {{-- <div class="review-item">
-                        <ul class="review-rating">
-                          <li class="fa fa-star"></li>
-                          <li class="fa fa-star"></li>
-                          <li class="fa fa-star"></li>
-                          <li class="fa fa-star"></li>
-                          <li class="fa fa-star"></li>
-                        </ul>
-                        <h3 class="title">Excellent services!</h3>
-                        <h5 class="sub-title"><span>Halk Marron</span> no <span>Sep 30, 2022</span></h5>
-                        <p>The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.</p>
-                        <a href="#/">Report as Inappropriate</a>
-                      </div>
-                      <!--== End Reviews Content Item ==-->
-  
-                      <!--== Start Reviews Content Item ==-->
-                      <div class="review-item">
-                        <ul class="review-rating">
-                          <li class="fa fa-star"></li>
-                          <li class="fa fa-star"></li>
-                          <li class="fa fa-star"></li>
-                          <li class="fa fa-star-o"></li>
-                          <li class="fa fa-star-o"></li>
-                        </ul>
-                        <h3 class="title">Price is very high</h3>
-                        <h5 class="sub-title"><span>Musa</span> no <span>Sep 30, 2022</span></h5>
-                        <p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.</p>
-                        <a href="#/">Report as Inappropriate</a>
-                      </div>
-                      <!--== End Reviews Content Item ==-->
-  
-                      <!--== Start Reviews Content Item ==-->
-                      <div class="review-item">
-                        <ul class="review-rating">
-                          <li class="fa fa-star"></li>
-                          <li class="fa fa-star"></li>
-                          <li class="fa fa-star"></li>
-                          <li class="fa fa-star"></li>
-                          <li class="fa fa-star-o"></li>
-                        </ul>
-                        <h3 class="title">Normal</h3>
-                        <h5 class="sub-title"><span>Muhammad</span> no <span>Sep 30, 2022</span></h5>
-                        <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour</p>
-                        <a href="#/">Report as Inappropriate</a>
-                      </div> --}}
-                                            <!--== End Reviews Content Item ==-->
                                         </div>
 
                                         <!--== Start Reviews Pagination Item ==-->
+                                        <!-- Phân trang -->
                                         <div class="review-pagination">
-                                            <span class="pagination-pag">1</span>
-                                            <span class="pagination-pag">2</span>
-                                            <span class="pagination-next">Next »</span>
+                                            @if ($reviews->hasPages())
+
+                                                <span class="pagination-prev">
+                                                    @if ($reviews->currentPage() > 1)
+                                                        <a href="{{ $reviews->previousPageUrl() }}">« Quay lại</a>
+                                                    @endif
+                                                </span>
+
+                                                <span class="pagination-pag">Trang</span>
+                                                @for ($i = 1; $i <= $reviews->lastPage(); $i++)
+                                                    <span
+                                                        class="pagination-pag {{ $i == $reviews->currentPage() ? 'active' : '' }}">
+                                                        <a href="{{ $reviews->url($i) }}">{{ $i }}</a>
+                                                    </span>
+                                                @endfor
+                                                
+                                                <span class="pagination-next">
+                                                    @if ($reviews->hasMorePages())
+                                                        <a href="{{ $reviews->nextPageUrl() }}">Tiếp theo »</a>
+                                                    @endif
+                                                </span>
+                                            @endif
                                         </div>
+                                        <style>
+                                            .pagination-pag {
+                                                display: inline-block;
+                                                margin: 0 5px;
+                                            }
+
+                                            .pagination-pag.active a {
+                                                font-weight: bold;
+                                                color: red;
+                                                text-decoration: underline;
+                                            }
+
+                                            .pagination-pag a {
+                                                text-decoration: none;
+                                                color: #000;
+                                            }
+
+                                            .pagination-prev{
+                                                display: flex;
+                                                margin-bottom: -25px;
+                                            }
+                                            .review-pagination{
+                                                margin: auto;
+                                            }
+                                        </style>
+
                                         <!--== End Reviews Pagination Item ==-->
                                     </div>
                                 </div>

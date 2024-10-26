@@ -295,7 +295,7 @@ class CheckoutController extends Controller
             if ($bill) {
                 // Cập nhật trạng thái hóa đơn
                 $bill->payment_status = 'completed';
-                $bill->bill_status = 'confirmed';
+                $bill->bill_status = 'pending';
                 $bill->save();
                 return view('client.tt-thanh-cong', compact('bill'));
             } else {
