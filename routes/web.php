@@ -1,6 +1,12 @@
 <?php
 
+use App\Http\Middleware\CheckRole;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\client\Account;
+
 use App\Http\Controllers\admin\BillController;
+use App\Http\Controllers\admin\DashboardController;
+use App\Http\Controllers\admin\StatisticsController;
 use App\Http\Controllers\BillController as ControllersBillController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
@@ -8,12 +14,19 @@ use App\Http\Controllers\client\AccountController;
 use App\Http\Controllers\client\BillController as ClientBillController;
 use App\Http\Controllers\client\HomeController;
 use App\Http\Controllers\client\ProductController as ClientProductController;
+
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\ProductSizeController;
 use App\Http\Controllers\VariantController;
-use App\Http\Middleware\CheckRole;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\admin\BillController;
 use App\Http\Controllers\client\CartController;
+use App\Http\Controllers\client\HomeController;
+use App\Http\Controllers\ProductSizeController;
+use App\Http\Controllers\client\AccountController;
+use App\Http\Controllers\admin\DashboardController;
+use App\Http\Controllers\admin\ProductController as AdminProductController;
+use App\Http\Controllers\client\ProductController as ClientProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,9 +84,8 @@ Route::get('account', function () {
 // Admin  
 Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
 
-    Route::get('/', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
+
+    Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
 
     Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
     Route::get('categories/create', [CategoryController::class, 'create'])->name('categories.create');
@@ -158,7 +170,7 @@ Route::middleware(['auth'])->group(function () {
 // Thanh toán
 
 Route::get('tt-that-bai', function () {
-return view('client.tt-that-bai');
+    return view('client.tt-that-bai');
 })->name('tt-that-bai');
 
 Route::get('tt-thanh-cong', function () {
@@ -172,6 +184,9 @@ Route::post('/checkout/vnpay', [CheckoutController::class, 'processVNPAY'])->nam
 Route::post('/checkouts', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
 Route::get('/checkouts', [CheckoutController::class, 'checkout'])->name('checkouts');
 
+// Thống kê (Statistics)
+Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
+Route::post('statistics', [StatisticsController::class, 'getStatistics'])->name('statistics.data');
 
 
 // show sp mới limit8
