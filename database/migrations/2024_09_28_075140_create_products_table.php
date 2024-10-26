@@ -17,9 +17,9 @@ return new class extends Migration
             $table->foreignIdFor(Category::class)->constrained()->onDelete('cascade');
             $table->string('name');
             $table->string('code')->unique();
-            $table->string('summary');
+            $table->text('summary');
             $table->text('detailed_description');
-            $table->float('average_rating')->nullable();
+            $table->decimal('average_rating', 2, 1)->default(0);
             $table->string('primary_image_url');
             $table->timestamps();
         });

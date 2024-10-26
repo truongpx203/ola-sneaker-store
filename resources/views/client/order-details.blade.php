@@ -30,16 +30,16 @@
             <div class="container pt--0 pb--0">
                 <div class="row">
                     <div class="col-lg-12 col-md-12">
-                        @if (Session('error'))
-                            <div class="alert alert-danger" role="alert">
-                                {{ Session('error') }}
-                            </div>
-                        @endif
-                        @error('note')
-                            <div class="alert alert-danger" role="alert">
-                                {{ $message }}
-                            </div>
-                        @enderror
+                        
+                        @if ($errors->any())
+                        <div class="alert alert-danger" role="alert">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                         @if (Session('success'))
                             <div class="alert alert-success" role="alert">
                                 {{ Session('success') }}
@@ -116,7 +116,8 @@
                                             <th>Size</th>
                                             <th>Số lượng</th>
                                             <th>Giá bán</th>
-                                            <th>Tổng tiền</th>
+                                            {{-- <th>Tổng tiền</th> --}}
+                                            <th>Thao tác</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -124,16 +125,130 @@
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
                                                 <td>{{ $item->product_name }}</td>
-                                                <td> <img src="{{ Storage::url($item->product_image_url) }}" width="90" height="110" alt="img"></td>
+                                                <td> <img src="{{ Storage::url($item->product_image_url) }}" width="90"
+                                                        height="110" alt="img"></td>
                                                 <td>{{ $item->variant->size->name }}</td>
                                                 <td>{{ $item->variant_quantity }}</td>
                                                 <td>{{ number_format($item->sale_price, 0, ',', '.') }}</td>
-                                                <td>{{ number_format($bill->total_price, 0, ',', '.') }}</td>
+                                                {{-- <td>{{ number_format($bill->total_price, 0, ',', '.') }}</td> --}}
+                                                <td>
+                                                    @if ($item->has_reviewed)
+                                                        <span class="badge bg-success" style="border-radius: 0">Đã đánh
+                                                            giá</span>
+                                                    @else
+                                                        @if ($bill->bill_status === 'completed')
+                                                            <button class="btn btn-outline-danger" style="border-radius: 0"
+                                                                onclick="toggleReviewForm({{ $item->variant->id }})">Đánh
+                                                                giá</button>
+                                                        @else
+                                                            <button class="btn btn-outline-danger btn-sm alert-button"
+                                                                style="border-radius: 0"
+                                                                onclick="alert('Trạng thái sang hoàn thành thì mới có thể đánh giá.');">Đánh
+                                                                giá</button>
+                                                        @endif
+                                                    @endif
+                                                </td>
+                                                <style>
+                                                    .btn-outline-danger.alert-button {
+                                                        cursor: not-allowed;
+                                                    }
+                                                </style>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="8">
+                                                    <div id="review-form-{{ $item->variant->id }}"
+                                                        class="reviews-form-area" style="display: none;">
+                                                        <h4 class="title p-3">Viết bài đánh giá</h4>
+                                                        <div class="reviews-form-content">
+                                                            <form action="{{ route('product.reviews.store') }}"
+                                                                method="POST" enctype="multipart/form-data">
+                                                                @csrf
+                                                                <div class="row">
+                                                                    <input type="hidden" name="variant_id"
+                                                                        value="{{ $item->variant->id }}">
+                                                                    <div class="mt-3">
+                                                                        <div class="form-group">
+                                                                            <span class="title">Xếp hạng</span>
+                                                                            <ul class="review-rating"
+                                                                                style="color: #f5c61a"
+                                                                                id="rating-{{ $item->variant->id }}">
+                                                                                @for ($i = 1; $i <= 5; $i++)
+                                                                                    <li class="fa fa-star-o"
+                                                                                        onclick="setRating({{ $item->variant->id }}, {{ $i }})">
+                                                                                    </li>
+                                                                                @endfor
+                                                                            </ul>
+                                                                            <input type="hidden" name="rating"
+                                                                                id="input-rating-{{ $item->variant->id }}"
+                                                                                value="0">
+                                                                            @error('rating')
+                                                                                <span
+                                                                                    class="text-danger">{{ $message }}</span>
+                                                                            @enderror
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <div class="form-group">
+                                                                            <label class="d-flex"
+                                                                                for="for_review-title">Ảnh sản
+                                                                                phẩm</label>
+                                                                            <input type="file" class="form-control"
+                                                                                name="image_url" accept="image/*">
+
+                                                                            @error('image_url')
+                                                                                <span
+                                                                                    class="text-danger mt-3">{{ $message }}</span>
+                                                                            @enderror
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="mt-2">
+                                                                        <div class="form-group">
+                                                                            <label class="d-flex" for="for_comment">Nội
+                                                                                dung đánh giá
+                                                                                (1500)</label>
+                                                                            <textarea id="for_comment" name="comment" rows="5" class="form-control" placeholder="Bình luận ..."></textarea>
+                                                                            @error('comment')
+                                                                                <span
+                                                                                    class="text-danger">{{ $message }}</span>
+                                                                            @enderror
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="p-3">
+                                                                        <div class="form-group">
+                                                                            <button type="submit"
+                                                                                class="btn btn-outline-danger"
+                                                                                style="margin-left: 87%; border-radius: 0">Đăng
+                                                                                bình luận</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </td>
                                             </tr>
                                         @endforeach
 
                                     </tbody>
                                 </table>
+                                {{-- js đánh giá --}}
+                                <script>
+                                    function toggleReviewForm(itemId) {
+                                        const reviewForm = document.getElementById(`review-form-${itemId}`);
+                                        reviewForm.style.display = reviewForm.style.display === 'none' ? 'block' : 'none';
+                                    }
+
+                                    function setRating(itemId, rating) {
+                                        const stars = document.querySelectorAll(`#rating-${itemId} .fa`);
+                                        stars.forEach((star, index) => {
+                                            star.classList.toggle('fa-star', index < rating);
+                                            star.classList.toggle('fa-star-o', index >= rating);
+                                        });
+                                        document.getElementById(`input-rating-${itemId}`).value = rating;
+                                    }
+                                </script>
+
+
                                 <div class="myaccount-content">
                                     {{-- <p class="saved-message">Giảm giá: <span class="text-danger">-$1000</span></p> --}}
                                     {{-- <p class="saved-message">Tiền ship: <span class="text-danger">30.000đ</span></p> --}}
@@ -195,7 +310,8 @@
                                 <form action="{{ route('completeOrder', $bill->id) }}" method="POST">
                                     @csrf
                                     <div class="single-input-item">
-                                        <button type="submit" class="btn btn-primary">Đánh dấu hoàn thành đơn hàng</button>
+                                        <button type="submit" class="btn btn-primary">Đánh dấu hoàn thành đơn
+                                            hàng</button>
                                     </div>
                                 </form>
                             </div>
@@ -210,7 +326,8 @@
                                         <label for="floatingTextarea2">Ghi chú</label>
                                     </div>
                                     <div class="single-input-item">
-                                        <button type="submit" class="check-btn sqr-btn" {{ $bill->bill_status !== 'pending' ? 'disabled' : '' }}>Hủy đơn</button>
+                                        <button type="submit" class="btn btn-light" style="border-radius: 0"
+                                            {{ $bill->bill_status !== 'pending' ? 'disabled' : '' }}>Hủy đơn</button>
                                     </div>
                                 </form>
 
@@ -219,7 +336,8 @@
                                         border-radius: 0;
                                         border: 1px solid #ced4da;
                                     }
-                                    .alert-success{
+
+                                    .alert-success {
                                         border-radius: 0;
                                         border: 1px solid #ced4da;
                                     }
