@@ -6,38 +6,69 @@ use App\Http\Controllers\Controller;
 use App\Models\Bill;
 use App\Models\BillHistory;
 use App\Models\BillItem;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
     public function detailBill($id)
     {
-        $bill = Bill::query()->with(['items', 'histories'])->where('id', $id)->first();
+        $bill = Bill::query()->with(['items', 'histories'])->findOrFail($id);;
         return view('client.order-details', compact('bill'));
     }
-    public function cancelOrder($id)
+    public function cancelOrder(Request $request, $id)
     {
-        $bill = Bill::query()->with(['items', 'histories'])->where('id', $id)->first();
-        $latestHistory = BillHistory::query()
-            ->where('bill_id', $id)
-            ->orderBy('at_datetime', 'desc')
-            ->first();
-        if ($latestHistory->to_status != "Chờ xác nhận") {
-            if ($latestHistory->to_status == "Đã hủy đơn hàng") {
-                return redirect()->route('order-details', $id)
-                    ->withErrors(['cancelBill' => 'Đơn hàng đã được bạn hủy từ trước']);
-            }
-            return redirect()->route('order-details', $id)
-                ->withErrors(['cancelBill' => 'Đơn hàng đã xác nhận không được hủy']);
+        $bill = Bill::findOrFail($id);
+
+        if ($bill->bill_status !== 'pending') {
+            return redirect()->back()->with('error', 'Chỉ có thể hủy đơn hàng đang chờ xác nhận.');
         }
-        BillHistory::query()->create([
-            'bill_id' => $bill->id,
-            'by_user' => Auth::user()->id,
-            'from_status' => $latestHistory->to_status,
-            'to_status' => "Đã hủy đơn hàng",
-            'note' => null,
-            'at_datetime' => now()->format('Y-m-d H:i:s')
+
+        $request->validate([
+            'note' => 'required|string|max:255',
+        ], [
+            'note.required' => 'Vui lòng nhập lý do hủy đơn hàng.',
+            'note.max' => 'Lý do hủy đơn hàng không quá 255 ký tự.'
         ]);
-        return redirect()->route('order-details', $id);
+
+        // Cập nhật trạng thái hóa đơn
+        $bill->bill_status = 'canceled';
+        $bill->save();
+
+        // Lưu vào lịch sử hủy đơn
+        BillHistory::create([
+            'bill_id' => $bill->id,
+            'by_user' => Auth::id(),
+            'from_status' => 'pending', // Trạng thái trước khi hủy
+            'to_status' => 'canceled',
+            'note' => $request->note,
+            'at_datetime' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Đơn hàng đã được hủy thành công.');
+    }
+
+    public function completeOrder(Request $request, $id)
+    {
+
+        $bill = Bill::findOrFail($id);
+
+        if ($bill->bill_status !== 'delivered') {
+            return redirect()->back()->with('error', 'Chỉ có thể đánh dấu đơn hàng là hoàn thành khi nó đã được giao hàng thành công.');
+        }
+
+        $bill->bill_status = 'completed';
+        $bill->save();
+
+        BillHistory::create([
+            'bill_id' => $bill->id,
+            'by_user' => Auth::id(),
+            'from_status' => 'delivered',
+            'to_status' => 'completed',
+            'note' => 'Đơn hàng đã được hoàn thành.',
+            'at_datetime' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Đơn hàng đã được hoàn thành.');
     }
 }

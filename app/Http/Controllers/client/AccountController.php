@@ -29,7 +29,9 @@ class AccountController extends Controller
 
     public function account()
     {
-        return view('client.account');
+        $user = Auth::user();
+        $bills = $user->bills;
+        return view('client.account',compact('user', 'bills'));
     }
 
     // Đăng ký
