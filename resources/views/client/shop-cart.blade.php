@@ -56,39 +56,27 @@
                                             <tr class="cart-product-item">
                                                 <input type="hidden" name="id[]" value="{{ $cart->id }}" />
                                                 <input type="hidden" name="variant_id[]" value="{{ $cart->variant_id }}" />
+                                                
                                                 <td class="product-remove">
-                                                    <button type="button" class="btn-remove">
-                                                        <i class="fa fa-trash-o"></i>
-                                                    </button>
-                                                </td>
-                                                <style>
-                                                    .btn-remove {
-                                                        background: none;
-                                                        border: none;
-                                                        padding: 0;
-                                                        cursor: pointer;
-                                                    }
-
-                                                    .btn-remove i {
-                                                        color: #333;
-                                                        font-size: 18px;
-                                                    }
-                                                </style>
+                                                    <a href="#/"><i class="fa fa-trash-o"></i></a>
+                                                  </td>
                                                 <td class="product-thumb">
                                                     <a href="{{ route('cart.show', $cart->variant->product_id) }}"> 
                                                         <img src="{{ Storage::url($cart->variant->product->primary_image_url) }}" width="90" height="110" alt="{{ $cart->variant->product->name }}">
                                                     </a>
                                                 </td>
                                                 <td class="product-name">
+                                                   <h4 class="title"> 
                                                     <a href="{{ route('cart.show', $cart->variant->product_id) }}">
-                                                        {{ $cart->variant->name }}
+                                                        {{  $cart->variant->product->name }}
                                                     </a>
+                                                   </h4>
                                                 </td>
                                                 <td class="product-size">
                                                     <span>{{ $cart->variant->productSize->name }}</span>
                                                 </td>
                                                 <td class="product-price">
-                                                    <span>{{ number_format($cart->variant->sale_price, 2) }} VNĐ</span>
+                                                    <span>{{ number_format($cart->variant->sale_price) }} VNĐ</span>
                                                 </td>
                                                 <td class="product-quantity">
                                                         <div class="pro-qty">
@@ -98,18 +86,18 @@
                                                       
                                                 </td>
                                                 <td class="product-subtotal">
-                                                    <span>{{ number_format($cart->variant->sale_price * $cart->variant_quantity, 2) }} VNĐ</span>
+                                                    <span>{{ number_format($cart->variant->sale_price * $cart->variant_quantity) }} VNĐ</span>
                                                 </td>
                                             </tr>
                                         @endforeach
                                         <tr class="actions">
-                                            <td colspan="7">
+                                            <td class="border-0" colspan="7">
                                                 <button type="submit" value="update" class="update-cart">Cập nhật Giỏ hàng</button>
                                             </form>
                                                 <form action="{{ route('cart.clear') }}" method="POST" style="display:inline;">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="delete-cart"
+                                                    <button type="submit" class="clear-cart"
                                                         onclick="return confirm('Bạn có chắc chắn muốn xóa toàn bộ giỏ hàng không?');">Xóa
                                                         toàn bộ giỏ hàng</button>
                                                 </form>
@@ -188,7 +176,7 @@
                                                     <p class="value">Tạm tính</p>
                                                 </td>
                                                 <td>
-                                                    <p class="price">{{ number_format($provisional, 2) }} VNĐ</p>
+                                                    <p class="price">{{ number_format($provisional) }} VNĐ</p>
                                                 </td>
                                             </tr>
                                             <tr class="cart-subtotal">
@@ -205,7 +193,7 @@
                                                     <p class="value">Tổng tiền</p>
                                                 </td>
                                                 <td>
-                                                    <p class="price">{{ number_format($cartTotal, 2) }} VNĐ</p>
+                                                    <p class="price">{{ number_format($cartTotal) }} VNĐ</p>
                                                     
                                                 </td>
                                             </tr>

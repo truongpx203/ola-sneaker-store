@@ -3,6 +3,18 @@
 use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\client\Account;
+
+use App\Http\Controllers\admin\BillController;
+use App\Http\Controllers\admin\DashboardController;
+use App\Http\Controllers\admin\StatisticsController;
+use App\Http\Controllers\BillController as ControllersBillController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\client\AccountController;
+use App\Http\Controllers\client\BillController as ClientBillController;
+use App\Http\Controllers\client\HomeController;
+use App\Http\Controllers\client\ProductController as ClientProductController;
+
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\VariantController;
 use App\Http\Controllers\CategoryController;
@@ -54,9 +66,6 @@ Route::get('order-details', function () {
     return view('client.order-details');
 })->name('order-details');
 
-Route::get('tt-thanhcong', function () {
-    return view('client.tt-thanh-cong');
-});
 Route::get('check-outCart', function () {
     return view('client.shop-checkout');
 });
@@ -69,15 +78,14 @@ Route::get('shop-compare', function () {
 Route::get('account', function () {
     return view('client.account');
 });
-Route::get('tt-thanh-cong', function () {
-    return view('client.tt-thanh-cong');
-});
+
 
 
 // Admin  
 Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
 
-    Route::get('/', [DashboardController::class,'dashboard'])->name('dashboard');
+
+    Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
 
     Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
     Route::get('categories/create', [CategoryController::class, 'create'])->name('categories.create');
@@ -149,9 +157,36 @@ Route::post('/reset-password/{token}', [AccountController::class, 'check_reset_p
 
 Route::get('/logout', [AccountController::class, 'logout'])->name('logout');
 
-Route::get('/account', [AccountController::class, 'account'])
-    ->name('account')
-    ->middleware('auth');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/account', [AccountController::class, 'account'])->name('account');
+
+    // chi tiết đơn hàng truyền id bảng bill
+    Route::get('order-details/{id}', [HomeController::class, 'detailBill'])->name('order-details');
+    Route::post('/bills/{id}/cancel', [HomeController::class, 'cancelOrder'])->name('cancelOrder');
+    Route::post('/bills/{bill}/complete', [HomeController::class, 'completeOrder'])->name('completeOrder');
+});
+
+
+// Thanh toán
+
+Route::get('tt-that-bai', function () {
+    return view('client.tt-that-bai');
+})->name('tt-that-bai');
+
+Route::get('tt-thanh-cong', function () {
+    return view('client.tt-thanh-cong');
+})->name('tt-thanh-cong');
+
+Route::get('/payment/return', [CheckoutController::class, 'returnFromVNPAY'])->name('checkout.vnpay.return');
+Route::post('/checkout/vnpay', [CheckoutController::class, 'processVNPAY'])->name('checkout.vnpay');
+
+// Route::post('/checkout/cod', [CheckoutController::class, 'processCheckout'])->name('checkout.cod');
+Route::post('/checkouts', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
+Route::get('/checkouts', [CheckoutController::class, 'checkout'])->name('checkouts');
+
+// Thống kê (Statistics)
+Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
+Route::post('statistics', [StatisticsController::class, 'getStatistics'])->name('statistics.data');
 
 
 // show sp mới limit8
@@ -170,30 +205,14 @@ Route::get('/shop/filter/price', [ClientProductController::class, 'filterByPrice
 //trang giỏ hàng
 Route::get('/cart', [CartController::class, 'showCart'])->name('cart.show');
 Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
-Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear'); 
+Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
 Route::post('/cart/voucher', [CartController::class, 'applyVoucher'])->name('cart.voucher');
 Route::post('/cart/update-all', [CartController::class, 'updateAll'])->name('cart.updateAll');
 
-// Trang thanh toán (Checkout)
-// Route::get('/checkouts', [CheckoutController::class, 'checkout'])->name('checkouts');
-// Route::post('/checkouts', [CheckoutController::class, 'processCheckout'])->name('checkoutProcess');
-Route::get('/checkouts', [CheckoutController::class, 'checkout'])->name('checkouts');
-Route::post('/checkouts', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
-// Route::post('/checkouts', [CheckoutController::class, 'paymentVNPAY'])->name('checkout.process');
 
-
-// chi tiết đơn hàng truyền id bảng bill
-Route::get('order-details/{id}', [HomeController::class, 'detailBill'])->name('order-details');
-Route::post('order-details/{id}', [HomeController::class, 'cancelOrder'])->name('cancelOrder');
-
-
-
-// Trang lịch sử mua hàng
-Route::get('bills/', [BillController::class, 'index'])->name('bills.index')->middleware('auth');
 
 
 
 Route::get('show-bill-item', function () {
     return view('admin.bills.show-bill-item');
 });
-
