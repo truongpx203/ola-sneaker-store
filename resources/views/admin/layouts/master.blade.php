@@ -906,6 +906,7 @@
     <script src="{{ asset('theme/admins/velzon/assets/libs/feather-icons/feather.min.js') }}"></script>
     <script src="{{ asset('theme/admins/velzon/assets/js/pages/plugins/lord-icon-2.1.0.js') }}"></script>
     <script src="{{ asset('theme/admins/velzon/assets/js/plugins.js') }}"></script>
+  
 
 @yield('script-libs');
     <!-- App js -->

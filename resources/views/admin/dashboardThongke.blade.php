@@ -108,7 +108,8 @@
                                             </span>
                                         </div>
                                         <div class="flex-grow-1 overflow-hidden ms-3">
-                                            <p class="text-uppercase fw-medium text-danger text-truncate mb-3">Giao hàng thất bại</p>
+                                            <p class="text-uppercase fw-medium text-danger text-truncate mb-3">Giao hàng
+                                                thất bại</p>
                                             <div class="d-flex align-items-center mb-3">
                                                 <h4 class="fs-4 flex-grow-1 mb-0 text-danger">{{ $giaoThatBai }}</h4>
                                             </div>
@@ -128,7 +129,8 @@
                                             </span>
                                         </div>
                                         <div class="flex-grow-1 overflow-hidden ms-3">
-                                            <p class="text-uppercase fw-medium text-warning text-truncate mb-3">Đơn hàng hoàn thành</p>
+                                            <p class="text-uppercase fw-medium text-warning text-truncate mb-3">Đơn hàng
+                                                hoàn thành</p>
                                             <div class="d-flex align-items-center mb-3">
                                                 <h4 class="fs-4 flex-grow-1 mb-0 text-warning">{{ $hoanThanh }}</h4>
                                             </div>
@@ -170,11 +172,21 @@
                 <div class="card">
                     <div class="card-header border-0 align-items-center d-flex">
                         <h4 class="card-title mb-0 flex-grow-1">#2. Thống kê doanh thu</h4>
+                        <div class="form-group">
+                            {{-- <label for="monthSelect">Chọn tháng cần thống kê:</label> --}}
+                            <select id="monthSelect" class="form-control">
+
+                            </select>
+                        </div>
                     </div><!-- end card header -->
+
 
                     <div class="card-body p-0 pb-2">
                         <div class="w-100">
 
+                            <div class="chart-container mt-4">
+                                <canvas id="revenueProfitChart"></canvas>
+                            </div>
                         </div>
                     </div><!-- end card body -->
                 </div>
@@ -307,4 +319,74 @@
 @section('script-libs')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const currentMonth = new Date().getMonth() + 1; // Lấy tháng hiện tại
+            const currentYear = new Date().getFullYear();
+            const monthSelect = document.getElementById('monthSelect');
+
+            // Populate các tháng trong dropdown
+            for (let i = 1; i <= 12; i++) {
+                const option = document.createElement('option');
+                option.value = `${i}-${currentYear}`; // Gán giá trị là tháng-năm
+                option.text = ` ${i}/${currentYear}`;
+                if (i === currentMonth) {
+                    option.selected = true; // Chọn tháng hiện tại
+                }
+                monthSelect.appendChild(option);
+            }
+        });
+
+        const thongKeNgayTheoThangData = <?php echo json_encode($thongKeNgayTheoThangData); ?>;
+        // consolog.log(thongKeNgayTheoThangData);
+        // Tách dữ liệu doanh thu và lợi nhuận từ thongKeNgayTheoThangData
+        const labels = Array.from({
+            length: 30
+        }, (_, i) => i + 1);
+        const revenueData = new Array(30).fill(0); // Khởi tạo với 30 giá trị bằng 0
+        const profitData = new Array(30).fill(0);
+
+        thongKeNgayTheoThangData.forEach(item => {
+            const dayIndex = item.day - 1; // Ngày bắt đầu từ 1, mảng bắt đầu từ 0
+            revenueData[dayIndex] = parseFloat(item.total_revenue); // Gán doanh thu cho ngày
+            profitData[dayIndex] = parseFloat(item.total_profit); // Gán lợi nhuận cho ngày
+        });
+
+
+        const ctx = document.getElementById('revenueProfitChart').getContext('2d');
+
+        // Tạo biểu đồ
+        const revenueProfitChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels, // Các ngày trong tháng
+                datasets: [{
+                        label: 'Doanh thu',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                        data: revenueData // Dữ liệu doanh thu
+                    },
+                    {
+                        label: 'Lợi nhuận',
+                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        borderWidth: 1,
+                        data: profitData // Dữ liệu lợi nhuận
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    x: {
+                        stacked: false, // Hiển thị cột không chồng lên nhau
+                    },
+                    y: {
+                        beginAtZero: true // Bắt đầu từ 0 trên trục Y
+                    }
+                }
+            }
+        });
+    </script>
 @endsection

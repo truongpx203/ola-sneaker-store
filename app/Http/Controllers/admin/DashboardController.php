@@ -69,6 +69,23 @@ class DashboardController extends Controller
             ->take(5) // Lấy top 5 sản phẩm có lợi nhuận cao nhất
             ->get();
 
+        $month = request('month', date('m')); // Lấy tháng từ request hoặc mặc định là tháng hiện tại
+
+        $thongKeNgayTheoThang = DB::table('bill_items')
+            ->join('bills', 'bill_items.bill_id', '=', 'bills.id')
+            ->select(
+                DB::raw('DAY(bills.created_at) as day'), // Lấy ngày
+                DB::raw('SUM(bill_items.sale_price * bill_items.variant_quantity) as total_revenue'), // Tổng doanh thu
+                DB::raw('SUM((bill_items.sale_price - bill_items.import_price) * bill_items.variant_quantity) as total_profit') // Tổng lợi nhuận
+            )
+            ->where('bills.bill_status', 'completed') // Chỉ tính cho hóa đơn đã hoàn thành
+            ->whereMonth('bills.created_at', $month) // Lọc theo tháng
+            ->groupBy(DB::raw('DAY(bills.created_at)')) // Nhóm theo ngày trong tháng
+            ->get();
+
+            $thongKeNgayTheoThangData = $thongKeNgayTheoThang->toArray();
+
+            // dd( $thongKeNgayTheoThangData);
 
         return view('admin.dashboardThongke', compact(
             'choXacNhan',
@@ -80,7 +97,8 @@ class DashboardController extends Controller
             'hoanThanh',
             'topBanChayNhat',
             'topDoanhThuCaoNhat',
-            'topLoiNhuanCaoNhat'
+            'topLoiNhuanCaoNhat',
+            'thongKeNgayTheoThangData'
         ));
     }
 }
