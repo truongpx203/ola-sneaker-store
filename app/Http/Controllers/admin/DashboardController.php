@@ -85,7 +85,6 @@ class DashboardController extends Controller
             'topDoanhThuCaoNhat',
             'topLoiNhuanCaoNhat'
         ));
-    }
 
         $year = $request->yearDasboard ?? now()->format('Y');
         $monthlyRevenue = Bill::query()
@@ -114,7 +113,5 @@ class DashboardController extends Controller
         }
         return view('admin.dashboard', compact('revenueByMonth', 'doanhthu'));
     }
-
-    
 
 }

@@ -30,7 +30,7 @@ class AccountController extends Controller
     public function account()
     {
         $user = Auth::user();
-        $bills = $user->bills;
+        $bills = $user->bills()->orderBy('id', 'desc')->get();
         return view('client.account',compact('user', 'bills'));
     }
 

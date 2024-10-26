@@ -24,16 +24,18 @@ class ProductController extends Controller
     {
         $product = Product::with(['variants' => function($query) {
             $query->where('is_show', 1)
-            ->join('product_sizes', 'variants.product_size_id', '=', 'product_sizes.id')                          
-            ->select('variants.*', 'product_sizes.name as name')
-            ->orderBy('product_sizes.name');
-        }, 'productImages'])->findOrFail($id);
-
-        // Sắp xếp các biến thể theo kích thước từ bé đến lớn
-        // $product->variants = $product->variants->sortBy(function ($variant) {
-        //     return $variant->size->name;
-        // });
+                ->join('product_sizes', 'variants.product_size_id', '=', 'product_sizes.id')                          
+                ->select('variants.*', 'product_sizes.name as name')
+                ->orderBy('product_sizes.name');
+        }, 'productImages'])->findOrFail($id); 
     
+        // Tính toán và cập nhật average_rating nếu cần
+        $product->average_rating = $product->calculateAverageRating();
+        $product->save(); 
+
+
+        $reviews = $product->reviews()->orderBy('id', 'desc')->paginate(5);
+        
         // Tìm biến thể có giá sale thấp nhất
         $lowestSaleVariant = $product->variants->whereNotNull('sale_price')->sortBy('sale_price')->first();
     
@@ -51,7 +53,7 @@ class ProductController extends Controller
             ->sortByDesc('id')
             ->take(6);
     
-        return view('client.product-details', compact('product', 'relatedProducts', 'lowestSaleVariant'));
+        return view('client.product-details', compact('product', 'relatedProducts', 'lowestSaleVariant', 'reviews'));
     }
 
     public function filterProducts(Request $request)

@@ -7,26 +7,17 @@ use App\Http\Controllers\client\Account;
 use App\Http\Controllers\admin\BillController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\StatisticsController;
-use App\Http\Controllers\BillController as ControllersBillController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\client\AccountController;
-use App\Http\Controllers\client\BillController as ClientBillController;
 use App\Http\Controllers\client\HomeController;
 use App\Http\Controllers\client\ProductController as ClientProductController;
-
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\VariantController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\admin\BillController;
 use App\Http\Controllers\client\CartController;
-use App\Http\Controllers\client\HomeController;
 use App\Http\Controllers\ProductSizeController;
-use App\Http\Controllers\client\AccountController;
-use App\Http\Controllers\admin\DashboardController;
-use App\Http\Controllers\admin\ProductController as AdminProductController;
-use App\Http\Controllers\client\ProductController as ClientProductController;
+use App\Http\Controllers\client\ProductReviewController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -164,6 +155,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('order-details/{id}', [HomeController::class, 'detailBill'])->name('order-details');
     Route::post('/bills/{id}/cancel', [HomeController::class, 'cancelOrder'])->name('cancelOrder');
     Route::post('/bills/{bill}/complete', [HomeController::class, 'completeOrder'])->name('completeOrder');
+    
+    Route::post('/products/reviews', [ProductReviewController::class, 'storeReview'])->name('product.reviews.store');
 });
 
 
