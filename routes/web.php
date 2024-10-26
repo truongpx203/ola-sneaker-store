@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\admin\BillController;
 use App\Http\Controllers\admin\DashboardController;
+use App\Http\Controllers\admin\StatisticsController;
 use App\Http\Controllers\BillController as ControllersBillController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
@@ -171,6 +172,9 @@ Route::post('/checkout/vnpay', [CheckoutController::class, 'processVNPAY'])->nam
 Route::post('/checkouts', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
 Route::get('/checkouts', [CheckoutController::class, 'checkout'])->name('checkouts');
 
+// Thống kê (Statistics)
+Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
+Route::post('statistics', [StatisticsController::class, 'getStatistics'])->name('statistics.data');
 
 
 // show sp mới limit8

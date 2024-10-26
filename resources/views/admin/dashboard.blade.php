@@ -203,10 +203,77 @@
                     <canvas id="revenueChart" width="1139" height="200"></canvas>
                 </div>
             </div>
+
+            {{-- View: Thống kê theo ngày --}}
+            <div class="revenue-statistics">
+                <div class="section-header">
+                    Thống kê theo ngày
+                </div>
+                <div class="date-filter">
+                    <form id="form-statistics">
+                        <label for="date">Chọn ngày:</label>
+                        <input type="date" id="date" name="date" value="{{ now()->toDateString() }}">
+                        <button type="submit">Xem thống kê</button>
+                    </form>
+                </div>
+
+
+                <div class="chart">
+                    <canvas id="hourlyChart" width="1139" height="200"></canvas>
+                </div>
+            </div>
+            {{-- @yield('statistics') --}}
         </div>
     </body>
 
     </html>
+
+    <script>
+        document.getElementById('form-statistics').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const date = document.getElementById('date').value;
+
+            fetch('{{ route("statistics.data") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ date: date })
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateChart(data);
+            });
+        });
+
+        const ctx = document.getElementById('hourlyChart').getContext('2d');
+        const hourlyChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: Array.from({length: 24}, (_, i) => `${i}:00`),
+                datasets: [{
+                    label: 'Số lượng',
+                    data: Array(24).fill(0),
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        function updateChart(data) {
+            hourlyChart.data.datasets[0].data = data;
+            hourlyChart.update();
+        }
+    </script>
     {{-- <div class="product-statistics">
                 <div class="section-header">
                     Thống Kê Sản Phẩm
