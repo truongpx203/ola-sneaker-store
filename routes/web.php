@@ -6,7 +6,6 @@ use App\Http\Controllers\client\Account;
 
 use App\Http\Controllers\admin\BillController;
 use App\Http\Controllers\admin\DashboardController;
-use App\Http\Controllers\admin\StatisticsController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\client\AccountController;
@@ -77,6 +76,7 @@ Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
 
 
     Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
+    Route::post('/statistics', [DashboardController::class, 'getStatistics'])->name('statistics');
 
     Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
     Route::get('categories/create', [CategoryController::class, 'create'])->name('categories.create');
@@ -177,9 +177,6 @@ Route::post('/checkout/vnpay', [CheckoutController::class, 'processVNPAY'])->nam
 Route::post('/checkouts', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
 Route::get('/checkouts', [CheckoutController::class, 'checkout'])->name('checkouts');
 
-// Thống kê (Statistics)
-Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
-Route::post('statistics', [StatisticsController::class, 'getStatistics'])->name('statistics.data');
 
 
 // show sp mới limit8
