@@ -291,8 +291,126 @@
                         </table>
                     </div>
                 </div><!-- end card body -->
-            </div><!-- end card -->
+            </div><!-- end card -->         
         </div><!-- end col -->
+    </div>
+    <br>
+    <h3 class="mb-3">Thống kê Theo khoảng thời gian</h3>
+    <br>
+    <div class="date-filter">
+        <form method="GET" action="{{ route('dashboard') }}" id="dateFilterForm" class="date-filter-form">
+            <label for="start_date">Chọn ngày bắt đầu:</label>
+            <input type="date" name="start_date" id="start_date" value="{{ $startDate }}" required>
+            
+            <label for="end_date">Chọn ngày kết thúc:</label>
+            <input type="date" name="end_date" id="end_date" value="{{ $endDate }}" required onchange="document.getElementById('dateFilterForm').submit();">
+        </form>
+    </div>
+    
+        @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif 
+        @if($data->isEmpty() && $revenuePerDay->isEmpty() && $profitPerDay->isEmpty())
+            <p>Không có dữ liệu thống kê cho khoảng thời gian đã chọn.</p>
+        @else
+            <!-- Biểu đồ thống kê đơn hàng, doanh thu và lợi nhuận -->
+            <div class="chart-container">
+                <canvas id="combinedChart"></canvas>
+            </div>
+        @endif
+        
+        @if(!$data->isEmpty() || !$revenuePerDay->isEmpty() || !$profitPerDay->isEmpty())
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+const labels = @json($data->pluck('date'));
+const orderCounts = @json($data->pluck('count'));
+const revenues = @json($revenuePerDay->pluck('total_revenue'));
+const profits = @json($profitPerDay->pluck('total_profit'));
+const combinedData = {
+    labels: labels,
+    datasets: [
+        {
+            label: 'Số lượng đơn hàng',
+            data: orderCounts,
+            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        },
+        {
+            label: 'Doanh thu',
+            data: revenues,
+            backgroundColor: 'rgba(75, 192, 192, 0.7)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+        },
+        {
+            label: 'Lợi nhuận',
+            data: profits,
+            backgroundColor: 'rgba(255, 99, 132, 0.7)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1
+        }
+    ]
+};
+const combinedChartConfig = {
+    type: 'bar',  // Biểu đồ cột
+    data: combinedData,
+    options: {
+        responsive: true,
+        scales: {
+            x: {
+                title: { display: true, text: 'Ngày' }  // Tiêu đề trục x
+            },
+            y: {
+                beginAtZero: true,
+                title: { display: true, text: 'Giá trị (VND)' }  // Tiêu đề trục y chung
+            }
+        }
+    }
+};
+// Khởi tạo biểu đồ
+new Chart(document.getElementById('combinedChart'), combinedChartConfig);
+        
+            // Khởi tạo biểu đồ
+            new Chart(document.getElementById('combinedChart'), combinedChartConfig);
+        </script>
+        @endif
+        <style>
+            <style>
+    /* Canh toàn bộ form sang bên phải */
+    .date-filter {
+        display: flex;
+        justify-content: flex-end;  /* Canh toàn bộ form sang bên phải */
+    }
+
+    .date-filter {
+    display: flex;
+    justify-content: flex-end;  /* Canh toàn bộ form sang bên phải */
+}
+
+.date-filter-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;  /* Khoảng cách giữa các nhãn và input */
+}
+
+label {
+    margin-right: 5px;  /* Khoảng cách giữa nhãn và ô input */
+}
+
+input[type="date"] {
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+</style>
     </div>
 @endsection
 
