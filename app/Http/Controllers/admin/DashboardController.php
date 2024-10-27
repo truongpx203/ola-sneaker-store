@@ -23,26 +23,26 @@ class DashboardController extends Controller
         $giaoThatBai        = Bill::where('bill_status', 'failed')->count();
         $daHuy              = Bill::where('bill_status', 'canceled')->count();
         $hoanThanh          = Bill::where('bill_status', 'completed')->count();
-// Xác thực dữ liệu đầu vào
-$validator = Validator::make($request->all(), [
-    'start_date' => 'required|date|date_format:Y-m-d',
-    'end_date' => 'required|date|date_format:Y-m-d|after_or_equal:start_date',
-]);
-// Mặc định khoảng thời gian 30 ngày gần nhất
-$startDate = $request->input('start_date', now()->subDays(30)->toDateString());
-$endDate = $request->input('end_date', now()->toDateString());
-//Kiểm tra khoảng thời gian có vượt quá 30 ngày hay không
-$start = Carbon::parse($startDate);
-$end = Carbon::parse($endDate);
+        // Xác thực dữ liệu đầu vào
+        $validator = Validator::make($request->all(), [
+            'start_date' => 'required|date|date_format:Y-m-d',
+            'end_date' => 'required|date|date_format:Y-m-d|after_or_equal:start_date',
+        ]);
+        // Mặc định khoảng thời gian 30 ngày gần nhất
+        $startDate = $request->input('start_date', now()->subDays(30)->toDateString());
+        $endDate = $request->input('end_date', now()->toDateString());
+        //Kiểm tra khoảng thời gian có vượt quá 30 ngày hay không
+        $start = Carbon::parse($startDate);
+        $end = Carbon::parse($endDate);
 
-if ($end->diffInDays($start) > 30) {
-    return redirect()->back()->withErrors(['date' => 'Khoảng thời gian không được vượt quá 30 ngày.'])->withInput();
-}
+        if ($end->diffInDays($start) > 30) {
+            return redirect()->back()->withErrors(['date' => 'Khoảng thời gian không được vượt quá 30 ngày.'])->withInput();
+        }
         // Lấy top 5 sản phẩm bán chạy nhất
         $topBanChayNhat = DB::table('bill_items')
             ->join('bills', 'bill_items.bill_id', '=', 'bills.id') // Join với bảng bills
             ->select('bill_items.variant_id', 'bill_items.product_name', 'bill_items.product_image_url', 'bill_items.sale_price', 'bill_items.listed_price', 'bill_items.import_price', DB::raw('COUNT(bill_items.variant_id) as appearances'))
-            ->where('bills.bill_status', 'completed') // Điều kiện chỉ tính các đơn hàng có trạng thái hoàn thành
+            ->where('bills.bill_status', 'delivered') // Điều kiện chỉ tính các đơn hàng có trạng thái hoàn thành
             ->groupBy('bill_items.variant_id', 'bill_items.product_name', 'bill_items.product_image_url', 'bill_items.sale_price', 'bill_items.listed_price', 'bill_items.import_price')
             ->orderBy('appearances', 'desc')
             ->take(5)
@@ -57,7 +57,7 @@ if ($end->diffInDays($start) > 30) {
                 'bill_items.product_image_url',
                 DB::raw('SUM(bill_items.variant_quantity * bill_items.sale_price) as total_revenue') // Tính tổng doanh thu
             )
-            ->where('bills.bill_status', 'completed') // Điều kiện chỉ tính các đơn hàng có trạng thái hoàn thành
+            ->where('bills.bill_status', 'delivered') // Điều kiện chỉ tính các đơn hàng có trạng thái hoàn thành
             ->groupBy(
                 'bill_items.variant_id',
                 'bill_items.product_name',
@@ -77,7 +77,7 @@ if ($end->diffInDays($start) > 30) {
                 'bill_items.product_image_url',
                 DB::raw('SUM((bill_items.sale_price - bill_items.import_price) * bill_items.variant_quantity) as total_profit') // Tính tổng lợi nhuận
             )
-            ->where('bills.bill_status', 'completed') // Điều kiện chỉ tính các đơn hàng có trạng thái hoàn thành
+            ->where('bills.bill_status', 'delivered') // Điều kiện chỉ tính các đơn hàng có trạng thái hoàn thành
             ->groupBy(
                 'bill_items.variant_id',
                 'bill_items.product_name',
@@ -85,7 +85,7 @@ if ($end->diffInDays($start) > 30) {
             )
             ->orderBy('total_profit', 'desc') // Sắp xếp theo tổng lợi nhuận giảm dần
             ->take(5) // Lấy top 5 sản phẩm có lợi nhuận cao nhất
-            ->get();   
+            ->get();
 
         // Truy vấn số lượng đơn hàng theo ngày
         $data = DB::table('bills')
@@ -112,6 +112,25 @@ if ($end->diffInDays($start) > 30) {
             ->orderBy('order_date', 'asc')
             ->get();
 
+        // doanh thu lợi nhuận theo tháng 
+        // $month = request('month', date('m'));
+        $monthYear = $request->query('month', date('m-Y'));
+        [$month, $year] = explode('-', $monthYear);
+        $thongKeNgayTheoThang = DB::table('bill_items')
+            ->join('bills', 'bill_items.bill_id', '=', 'bills.id')
+            ->select(
+                DB::raw('DAY(bills.created_at) as day'), // Lấy ngày
+                DB::raw('SUM(bill_items.sale_price * bill_items.variant_quantity) as total_revenue'), // Tổng doanh thu
+                DB::raw('SUM((bill_items.sale_price - bill_items.import_price) * bill_items.variant_quantity) as total_profit') // Tổng lợi nhuận
+            )
+            ->where('bills.bill_status', 'delivered') // Chỉ tính cho hóa đơn đã hoàn thành
+            ->whereMonth('bills.created_at', $month) // Lọc theo tháng
+            ->groupBy(DB::raw('DAY(bills.created_at)')) // Nhóm theo ngày trong tháng
+            ->get();
+
+        $thongKeNgayTheoThangData = $thongKeNgayTheoThang->toArray();
+
+
         return view('admin.dashboardThongke', compact(
             'choXacNhan',
             'daXacNhan',
@@ -122,14 +141,20 @@ if ($end->diffInDays($start) > 30) {
             'hoanThanh',
             'topBanChayNhat',
             'topDoanhThuCaoNhat',
-            'topLoiNhuanCaoNhat','data', 'startDate', 'endDate', 'revenuePerDay', 'profitPerDay'
+            'topLoiNhuanCaoNhat',
+            'data',
+            'startDate',
+            'endDate',
+            'revenuePerDay',
+            'profitPerDay',
+            'thongKeNgayTheoThangData'
         ));
 
         $year = $request->yearDasboard ?? now()->format('Y');
         $monthlyRevenue = Bill::query()
             ->with('histories')
             ->whereHas('histories', function ($query) use ($year) {
-                $query->where('to_status', '=', 'completed')
+                $query->where('to_status', '=', 'delivered')
                     ->whereYear('at_datetime', '=', $year);
             })
             ->join('bill_histories', 'bills.id', '=', 'bill_histories.bill_id')
@@ -160,8 +185,8 @@ if ($end->diffInDays($start) > 30) {
         // Truy vấn số lượng sản phẩm đã mua và doanh thu trong ngày, nhóm theo giờ
         $data = DB::table('bills')
             ->select(
-                DB::raw('HOUR(created_at) as hour'), 
-                DB::raw('COUNT(*) as count'), 
+                DB::raw('HOUR(created_at) as hour'),
+                DB::raw('COUNT(*) as count'),
                 DB::raw('SUM(total_price) as revenue')
             )
             ->whereDate('created_at', $date)
@@ -180,7 +205,5 @@ if ($end->diffInDays($start) > 30) {
         }
 
         return response()->json($hourlyData);
-
     }
-
 }
