@@ -23,21 +23,21 @@ class DashboardController extends Controller
         $giaoThatBai        = Bill::where('bill_status', 'failed')->count();
         $daHuy              = Bill::where('bill_status', 'canceled')->count();
         $hoanThanh          = Bill::where('bill_status', 'completed')->count();
-// Xác thực dữ liệu đầu vào
-$validator = Validator::make($request->all(), [
-    'start_date' => 'required|date|date_format:Y-m-d',
-    'end_date' => 'required|date|date_format:Y-m-d|after_or_equal:start_date',
-]);
-// Mặc định khoảng thời gian 30 ngày gần nhất
-$startDate = $request->input('start_date', now()->subDays(30)->toDateString());
-$endDate = $request->input('end_date', now()->toDateString());
-//Kiểm tra khoảng thời gian có vượt quá 30 ngày hay không
-$start = Carbon::parse($startDate);
-$end = Carbon::parse($endDate);
+        // Xác thực dữ liệu đầu vào
+        $validator = Validator::make($request->all(), [
+            'start_date' => 'required|date|date_format:Y-m-d',
+            'end_date' => 'required|date|date_format:Y-m-d|after_or_equal:start_date',
+        ]);
+        // Mặc định khoảng thời gian 30 ngày gần nhất
+        $startDate = $request->input('start_date', now()->subDays(30)->toDateString());
+        $endDate = $request->input('end_date', now()->toDateString());
+        //Kiểm tra khoảng thời gian có vượt quá 30 ngày hay không
+        $start = Carbon::parse($startDate);
+        $end = Carbon::parse($endDate);
 
-if ($end->diffInDays($start) > 30) {
-    return redirect()->back()->withErrors(['date' => 'Khoảng thời gian không được vượt quá 30 ngày.'])->withInput();
-}
+        if ($end->diffInDays($start) > 30) {
+            return redirect()->back()->withErrors(['date' => 'Khoảng thời gian không được vượt quá 30 ngày.'])->withInput();
+        }
         // Lấy top 5 sản phẩm bán chạy nhất
         $topBanChayNhat = DB::table('bill_items')
             ->join('bills', 'bill_items.bill_id', '=', 'bills.id') // Join với bảng bills
@@ -85,7 +85,7 @@ if ($end->diffInDays($start) > 30) {
             )
             ->orderBy('total_profit', 'desc') // Sắp xếp theo tổng lợi nhuận giảm dần
             ->take(5) // Lấy top 5 sản phẩm có lợi nhuận cao nhất
-            ->get();   
+            ->get();
 
         // Truy vấn số lượng đơn hàng theo ngày
         $data = DB::table('bills')
@@ -122,7 +122,12 @@ if ($end->diffInDays($start) > 30) {
             'hoanThanh',
             'topBanChayNhat',
             'topDoanhThuCaoNhat',
-            'topLoiNhuanCaoNhat','data', 'startDate', 'endDate', 'revenuePerDay', 'profitPerDay'
+            'topLoiNhuanCaoNhat',
+            'data',
+            'startDate',
+            'endDate',
+            'revenuePerDay',
+            'profitPerDay'
         ));
 
         $year = $request->yearDasboard ?? now()->format('Y');
@@ -160,8 +165,8 @@ if ($end->diffInDays($start) > 30) {
         // Truy vấn số lượng sản phẩm đã mua và doanh thu trong ngày, nhóm theo giờ
         $data = DB::table('bills')
             ->select(
-                DB::raw('HOUR(created_at) as hour'), 
-                DB::raw('COUNT(*) as count'), 
+                DB::raw('HOUR(created_at) as hour'),
+                DB::raw('COUNT(*) as count'),
                 DB::raw('SUM(total_price) as revenue')
             )
             ->whereDate('created_at', $date)
@@ -180,7 +185,29 @@ if ($end->diffInDays($start) > 30) {
         }
 
         return response()->json($hourlyData);
-
     }
 
+    public function getStatisticsYear(Request $request)
+    {
+        $year = $request->input('year') ?? Carbon::today()->format('Y');
+        $data = DB::table('bills')
+            ->select(
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw('COUNT(*) as count'),
+                DB::raw('SUM(total_price) as revenue')
+            )
+            ->whereYear('created_at', $year)
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
+        $monthlyData = [
+            'counts' => array_fill(0, 12, 0),
+            'revenues' => array_fill(0, 12, 0.0)
+        ];
+        foreach ($data as $item) {
+            $monthlyData['counts'][$item->month - 1] = $item->count;
+            $monthlyData['revenues'][$item->month - 1] = $item->revenue;
+        }
+        return response()->json($monthlyData);
+    }
 }
