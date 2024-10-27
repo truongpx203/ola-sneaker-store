@@ -136,6 +136,22 @@
                         </ul>
                     </div>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#review" data-bs-toggle="collapse"
+                        role="button" aria-expanded="false" aria-controls="review">
+                        <i class="ri-layout-3-line"></i> <span data-key="t-layouts">Đánh giá</span> 
+                    </a>
+                    <div class="collapse menu-dropdown" id="review">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="{{route('reviews.index')}}" target="_blank" class="nav-link"
+                                    data-key="t-horizontal">Danh sách</a>
+                             
+                            </li>
+                        </ul>
+                    </div>
+                </li>
                 
 
             </ul>

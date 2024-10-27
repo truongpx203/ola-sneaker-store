@@ -9,7 +9,7 @@ class ProductReview extends Model
 {
     use HasFactory;
 
-     protected $fillable = [
+    protected $fillable = [
         'variant_id',
         'user_id',
         'rating',
@@ -18,7 +18,10 @@ class ProductReview extends Model
         'review_date',
         'is_hidden',
     ];
-
+    public function variant()
+    {
+        return $this->belongsTo(Variant::class);
+    }
     public function product()
     {
         return $this->belongsTo(Product::class, 'variant_id', 'id');
@@ -28,5 +31,4 @@ class ProductReview extends Model
     {
         return $this->belongsTo(User::class);
     }
-    
 }

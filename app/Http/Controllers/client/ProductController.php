@@ -34,7 +34,7 @@ class ProductController extends Controller
         $product->save(); 
 
 
-        $reviews = $product->reviews()->orderBy('id', 'desc')->paginate(5);
+        $reviews = $product->reviews()->where('is_hidden', false)->orderBy('id', 'desc')->paginate(5);
         
         // Tìm biến thể có giá sale thấp nhất
         $lowestSaleVariant = $product->variants->whereNotNull('sale_price')->sortBy('sale_price')->first();
@@ -44,7 +44,8 @@ class ProductController extends Controller
             ->where('id', '!=', $product->id)
             ->with(['variants' => function ($query) {
                 $query->where('is_show', 1) 
-                      ->whereNotNull('sale_price'); 
+                      ->whereNotNull('sale_price')
+                      ->orderBy('sale_price', 'asc'); 
             }])
             ->get()
             ->sortBy(function ($product) {
