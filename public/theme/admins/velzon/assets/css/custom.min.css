@@ -1,2 +1,32 @@
 
 /*# sourceMappingURL=custom.min.css.map */
+.date-filter input[type="number"] {
+    width: 150px;
+    text-align: center;
+    margin-left: 10px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    padding: 5px;
+    color: #000;
+    outline: none; /* Optional: remove default focus outline */
+}
+
+.date-filter input[type="number"]:focus {
+    border-color: #405189; /* Change border color on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a subtle shadow on focus */
+}
+.date-filter a {
+    width: 150px;
+    text-align: center;
+    margin-left: 10px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    padding: 5px;
+    text-decoration: none;
+    color: #000;
+}
+.dasboard_admin li .active{
+    Background: none  !important;
+    color: #405189 !important;
+    font-weight: 800;
+}
