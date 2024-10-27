@@ -99,6 +99,7 @@ class DashboardController extends Controller
         $revenuePerDay = DB::table('bills')
             ->select(DB::raw('DATE(created_at) as order_date'), DB::raw('SUM(total_price) as total_revenue'))
             ->whereBetween('created_at', [$startDate, $endDate])
+            ->where('bill_status', 'completed')
             ->groupBy(DB::raw('DATE(created_at)'))
             ->orderBy('order_date', 'asc')
             ->get();
@@ -107,7 +108,8 @@ class DashboardController extends Controller
         $profitPerDay = DB::table('bill_items')
             ->join('bills', 'bill_items.bill_id', '=', 'bills.id')
             ->select(DB::raw('DATE(bills.created_at) as order_date'), DB::raw('SUM((bill_items.sale_price - bill_items.import_price) * bill_items.variant_quantity) as total_profit'))
-            ->whereBetween('bills.created_at', [$startDate, $endDate]) // Chú ý thay đổi từ bill_items.created_at
+            ->whereBetween('bills.created_at', [$startDate, $endDate])
+            ->where('bills.bill_status', 'completed')
             ->groupBy(DB::raw('DATE(bills.created_at)'))
             ->orderBy('order_date', 'asc')
             ->get();
