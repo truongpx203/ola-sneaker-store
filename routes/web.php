@@ -6,6 +6,7 @@ use App\Http\Controllers\client\Account;
 
 use App\Http\Controllers\admin\BillController;
 use App\Http\Controllers\admin\DashboardController;
+use App\Http\Controllers\admin\ProductReviewController as AdminProductReviewController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\client\AccountController;
@@ -127,6 +128,11 @@ Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
     Route::get('/bills', [BillController::class, 'index'])->name('bills.index');
     Route::get('/bills/{id}', [BillController::class, 'show'])->name('bills.show');
     Route::post('/bills/{id}/update-status', [BillController::class, 'updateStatus'])->name('bills.updateStatus');
+
+    // reviews
+    Route::get('/reviews', [AdminProductReviewController::class, 'index'])->name('reviews.index');
+    Route::get('/review/{id}', [AdminProductReviewController::class, 'update']);
+
 });
 
 
