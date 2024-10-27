@@ -12,6 +12,7 @@ class ProductReview extends Model
     protected $fillable = [
         'variant_id',
         'user_id',
+        'bill_id',
         'rating',
         'comment',
         'image_url',

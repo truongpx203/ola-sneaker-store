@@ -14,18 +14,24 @@ class HomeController extends Controller
 {
     public function detailBill($id)
     {
-        $bill = Bill::query()->with(['items.variant', 'histories'])->findOrFail($id);;
+        $bill = Bill::query()
+            ->with(['items.variant', 'items.variant.productReviews'])
+            ->findOrFail($id);
 
-        // Kiểm tra các đánh giá của người dùng
+        // Lấy ID của người dùng đã đăng nhập
         $userId = auth()->id();
+
         foreach ($bill->items as $item) {
+            // Kiểm tra xem người dùng đã đánh giá sản phẩm này trong đơn hàng này chưa
             $item->has_reviewed = ProductReview::where('variant_id', $item->variant->id)
                 ->where('user_id', $userId)
+                ->where('bill_id', $bill->id) 
                 ->exists();
         }
 
         return view('client.order-details', compact('bill'));
     }
+
     public function cancelOrder(Request $request, $id)
     {
         $bill = Bill::findOrFail($id);

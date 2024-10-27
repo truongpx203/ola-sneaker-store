@@ -95,18 +95,22 @@
                                                 {{ number_format($lowestSaleVariant->sale_price) }} đ
                                             </span>
                                         </div>
+
                                         <div class="rating-box-wrap">
-                                            <div class="rating-box">
-                                                @for ($i = 1; $i <= 5; $i++)
-                                                    <i
-                                                        class="fa fa-star{{ $i <= $product->average_rating ? '' : '-o' }}"></i>
-                                                @endfor
-                                            </div>
-                                            <div class="review-status">
-                                                <a href="javascript:void(0)">({{ $product->reviews->count() }} Đánh giá của
-                                                    khách hàng)</a>
-                                            </div>
+                                            @if ($product->reviews->count() > 0)
+                                                <div class="rating-box">
+                                                    @for ($i = 1; $i <= 5; $i++)
+                                                        <i
+                                                            class="fa fa-star{{ $i <= $product->average_rating ? '' : '-o' }}"></i>
+                                                    @endfor
+                                                </div>
+                                                <div class="review-status">
+                                                    <a href="javascript:void(0)">({{ $product->reviews->count() }} Đánh giá
+                                                        của khách hàng)</a>
+                                                </div>
+                                            @endif
                                         </div>
+
                                         <p>{{ $product->summary }}</p>
                                         {{-- <div class="product-color">
                     <h6 class="title">Color</h6>
@@ -292,8 +296,10 @@
 
                                 <li role="presentation">
                                     <a id="reviews-tab" data-bs-toggle="pill" href="#reviews" role="tab"
-                                        aria-controls="reviews" aria-selected="false">Đánh giá
-                                        <span>({{ $product->reviews->count() }}) </span></a>
+                                       aria-controls="reviews" aria-selected="false">Bình luận
+                                       <span>({{ $product->reviews->filter(function($review) {
+                                               return ($review->comment || $review->image_url) && !$review->is_hidden; // Kiểm tra không bị ẩn
+                                           })->count() }})</span></a>
                                 </li>
                             </ul>
                             <div class="tab-content product-tab-content" id="ReviewTabContent">
@@ -312,18 +318,20 @@
                                     <div class="product-review-content">
                                         <div class="review-content-header">
                                             <h3>Đánh giá của khách hàng</h3>
-                                            <div class="review-info">
-                                                <ul class="review-rating">
-                                                    @for ($i = 1; $i <= 5; $i++)
-                                                        <li
-                                                            class="fa fa-star{{ $i <= $product->average_rating ? '' : '-o' }}">
-                                                        </li>
-                                                    @endfor
-                                                </ul>
-                                                <span class="review-caption">Dựa trên {{ $product->reviews->count() }}
-                                                    đánh giá</span>
-                                                {{-- <span class="review-write-btn">Viết bài đánh giá</span> --}}
-                                            </div>
+                                            @if ($product->reviews->count() > 0)
+                                                <div class="review-info">
+                                                    <ul class="review-rating">
+                                                        @for ($i = 1; $i <= 5; $i++)
+                                                            <li
+                                                                class="fa fa-star{{ $i <= $product->average_rating ? '' : '-o' }}">
+                                                            </li>
+                                                        @endfor
+                                                    </ul>
+                                                    <span class="review-caption">Dựa trên {{ $product->reviews->count() }}
+                                                        đánh giá</span>
+                                                    {{-- <span class="review-write-btn">Viết bài đánh giá</span> --}}
+                                                </div>
+                                            @endif
                                         </div>
 
                                         <!--== Start Reviews Form Item ==-->
@@ -392,30 +400,39 @@
                                             </div>
 
                                             @forelse ($reviews as $review)
-                                                <div class="review-item">
-                                                    <ul class="review-rating">
-                                                        @for ($i = 1; $i <= 5; $i++)
-                                                            <li class="fa fa-star{{ $i <= $review->rating ? '' : '-o' }}">
-                                                            </li>
-                                                        @endfor
-                                                    </ul>
-                                                    <h3 class="title">{{ $review->user->full_name }}</h3>
-                                                    <!-- Hiển thị nội dung đánh giá -->
-                                                    <h5 class="sub-title">
-                                                        <span>{{ $review->user->name }}</span> Đánh giá vào
-                                                        <span>{{ \Carbon\Carbon::parse($review->review_date)->format('d/m/Y') }}</span>
-                                                    </h5>
-                                                    @if ($review->image_url)
-                                                        <img src="{{ Storage::url($review->image_url) }}"
-                                                            alt="Review Image" width="200"
-                                                            onclick="openModal('{{ Storage::url($review->image_url) }}')">
-                                                    @endif
-                                                    <p>{{ $review->comment }}</p> <!-- Hiển thị nội dung đánh giá -->
+                                                @if ($review->image_url || $review->comment)
+                                                    <div class="review-item">
+                                                        <ul class="review-rating">
+                                                            @for ($i = 1; $i <= 5; $i++)
+                                                                <li
+                                                                    class="fa fa-star{{ $i <= $review->rating ? '' : '-o' }}">
+                                                                </li>
+                                                            @endfor
+                                                        </ul>
+                                                        <h3 class="title">{{ $review->user->full_name }}</h3>
+                                                        <!-- Hiển thị nội dung đánh giá -->
+                                                        <h5 class="sub-title">
+                                                            <span>{{ $review->user->full_name }}</span> Đánh giá vào
+                                                            <span>{{ \Carbon\Carbon::parse($review->review_date)->format('d/m/Y H:i') }}</span>
+                                                        </h5>
+                                                        <h5 class="sub-title">
+                                                            Sản phẩm: <span class="me-2">{{ $review->variant->product->name }}</span> 
+                                                            Kích thước: <span>{{ $review->variant->size->name }}</span>
+                                                        </h5>
+                                                        @if ($review->image_url)
+                                                            <img src="{{ Storage::url($review->image_url) }}"
+                                                                alt="Review Image" width="200"
+                                                                onclick="openModal('{{ Storage::url($review->image_url) }}')">
+                                                        @endif
+                                                        <h5 class="sub-title mt-3">
+                                                            Nội dung: <span>{{ $review->comment }}</span>
+                                                        </h5>
 
-                                                    {{-- <a href="#/">Report as Inappropriate</a> --}}
-                                                </div>
+                                                        {{-- <a href="#/">Report as Inappropriate</a> --}}
+                                                    </div>
+                                                @endif
                                             @empty
-                                                <p>Chưa có đánh giá nào cho sản phẩm này.</p>
+                                                <p>Chưa có bình luận nào cho sản phẩm này.</p>
                                             @endforelse
 
                                             <style>
@@ -484,7 +501,7 @@
                                                         <a href="{{ $reviews->url($i) }}">{{ $i }}</a>
                                                     </span>
                                                 @endfor
-                                                
+
                                                 <span class="pagination-next">
                                                     @if ($reviews->hasMorePages())
                                                         <a href="{{ $reviews->nextPageUrl() }}">Tiếp theo »</a>
@@ -509,11 +526,12 @@
                                                 color: #000;
                                             }
 
-                                            .pagination-prev{
+                                            .pagination-prev {
                                                 display: flex;
                                                 margin-bottom: -25px;
                                             }
-                                            .review-pagination{
+
+                                            .review-pagination {
                                                 margin: auto;
                                             }
                                         </style>

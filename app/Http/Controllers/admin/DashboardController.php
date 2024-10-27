@@ -210,7 +210,7 @@ class DashboardController extends Controller
 
         return response()->json($hourlyData);
 
-
+    }
     public function getStatisticsYear(Request $request)
     {
         $year = $request->input('year') ?? Carbon::today()->format('Y');

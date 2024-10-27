@@ -11,10 +11,10 @@ class Variant extends Model
 {
 
     // Trong model Variant.php
-public function productSize()
-{
-    return $this->belongsTo(ProductSize::class, 'product_size_id');
-}
+    public function productSize()
+    {
+        return $this->belongsTo(ProductSize::class, 'product_size_id');
+    }
 
     use HasFactory;
 
@@ -38,9 +38,14 @@ public function productSize()
         return $this->belongsTo(ProductSize::class,  'product_size_id');
     }
 
+    public function productReviews()
+    {
+        return $this->hasMany(ProductReview::class, 'variant_id');
+    }
     // ngày 14/10
 
-    public function cart(){
+    public function cart()
+    {
         // return $this->hasMany(Cart::class);
         return $this->belongsTo(Cart::class);
     }
