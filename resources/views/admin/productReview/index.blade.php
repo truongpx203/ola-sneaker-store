@@ -57,8 +57,8 @@
                             Xem Chi Tiết
                         </button>
                         <a style="margin-right: 2px" href="review/{{ $review->id }}"
-                            class="btn btn-{{ $review->is_hidden ? 'danger' : 'success' }}">
-                            {{ $review->is_hidden ? 'Ẩn' : 'Hiển thị' }}
+                            class="btn btn-{{ $review->is_hidden ? 'success' : 'danger' }}">
+                            {{ $review->is_hidden ? 'Hiển thị' : 'Ẩn' }}
                         </a>
                     </td>
                 </tr>

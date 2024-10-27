@@ -30,16 +30,16 @@
             <div class="container pt--0 pb--0">
                 <div class="row">
                     <div class="col-lg-12 col-md-12">
-                        
+
                         @if ($errors->any())
-                        <div class="alert alert-danger" role="alert">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
+                            <div class="alert alert-danger" role="alert">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                         @if (Session('success'))
                             <div class="alert alert-success" role="alert">
                                 {{ Session('success') }}
@@ -156,69 +156,50 @@
                                             </tr>
                                             <tr>
                                                 <td colspan="8">
-                                                    <div id="review-form-{{ $item->variant->id }}"
-                                                        class="reviews-form-area" style="display: none;">
+                                                    <div id="review-form-{{ $item->variant->id }}" class="reviews-form-area" style="display: none;">
                                                         <h4 class="title p-3">Viết bài đánh giá</h4>
                                                         <div class="reviews-form-content">
-                                                            <form action="{{ route('product.reviews.store') }}"
-                                                                method="POST" enctype="multipart/form-data">
+                                                            <form action="{{ route('product.reviews.store') }}" method="POST" enctype="multipart/form-data">
                                                                 @csrf
+                                                                <input type="hidden" name="variant_id" value="{{ $item->variant->id }}">
+                                                                <input type="hidden" name="bill_id" value="{{ $bill->id }}">
+                                                
                                                                 <div class="row">
-                                                                    <input type="hidden" name="variant_id"
-                                                                        value="{{ $item->variant->id }}">
                                                                     <div class="mt-3">
                                                                         <div class="form-group">
                                                                             <span class="title">Xếp hạng</span>
-                                                                            <ul class="review-rating"
-                                                                                style="color: #f5c61a"
-                                                                                id="rating-{{ $item->variant->id }}">
+                                                                            <ul class="review-rating" style="color: #f5c61a" id="rating-{{ $item->variant->id }}">
                                                                                 @for ($i = 1; $i <= 5; $i++)
-                                                                                    <li class="fa fa-star-o"
-                                                                                        onclick="setRating({{ $item->variant->id }}, {{ $i }})">
-                                                                                    </li>
+                                                                                    <li class="fa fa-star-o" onclick="setRating({{ $item->variant->id }}, {{ $i }})"></li>
                                                                                 @endfor
                                                                             </ul>
-                                                                            <input type="hidden" name="rating"
-                                                                                id="input-rating-{{ $item->variant->id }}"
-                                                                                value="0">
+                                                                            <input type="hidden" name="rating" id="input-rating-{{ $item->variant->id }}" value="0">
                                                                             @error('rating')
-                                                                                <span
-                                                                                    class="text-danger">{{ $message }}</span>
+                                                                                <span class="text-danger">{{ $message }}</span>
                                                                             @enderror
                                                                         </div>
                                                                     </div>
                                                                     <div class="mb-3">
                                                                         <div class="form-group">
-                                                                            <label class="d-flex"
-                                                                                for="for_review-title">Ảnh sản
-                                                                                phẩm</label>
-                                                                            <input type="file" class="form-control"
-                                                                                name="image_url" accept="image/*">
-
+                                                                            <label class="d-flex" for="for_review-title">Ảnh sản phẩm</label>
+                                                                            <input type="file" class="form-control" name="image_url" accept="image/*">
                                                                             @error('image_url')
-                                                                                <span
-                                                                                    class="text-danger mt-3">{{ $message }}</span>
+                                                                                <span class="text-danger mt-3">{{ $message }}</span>
                                                                             @enderror
                                                                         </div>
                                                                     </div>
                                                                     <div class="mt-2">
                                                                         <div class="form-group">
-                                                                            <label class="d-flex" for="for_comment">Nội
-                                                                                dung đánh giá
-                                                                                (1500)</label>
+                                                                            <label class="d-flex" for="for_comment">Nội dung đánh giá (1500)</label>
                                                                             <textarea id="for_comment" name="comment" rows="5" class="form-control" placeholder="Bình luận ..."></textarea>
                                                                             @error('comment')
-                                                                                <span
-                                                                                    class="text-danger">{{ $message }}</span>
+                                                                                <span class="text-danger">{{ $message }}</span>
                                                                             @enderror
                                                                         </div>
                                                                     </div>
                                                                     <div class="p-3">
                                                                         <div class="form-group">
-                                                                            <button type="submit"
-                                                                                class="btn btn-outline-danger"
-                                                                                style="margin-left: 87%; border-radius: 0">Đăng
-                                                                                bình luận</button>
+                                                                            <button type="submit" class="btn btn-outline-danger" style="margin-left: 87%; border-radius: 0">Đăng bình luận</button>
                                                                         </div>
                                                                     </div>
                                                                 </div>

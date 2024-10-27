@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Variant::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
+            $table->foreignId('bill_id')->nullable()->constrained()->onDelete('cascade');
             $table->integer('rating');
             $table->text('comment')->nullable();
             $table->string('image_url')->nullable();
