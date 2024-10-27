@@ -172,6 +172,12 @@
                 <div class="card">
                     <div class="card-header border-0 align-items-center d-flex">
                         <h4 class="card-title mb-0 flex-grow-1">#2. Thống kê doanh thu</h4>
+                        <div class="form-group">
+                            {{-- <label for="monthSelect">Chọn tháng cần thống kê:</label> --}}
+                            <select id="monthSelect" class="form-control">
+
+                            </select>
+                        </div>
                     </div><!-- end card header -->
                     {{-- Thống kê ngày --}}
                     {{-- <div class="card-body p-0 pb-2">
@@ -649,5 +655,4 @@
             }
         });
     </script>
-
 @endsection

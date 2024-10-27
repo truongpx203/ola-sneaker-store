@@ -128,8 +128,9 @@ class DashboardController extends Controller
             ->groupBy(DB::raw('DAY(bills.created_at)')) // Nhóm theo ngày trong tháng
             ->get();
 
-        $thongKeNgayTheoThangData = $thongKeNgayTheoThang->toArray();
+            $thongKeNgayTheoThangData = $thongKeNgayTheoThang->toArray();
 
+            // dd( $thongKeNgayTheoThangData);
 
         return view('admin.dashboardThongke', compact(
             'choXacNhan',
