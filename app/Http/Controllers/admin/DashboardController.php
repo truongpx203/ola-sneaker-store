@@ -152,5 +152,35 @@ if ($end->diffInDays($start) > 30) {
         }
         return view('admin.dashboard', compact('revenueByMonth', 'doanhthu'));
     }
-    
+
+    public function getStatistics(Request $request)
+    {
+        $date = $request->input('date') ?? Carbon::today()->toDateString();
+
+        // Truy vấn số lượng sản phẩm đã mua và doanh thu trong ngày, nhóm theo giờ
+        $data = DB::table('bills')
+            ->select(
+                DB::raw('HOUR(created_at) as hour'), 
+                DB::raw('COUNT(*) as count'), 
+                DB::raw('SUM(total_price) as revenue')
+            )
+            ->whereDate('created_at', $date)
+            ->groupBy('hour')
+            ->get();
+
+        // Tạo mảng 24 phần tử cho số lượng sản phẩm và doanh thu
+        $hourlyData = [
+            'counts' => array_fill(0, 24, 0),
+            'revenues' => array_fill(0, 24, 0.0)
+        ];
+
+        foreach ($data as $item) {
+            $hourlyData['counts'][$item->hour] = $item->count;
+            $hourlyData['revenues'][$item->hour] = $item->revenue;
+        }
+
+        return response()->json($hourlyData);
+
+    }
+
 }

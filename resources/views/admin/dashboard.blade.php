@@ -219,61 +219,14 @@
 
 
                 <div class="chart">
-                    <canvas id="hourlyChart" width="1139" height="200"></canvas>
+                    <canvas id="hourlyChart" width="1239" height="200"></canvas>
                 </div>
             </div>
-            {{-- @yield('statistics') --}}
         </div>
     </body>
 
     </html>
 
-    <script>
-        document.getElementById('form-statistics').addEventListener('submit', function (event) {
-            event.preventDefault();
-            const date = document.getElementById('date').value;
-
-            fetch('{{ route("statistics.data") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({ date: date })
-            })
-            .then(response => response.json())
-            .then(data => {
-                updateChart(data);
-            });
-        });
-
-        const ctx = document.getElementById('hourlyChart').getContext('2d');
-        const hourlyChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: Array.from({length: 24}, (_, i) => `${i}:00`),
-                datasets: [{
-                    label: 'Số lượng',
-                    data: Array(24).fill(0),
-                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-
-        function updateChart(data) {
-            hourlyChart.data.datasets[0].data = data;
-            hourlyChart.update();
-        }
-    </script>
     {{-- <div class="product-statistics">
                 <div class="section-header">
                     Thống Kê Sản Phẩm
@@ -556,5 +509,81 @@
             const url = `{{ route('dashboard') }}?yearDasboard=${selectedYear}`;
             window.location.href = url;
         });
+
+        // Thống kê ngày 
+
+        document.getElementById('form-statistics').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const date = document.getElementById('date').value;
+
+            fetch('{{ route("statistics.data") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ date: date })
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateChart(data);
+            });
+        });
+
+        const hourlyctx = document.getElementById('hourlyChart').getContext('2d');
+        const hourlyChart = new Chart(hourlyctx, {
+            type: 'bar',
+            data: {
+                labels: Array.from({length: 24}, (_, i) => `${i}:00`),
+                datasets: [
+                    {
+                        label: 'Số lượng sản phẩm đã mua',
+                        data: Array(24).fill(0),
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Doanh thu (VNĐ)',
+                        data: Array(24).fill(0),
+                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Số lượng sản phẩm'
+                        }
+                    },
+                    y1: {
+                        beginAtZero: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Doanh thu (VNĐ)'
+                        },
+                        grid: {
+                            drawOnChartArea: false // Tắt đường lưới cho doanh thu
+                        }
+                    }
+                }
+            }
+        });
+
+        function updateChart(data) {
+            hourlyChart.data.datasets[0].data = data.counts;
+            hourlyChart.data.datasets[1].data = data.revenues;
+            hourlyChart.update();
+        }
     </script>
+
 @endsection
