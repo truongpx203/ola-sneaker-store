@@ -170,34 +170,78 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card">
-                    <div class="card-header border-0 align-items-center d-flex">
-                        <h4 class="card-title mb-0 flex-grow-1">#2. Thống kê doanh thu</h4>
-                        <div class="form-group">
-                            {{-- <label for="monthSelect">Chọn tháng cần thống kê:</label> --}}
-                            <select id="monthSelect" class="form-control">
 
-                            </select>
-                        </div>
+
+                    <div class="card-header border-0 d-flex align-items-center my-auto">
+                        <h4 class="card-title mb-0">#2. Thống kê doanh thu</h4>
+                        <ul class="nav nav-pills dasboard_admin" id="pills-tab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="dasboard-day-tab" data-bs-toggle="pill"
+                                    data-bs-target="#dasboard-day" type="button" role="tab"
+                                    aria-controls="dasboard-day" aria-selected="true">Theo ngày</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="dasboard-month-tab" data-bs-toggle="pill"
+                                    data-bs-target="#dasboard-month" type="button" role="tab"
+                                    aria-controls="dasboard-month" aria-selected="false">Theo tháng</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="dasboard-year-tab" data-bs-toggle="pill"
+                                    data-bs-target="#dasboard-year" type="button" role="tab"
+                                    aria-controls="dasboard-year" aria-selected="false">Theo năm</button>
+                            </li>
+                        </ul>
+
                     </div><!-- end card header -->
                     {{-- Thống kê ngày --}}
                     {{-- <div class="card-body p-0 pb-2">
                         <div class="w-100"> --}}
+                    
                     <div class="card-body">
-                        <div class="section-header mb-3">
-                            <h5 class="text-uppercase">Thống kê theo ngày</h5>
-                        </div>
+                        <div class="tab-content" id="pills-tabContent">
+                            <div class="tab-pane fade show active" id="dasboard-day" role="tabpanel"
+                                aria-labelledby="dasboard-day-tab" tabindex="0">
+                                <div class="section-header mb-3">
+                                    <h5 class="text-uppercase">Thống kê theo ngày</h5>
+                                </div>
 
-                        <div class="date-filter mb-4">
-                            <form id="form-statistics" class="d-flex align-items-center">
-                                <label for="date" class="me-2">Chọn ngày:</label>
-                                <input type="date" id="date" name="date" value="{{ now()->toDateString() }}"
-                                    class="form-control me-2" style="max-width: 200px;">
-                                <button type="submit" class="btn btn-primary">Xem thống kê</button>
-                            </form>
-                        </div>
+                                <div class="date-filter mb-4">
+                                    <form id="form-statistics" class="d-flex align-items-center">
+                                        <label for="date" class="me-2">Chọn ngày:</label>
+                                        <input type="date" id="date" name="date"
+                                            value="{{ now()->toDateString() }}" class="form-control me-2"
+                                            style="max-width: 200px;">
+                                        <button type="submit" class="btn btn-primary">Xem thống kê</button>
+                                    </form>
+                                </div>
 
-                        <div class="chart">
-                            <canvas id="hourlyChart" class="w-100" style="max-height: 300px;"></canvas>
+                                <div class="chart">
+                                    <canvas id="hourlyChart" class="w-100" style="max-height: 300px;"></canvas>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="dasboard-month" role="tabpanel"
+                                aria-labelledby="dasboard-month-tab" tabindex="0">...</div>
+                            <div class="tab-pane fade" id="dasboard-year" role="tabpanel"
+                                aria-labelledby="dasboard-year-tab" tabindex="0">
+                                <div class="section-header mb-3">
+                                    <h5 class="text-uppercase">Thống kê theo năm</h5>
+                                </div>
+
+                                <div class="date-filter mb-4">
+                                    <form id="form-statistics-year" class="d-flex align-items-center">
+                                        <label for="year" class="me-2">Năm:</label>
+                                        <input type="number" id="year" name="year"
+                                            value="{{ now()->format('Y') }}" class="form-control me-2"
+                                            style="max-width: 200px;">
+                                        <button type="submit" class="btn btn-primary">Xem thống kê</button>
+                                    </form>
+
+                                </div>
+
+                                <div class="chart">
+                                    <canvas id="hourlyChartYear" class="w-100" style="max-height: 300px;"></canvas>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">
@@ -481,7 +525,7 @@
                 </div><!-- end card -->
             </div><!-- end col -->
         </div>
-       
+
     </div>
 @endsection
 
@@ -502,7 +546,7 @@
 {{-- Thống kê ngày --}}
 @section('scripts')
     <script>
-        
+
         document.getElementById('form-statistics').addEventListener('submit', function(event) {
             event.preventDefault();
             const date = document.getElementById('date').value;
@@ -572,6 +616,92 @@
                 }
             }
         });
+        // Thống kê theo năm
+        document.addEventListener('DOMContentLoaded', function() {
+            const year = document.getElementById('year').value;
+            fetch('{{ route('statisticsYear') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        year: year
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    updateChartYear(data);
+                });
+            document.getElementById('form-statistics-year').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const year = document.getElementById('year').value;
+                fetch('{{ route('statisticsYear') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            year: year
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // console.log(data);
+                        updateChartYear(data);
+                    });
+            });
+        });
+        const hourlyctxYear = document.getElementById('hourlyChartYear').getContext('2d');
+        const hourlyChartYear = new Chart(hourlyctxYear, {
+            type: 'bar',
+            data: {
+                labels: Array.from({
+                    length: 12
+                }, (_, i) => `T${i+1}`),
+                datasets: [{
+                        label: 'Số lượng sản phẩm đã mua',
+                        data: Array(12).fill(0),
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Doanh thu (VNĐ)',
+                        data: Array(12).fill(0),
+                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Số lượng sản phẩm'
+                        }
+                    },
+                    y1: {
+                        beginAtZero: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Doanh thu (VNĐ)'
+                        },
+                        grid: {
+                            drawOnChartArea: false // Tắt đường lưới cho doanh thu
+                        }
+                    }
+                }
+            }
+        });
 
         function updateChart(data) {
             hourlyChart.data.datasets[0].data = data.counts;
@@ -581,11 +711,10 @@
 
 
         
-        
     </script>
 
-      // thống kê tháng 
-        
+ 
+  
     <script>
          document.addEventListener("DOMContentLoaded", function() {
             const currentMonth = new Date().getMonth() + 1; // Lấy tháng hiện tại
@@ -654,5 +783,6 @@
                 }
             }
         });
+
     </script>
 @endsection

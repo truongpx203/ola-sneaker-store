@@ -99,6 +99,7 @@ class DashboardController extends Controller
         $revenuePerDay = DB::table('bills')
             ->select(DB::raw('DATE(created_at) as order_date'), DB::raw('SUM(total_price) as total_revenue'))
             ->whereBetween('created_at', [$startDate, $endDate])
+            ->where('bill_status', 'completed')
             ->groupBy(DB::raw('DATE(created_at)'))
             ->orderBy('order_date', 'asc')
             ->get();
@@ -107,7 +108,8 @@ class DashboardController extends Controller
         $profitPerDay = DB::table('bill_items')
             ->join('bills', 'bill_items.bill_id', '=', 'bills.id')
             ->select(DB::raw('DATE(bills.created_at) as order_date'), DB::raw('SUM((bill_items.sale_price - bill_items.import_price) * bill_items.variant_quantity) as total_profit'))
-            ->whereBetween('bills.created_at', [$startDate, $endDate]) // Chú ý thay đổi từ bill_items.created_at
+            ->whereBetween('bills.created_at', [$startDate, $endDate])
+            ->where('bills.bill_status', 'completed')
             ->groupBy(DB::raw('DATE(bills.created_at)'))
             ->orderBy('order_date', 'asc')
             ->get();
@@ -147,6 +149,7 @@ class DashboardController extends Controller
             'startDate',
             'endDate',
             'revenuePerDay',
+
             'profitPerDay',
             'thongKeNgayTheoThangData'
         ));
@@ -206,5 +209,30 @@ class DashboardController extends Controller
         }
 
         return response()->json($hourlyData);
+
+
+    public function getStatisticsYear(Request $request)
+    {
+        $year = $request->input('year') ?? Carbon::today()->format('Y');
+        $data = DB::table('bills')
+            ->select(
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw('COUNT(*) as count'),
+                DB::raw('SUM(total_price) as revenue')
+            )
+            ->whereYear('created_at', $year)
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
+        $monthlyData = [
+            'counts' => array_fill(0, 12, 0),
+            'revenues' => array_fill(0, 12, 0.0)
+        ];
+        foreach ($data as $item) {
+            $monthlyData['counts'][$item->month - 1] = $item->count;
+            $monthlyData['revenues'][$item->month - 1] = $item->revenue;
+        }
+        return response()->json($monthlyData);
     }
+
 }
