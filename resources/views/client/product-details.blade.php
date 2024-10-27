@@ -464,6 +464,73 @@
                                             </script>
                                             <!--== End Reviews Content Item ==-->
 
+<<<<<<< HEAD
+                                            <!--== Start Reviews Content Item ==-->
+                                            {{-- <div class="review-item">
+                        <ul class="review-rating">
+                          <li class="fa fa-star"></li>
+                          <li class="fa fa-star-o"></li>
+                          <li class="fa fa-star-o"></li>
+                          <li class="fa fa-star-o"></li>
+                          <li class="fa fa-star-o"></li>
+                        </ul>
+<<<<<<< Updated upstream
+                        <h3 class="title">Low Quality</h3>
+                        <h5 class="sub-title"><span>Oliv hala</span> no <span>Sep 30, 2022</span></h5>
+                        <p>My Favorite White Sneakers From Splurge To Save the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.</p>
+                        <a href="#/">Report as Inappropriate</a>
+                      </div> --}}
+                                            <!--== End Reviews Content Item ==-->
+
+                                            <!--== Start Reviews Content Item ==-->
+                                            {{-- <div class="review-item">
+                        <ul class="review-rating">
+                          <li class="fa fa-star"></li>
+                          <li class="fa fa-star"></li>
+                          <li class="fa fa-star"></li>
+                          <li class="fa fa-star"></li>
+                          <li class="fa fa-star"></li>
+                        </ul>
+                        <h3 class="title">Excellent services!</h3>
+                        <h5 class="sub-title"><span>Halk Marron</span> no <span>Sep 30, 2022</span></h5>
+                        <p>The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.</p>
+                        <a href="#/">Report as Inappropriate</a>
+                      </div>
+                      <!--== End Reviews Content Item ==-->
+  
+                      <!--== Start Reviews Content Item ==-->
+                      <div class="review-item">
+                        <ul class="review-rating">
+                          <li class="fa fa-star"></li>
+                          <li class="fa fa-star"></li>
+                          <li class="fa fa-star"></li>
+                          <li class="fa fa-star-o"></li>
+                          <li class="fa fa-star-o"></li>
+                        </ul>
+                        <h3 class="title">Price is very high</h3>
+                        <h5 class="sub-title"><span>Musa</span> no <span>Sep 30, 2022</span></h5>
+                        <p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.</p>
+                        <a href="#/">Report as Inappropriate</a>
+                      </div>
+                      <!--== End Reviews Content Item ==-->
+  
+                      <!--== Start Reviews Content Item ==-->
+                      <div class="review-item">
+                        <ul class="review-rating">
+                          <li class="fa fa-star"></li>
+                          <li class="fa fa-star"></li>
+                          <li class="fa fa-star"></li>
+                          <li class="fa fa-star"></li>
+                          <li class="fa fa-star-o"></li>
+                        </ul>
+                        <h3 class="title">Normal</h3>
+                        <h5 class="sub-title"><span>Muhammad</span> no <span>Sep 30, 2022</span></h5>
+                        <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour</p>
+                        <a href="#/">Report as Inappropriate</a>
+                      </div> --}}
+                                            <!--== End Reviews Content Item ==-->
+=======
+>>>>>>> 822fc087868cb3ba8e79b09d5184f23edf27ce86
                                         </div>
 
                                         <!--== Start Reviews Pagination Item ==-->
@@ -524,6 +591,68 @@
                             </div>
                         </div>
                     </div>
+=======
+                    </div>
+                
+                    <div id="stock-info" class="stock-info mb-2"></div>
+                    @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                @if (session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
+                    <div class="product-quick-action">
+                        <div class="qty-wrap">
+                            <!-- Cập nhật `variant_id` đã chọn vào đây -->
+                            <input type="hidden" name="variant_id" id="selected-variant-id" value="">
+                            <div class="pro-qty">
+                                <input type="number" title="Quantity" name="variant_quantity" value="1" min="1">
+                            </div>
+                        </div>
+                        <button type="submit" id="add-to-cart-btn" onclick="addToCart(event)" class="btn-theme">
+                            Thêm vào giỏ hàng
+                        </button>
+                        
+                    </div>
+                </form>        
+                    <style>
+                      .btn-theme.disabled {
+                        background-color: #fff;
+                        color: #eb3e32;
+                        cursor: not-allowed;
+                      }
+                    </style>
+                  </div>
+                  <div class="product-wishlist-compare">
+                    {{-- <a href="shop-wishlist.html"><i class="pe-7s-like"></i>Thêm vào sản phẩm yêu thích</a> --}}
+                    {{-- <a href="shop-compare.html"><i class="pe-7s-shuffle"></i>Add to Compare</a> --}}
+                  </div>
+                  <div class="product-info-footer">
+                    <hr style="border-top: 3px solid black">
+                    <h6 class="code"><span>Mã số :</span>{{$product->code}}</h6>
+                    {{-- <div class="social-icons">
+                      <span>Chia sẻ</span>
+                      <a href="#/"><i class="fa fa-facebook"></i></a>
+                      <a href="#/"><i class="fa fa-dribbble"></i></a>
+                      <a href="#/"><i class="fa fa-pinterest-p"></i></a>
+                    </div> --}}
+                  </div>
+>>>>>>> Stashed changes
                 </div>
 
             </div>
@@ -640,8 +769,131 @@
                     </div>
                 </div>
             </div>
+<<<<<<< Updated upstream
         </section>
         <!--== End Product Area Wrapper ==-->
     </main>
 
 @endsection
+=======
+            <!--== Add Swiper Arrows ==-->
+            {{-- <div class="product-swiper-btn-wrap">
+              <div class="product-swiper-btn-prev">
+                <i class="fa fa-arrow-left"></i>
+              </div>
+              <div class="product-swiper-btn-next">
+                <i class="fa fa-arrow-right"></i>
+              </div> --}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!--== End Product Area Wrapper ==-->
+</main>
+<script>
+  let selectedStock = null;
+  let selectedVariantId = null;
+  let variants = @json($product->variants);
+
+  function updateStockInfo(element, sizeName) {
+      const stockInfo = document.getElementById('stock-info');
+      const stock = element.getAttribute('data-stock');
+      selectedStock = stock;
+      selectedVariantId = element.getAttribute('data-variant-id');
+
+      // Cập nhật input ẩn với variant ID đã chọn
+      document.getElementById('selected-variant-id').value = selectedVariantId;
+
+      // Xóa lớp active khỏi tất cả các kích thước
+      document.querySelectorAll('.size-item').forEach(item => item.classList.remove('active'));
+      element.classList.add('active');
+
+      // Cập nhật thông tin số lượng
+      if (stock == 0) {
+          stockInfo.innerHTML = '<span style="color: red;">Đã hết hàng</span>';
+          disableAddToCart();
+      } else {
+          stockInfo.innerHTML = `Số lượng còn lại: ${stock}`;
+          enableAddToCart();
+      }
+
+      updatePrice(element);
+  }
+
+  function updatePrice(element) {
+      const variantId = element.getAttribute('data-variant-id');
+      const selectedVariant = variants.find(variant => variant.id == variantId);
+
+      if (selectedVariant) {
+          const priceOld = document.getElementById('price-old');
+          const priceSep = document.getElementById('price-sep');
+          const priceDisplay = document.getElementById('price');
+
+          if (selectedVariant.sale_price) {
+              priceOld.innerHTML = `${number_format(selectedVariant.listed_price)} đ`;
+              priceOld.style.display = 'inline'; 
+              priceSep.style.display = 'inline';
+              priceDisplay.innerHTML = `${number_format(selectedVariant.sale_price)} đ`;
+          } else {
+              priceOld.style.display = 'none';
+              priceSep.style.display = 'none';
+              priceDisplay.innerHTML = `${number_format(selectedVariant.listed_price)} đ`;
+          }
+      }
+  }
+
+  function number_format(number) {
+      return Math.floor(number).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  function disableAddToCart() {
+      const addToCartBtn = document.getElementById('add-to-cart-btn');
+      addToCartBtn.classList.add('disabled');
+      addToCartBtn.href = '#';
+      addToCartBtn.onclick = function(event) {
+          event.preventDefault();
+          alert('Sản phẩm đã hết hàng hoặc chưa chọn size!');
+      };
+  }
+
+  function enableAddToCart() {
+      const addToCartBtn = document.getElementById('add-to-cart-btn');
+      addToCartBtn.classList.remove('disabled');
+      addToCartBtn.href = "{{ route('cart.add') }}";
+      addToCartBtn.onclick = null;
+  }
+
+  function addToCart(event) {
+if (!selectedVariantId || selectedStock == 0) {
+event.preventDefault();
+alert('Bạn cần chọn kích thước trước khi thêm vào giỏ hàng!');
+} else {
+// Optional: send data via AJAX instead of form submit
+let formData = new FormData();
+formData.append('variant_id', selectedVariantId);
+formData.append('variant_quantity', document.querySelector('input[name="variant_quantity"]').value);
+
+fetch('{{ route('cart.add') }}', {
+method: 'POST',
+headers: {
+'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+},
+body: formData
+})
+.then(response => response.json())
+.then(data => {
+if (data.success) {
+// Nếu thêm vào giỏ hàng thành công, chuyển hướng đến trang giỏ hàng
+window.location.href = '{{ route("cart.show") }}'; // Đường dẫn tới trang giỏ hàng
+} else {
+alert('Đã xảy ra lỗi khi thêm vào giỏ hàng.');
+}
+})
+.catch(error => console.error('Error:', error));
+}
+}
+</script>        
+@endsection
+>>>>>>> Stashed changes

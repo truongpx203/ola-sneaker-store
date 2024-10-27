@@ -7,6 +7,7 @@ use App\Models\Bill;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -22,7 +23,21 @@ class DashboardController extends Controller
         $giaoThatBai        = Bill::where('bill_status', 'failed')->count();
         $daHuy              = Bill::where('bill_status', 'canceled')->count();
         $hoanThanh          = Bill::where('bill_status', 'completed')->count();
+// Xác thực dữ liệu đầu vào
+$validator = Validator::make($request->all(), [
+    'start_date' => 'required|date|date_format:Y-m-d',
+    'end_date' => 'required|date|date_format:Y-m-d|after_or_equal:start_date',
+]);
+// Mặc định khoảng thời gian 30 ngày gần nhất
+$startDate = $request->input('start_date', now()->subDays(30)->toDateString());
+$endDate = $request->input('end_date', now()->toDateString());
+//Kiểm tra khoảng thời gian có vượt quá 30 ngày hay không
+$start = Carbon::parse($startDate);
+$end = Carbon::parse($endDate);
 
+if ($end->diffInDays($start) > 30) {
+    return redirect()->back()->withErrors(['date' => 'Khoảng thời gian không được vượt quá 30 ngày.'])->withInput();
+}
         // Lấy top 5 sản phẩm bán chạy nhất
         $topBanChayNhat = DB::table('bill_items')
             ->join('bills', 'bill_items.bill_id', '=', 'bills.id') // Join với bảng bills
@@ -70,8 +85,32 @@ class DashboardController extends Controller
             )
             ->orderBy('total_profit', 'desc') // Sắp xếp theo tổng lợi nhuận giảm dần
             ->take(5) // Lấy top 5 sản phẩm có lợi nhuận cao nhất
+            ->get();   
+
+        // Truy vấn số lượng đơn hàng theo ngày
+        $data = DB::table('bills')
+            ->select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as count'))
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy('date')
+            ->orderBy('date', 'asc')
             ->get();
 
+        // Truy vấn doanh thu theo ngày (chỉ tính đơn hàng đã hoàn thành)
+        $revenuePerDay = DB::table('bills')
+            ->select(DB::raw('DATE(created_at) as order_date'), DB::raw('SUM(total_price) as total_revenue'))
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy(DB::raw('DATE(created_at)'))
+            ->orderBy('order_date', 'asc')
+            ->get();
+
+        // Truy vấn lợi nhuận theo ngày
+        $profitPerDay = DB::table('bill_items')
+            ->join('bills', 'bill_items.bill_id', '=', 'bills.id')
+            ->select(DB::raw('DATE(bills.created_at) as order_date'), DB::raw('SUM((bill_items.sale_price - bill_items.import_price) * bill_items.variant_quantity) as total_profit'))
+            ->whereBetween('bills.created_at', [$startDate, $endDate]) // Chú ý thay đổi từ bill_items.created_at
+            ->groupBy(DB::raw('DATE(bills.created_at)'))
+            ->orderBy('order_date', 'asc')
+            ->get();
 
         return view('admin.dashboardThongke', compact(
             'choXacNhan',
@@ -83,7 +122,7 @@ class DashboardController extends Controller
             'hoanThanh',
             'topBanChayNhat',
             'topDoanhThuCaoNhat',
-            'topLoiNhuanCaoNhat'
+            'topLoiNhuanCaoNhat','data', 'startDate', 'endDate', 'revenuePerDay', 'profitPerDay'
         ));
 
         $year = $request->yearDasboard ?? now()->format('Y');
@@ -143,4 +182,5 @@ class DashboardController extends Controller
         return response()->json($hourlyData);
 
     }
+
 }
