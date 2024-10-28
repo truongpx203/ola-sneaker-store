@@ -190,13 +190,18 @@
                                     data-bs-target="#dasboard-year" type="button" role="tab"
                                     aria-controls="dasboard-year" aria-selected="false">Theo năm</button>
                             </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="dasboard-tg-tab" data-bs-toggle="pill"
+                                    data-bs-target="#dasboard-tg" type="button" role="tab"
+                                    aria-controls="dasboard-tg" aria-selected="false">Theo khoảng thời gian</button>
+                            </li>
                         </ul>
 
                     </div><!-- end card header -->
                     {{-- Thống kê ngày --}}
                     {{-- <div class="card-body p-0 pb-2">
                         <div class="w-100"> --}}
-                    
+                            <div class="tab-content">                                   
                     <div class="card-body">
                         <div class="tab-content" id="pills-tabContent">
                             <div class="tab-pane fade show active" id="dasboard-day" role="tabpanel"
@@ -211,7 +216,7 @@
                                         <input type="date" id="date" name="date"
                                             value="{{ now()->toDateString() }}" class="form-control me-2"
                                             style="max-width: 200px;">
-                                        <button type="submit" class="btn btn-primary">Xem thống kê</button>
+                                        <button type="submit" class="btn btn-primary">Thống kê</button>
                                     </form>
                                 </div>
 
@@ -220,7 +225,50 @@
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="dasboard-month" role="tabpanel"
-                                aria-labelledby="dasboard-month-tab" tabindex="0">...</div>
+                            aria-labelledby="dasboard-month-tab" tabindex="0">
+                            <div class="section-header mb-3">
+                                <h5 class="text-uppercase">Thống kê theo tháng</h5>
+                            </div>
+                            
+                            <div class="month-filter mb-4">
+                                <div class="d-flex justify-content-end">
+                                <form id="form-statistics-month" class="d-flex align-items-center">
+                                    <label for="month" class="me-2">Chọn tháng:</label>
+                                    <input type="month" id="month" name="month" class="form-control me-2"
+                                    value="{{ now()->format('Y-m') }}" required>
+                                    <button type="submit" class="btn btn-primary">thống kê</button>
+                                </form>
+                                </div>
+                            </div>
+            
+                            <div class="chart">
+                                <canvas id="monthlyChart" class="w-100" style="max-height: 300px;"></canvas>
+                            </div>
+                            </div>
+                            <div class="tab-pane fade" id="dasboard-tg" role="tabpanel"
+                            aria-labelledby="dasboard-tg-all" tabindex="0">
+                            <div class="section-header mb-3">
+                                <h5 class="text-uppercase">Thống kê theo Khoảng thời gian</h5>
+                            </div>
+                            <div class="month-filter mb-4">
+                                <div class="d-flex justify-content-end">
+                                <form id="form-statistics-time" class="d-flex align-items-center">
+                                    <label for="start_date" class="me-2">Chọn ngày bắt đầu:</label>
+                                    <input type="date" id="start_date" name="start_date" class="form-control me-2" required>
+                            
+                                    <label for="end_date" class="me-2">Chọn ngày kết thúc:</label>
+                                    <input type="date" id="end_date" name="end_date" class="form-control me-2" required>
+                            
+                                    <button type="submit" class="btn btn-primary">Thống kê</button>
+                                </form>
+                                </div>
+                            </div>                                       
+                            <div class="chart">
+                                <canvas id="timeRangeChart" class="w-100" style="max-height: 300px;"></canvas>
+                            </div>
+                            </div>
+                            <div class="tab-pane fade" id="dasboard-month" role="tabpanel"
+                                aria-labelledby="dasboard-month-tab" tabindex="0"></div>
                             <div class="tab-pane fade" id="dasboard-year" role="tabpanel"
                                 aria-labelledby="dasboard-year-tab" tabindex="0">
                                 <div class="section-header mb-3">
@@ -244,174 +292,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div class="section-header mb-3">
-                            <h5 class="text-uppercase">Thống kê theo tháng</h5>
-                        </div>
-
-                        <div class="date-filter mb-4">
-                            <div class="form-group">
-                                {{-- <label for="monthSelect">Chọn tháng cần thống kê:</label> --}}
-                                <select id="monthSelect" class="form-control">
-
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="chart-container mt-4">
-                            <canvas id="doanhThuLoiNhuanChart"></canvas>
-                        </div>
-                        
-                    </div>
-                    <div class="card-body">
-                        <div class="section-header mb-3">
-                            <h5 class="text-uppercase">Thống kê Theo khoảng thời gian</h5>
-                        </div>
-                       
-                        <div class="date-filter">
-                            <form method="GET" action="{{ route('dashboard') }}" id="dateFilterForm" class="date-filter-form">
-                                <label for="start_date">Chọn ngày bắt đầu:</label>
-                                <input type="date" name="start_date" id="start_date" value="{{ $startDate }}" required>
-                
-                                <label for="end_date">Chọn ngày kết thúc:</label>
-                                <input type="date" name="end_date" id="end_date" value="{{ $endDate }}" required
-                                    onchange="document.getElementById('dateFilterForm').submit();">
-                            </form>
-                        </div>
-                
-                        @if ($errors->any())
-                            <div class="alert alert-danger">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
-                        @if ($data->isEmpty() && $revenuePerDay->isEmpty() && $profitPerDay->isEmpty())
-                            <p>Không có dữ liệu thống kê cho khoảng thời gian đã chọn.</p>
-                        @else
-                            <!-- Biểu đồ thống kê đơn hàng, doanh thu và lợi nhuận -->
-                            <div class="chart-container">
-                                <canvas id="combinedChart"></canvas>
-                            </div>
-                        @endif
-                
-                        @if (!$data->isEmpty() || !$revenuePerDay->isEmpty() || !$profitPerDay->isEmpty())
-                            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-                            <script>
-                                const labels = @json($data->pluck('date'));
-                                const orderCounts = @json($data->pluck('count'));
-                                const revenues = @json($revenuePerDay->pluck('total_revenue'));
-                                const profits = @json($profitPerDay->pluck('total_profit'));
-                                const combinedData = {
-                                    labels: labels,
-                                    datasets: [{
-                                            label: 'Số lượng đơn hàng',
-                                            data: orderCounts,
-                                            backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                                            borderColor: 'rgba(54, 162, 235, 1)',
-                                            borderWidth: 1
-                                        },
-                                        {
-                                            label: 'Doanh thu',
-                                            data: revenues,
-                                            backgroundColor: 'rgba(75, 192, 192, 0.7)',
-                                            borderColor: 'rgba(75, 192, 192, 1)',
-                                            borderWidth: 1
-                                        },
-                                        {
-                                            label: 'Lợi nhuận',
-                                            data: profits,
-                                            backgroundColor: 'rgba(255, 99, 132, 0.7)',
-                                            borderColor: 'rgba(255, 99, 132, 1)',
-                                            borderWidth: 1
-                                        }
-                                    ]
-                                };
-                                const combinedChartConfig = {
-                                    type: 'bar', // Biểu đồ cột
-                                    data: combinedData,
-                                    options: {
-                                        responsive: true,
-                                        scales: {
-                                            x: {
-                                                title: {
-                                                    display: true,
-                                                    text: 'Ngày'
-                                                } // Tiêu đề trục x
-                                            },
-                                            y: {
-                                                beginAtZero: true,
-                                                title: {
-                                                    display: true,
-                                                    text: 'Giá trị (VND)'
-                                                } // Tiêu đề trục y chung
-                                            }
-                                        }
-                                    }
-                                };
-                                // Khởi tạo biểu đồ
-                                new Chart(document.getElementById('combinedChart'), combinedChartConfig);
-                
-                                // Khởi tạo biểu đồ
-                                new Chart(document.getElementById('combinedChart'), combinedChartConfig);
-                            </script>
-                        @endif
-                        <style>
-                            <style>
-                
-                            /* Canh toàn bộ form sang bên phải */
-                            .date-filter {
-                                display: flex;
-                                justify-content: flex-end;
-                                /* Canh toàn bộ form sang bên phải */
-                            }
-                
-                            .date-filter {
-                                display: flex;
-                                justify-content: flex-end;
-                                /* Canh toàn bộ form sang bên phải */
-                            }
-                
-                            .date-filter-form {
-                                display: flex;
-                                align-items: center;
-                                gap: 10px;
-                                /* Khoảng cách giữa các nhãn và input */
-                            }
-                
-                            label {
-                                margin-right: 5px;
-                                /* Khoảng cách giữa nhãn và ô input */
-                            }
-                
-                            input[type="date"] {
-                                padding: 5px;
-                                border-radius: 4px;
-                                border: 1px solid #ccc;
-                            }
-                        </style>
-                        <div class="date-filter mb-4">
-                            <div class="form-group">
-                                {{-- <label for="monthSelect">Chọn tháng cần thống kê:</label> --}}
-                                <select id="monthSelect" class="form-control">
-
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="chart-container mt-4">
-                            <canvas id="doanhThuLoiNhuanChart"></canvas>
-                        </div>
-
-                    </div>
+                    
                     {{-- </div><!-- end card body -->
                     </div> --}}
                 </div>
             </div>
         </div>
-
         <div class="row">
             <div class="col-xl-4">
                 <div class="card card-height-100">
@@ -525,8 +411,59 @@
                 </div><!-- end card -->
             </div><!-- end col -->
         </div>
-
     </div>
+
+            <style>
+                /* Card styling */
+                .card {
+                    background-color: white;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                    margin: 20px;
+                    padding: 20px;
+                }
+        
+                .card-header {
+                    background-color: #f5f5f5;
+                    padding: 10px;
+                    border-bottom: 1px solid #ddd;
+                    border-top-left-radius: 8px;
+                    border-top-right-radius: 8px;
+                }
+        
+                .card-body {
+                    padding: 20px;
+                }
+        
+                /* Date filter form styling */
+                .date-filter {
+                    display: flex;
+                    justify-content: flex-end;
+                }
+        
+                .date-filter-form {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+        
+                label {
+                    margin-right: 5px;
+                }
+        
+                input[type="date"] {
+                    padding: 5px;
+                    border-radius: 4px;
+                    border: 1px solid #ccc;
+                }
+        
+                /* Chart styling */
+                .chart-container {
+                    margin-top: 20px;
+                }
+            </style>
+        </div>
 @endsection
 
 @section('style-libs')
@@ -702,6 +639,201 @@
                 }
             }
         });
+    // Theo tháng
+document.getElementById('form-statistics-month').addEventListener('submit', function(event) {
+    event.preventDefault(); // Ngăn chặn hành động gửi form mặc định
+    const month = document.getElementById('month').value; // Lấy tháng được chọn
+    const [year, monthValue] = month.split('-'); // Tách năm và tháng từ giá trị tháng
+
+    fetch('{{ route('statisticsMonth') }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            month: monthValue,
+            year: year // Gửi thêm năm
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        updateMonthlyChart(data);
+    })
+    .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+    });
+});
+
+// Khởi tạo biểu đồ tháng
+const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+const monthlyChart = new Chart(monthlyCtx, {
+    type: 'bar',
+    data: {
+        labels: Array.from({ length: 31 }, (_, i) => i + 1), // Tạo nhãn cho 31 ngày
+        datasets: [
+            {
+                label: 'Doanh thu (VNĐ)',
+                data: Array(31).fill(0), // Dữ liệu mặc định cho 31 ngày
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                yAxisID: 'y'
+            },
+            {
+                label: 'Lợi nhuận (VNĐ)',
+                data: Array(31).fill(0), // Dữ liệu mặc định cho 31 ngày
+                backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1,
+                yAxisID: 'y1'
+            },
+            
+        ]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                position: 'left',
+                title: {
+                    display: true,
+                    text: 'Doanh thu và lợi nhuận (VNĐ)'
+                }
+            },
+            y1: {
+                beginAtZero: true,
+                position: 'right',
+                title: {
+                    display: true,
+                    text: 'Lợi nhuận (VNĐ)'
+                },
+                grid: {
+                    drawOnChartArea: false 
+                }
+            },
+            
+        }
+    }
+});
+//theo khoảng thời gian
+// Sự kiện submit cho thống kê theo khoảng thời gian
+document.getElementById('form-statistics-time').addEventListener('submit', function(event) {
+    event.preventDefault(); // Ngăn chặn hành động gửi form mặc định
+    const startDate = document.getElementById('start_date').value; // Lấy ngày bắt đầu
+    const endDate = document.getElementById('end_date').value; // Lấy ngày kết thúc
+    const errorDiv = document.getElementById('error-message');
+    if (errorDiv) {
+        errorDiv.remove();
+    }
+    fetch('{{ route('statisticsTimeRange') }}', { // Sử dụng route để gửi yêu cầu đến server
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            start_date: startDate,
+            end_date: endDate
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Khoảng thời gian không vượt quá 30 ngày');
+        }
+        return response.json();
+    })
+    .then(data => {
+        updateTimeRangeChart(data); // Cập nhật biểu đồ với dữ liệu mới
+    })
+    .catch(error => {
+        // Hiển thị thông báo lỗi nếu khoảng thời gian không hợp lệ
+        const errorMessage = document.createElement('div');
+        errorMessage.id = 'error-message';
+        errorMessage.classList.add('alert', 'alert-danger');
+        errorMessage.innerText = error.message;
+
+        // Chèn thông báo lỗi vào trước form
+        document.getElementById('form-statistics-time').insertAdjacentElement('beforebegin', errorMessage);
+    });
+});
+
+// Khởi tạo biểu đồ cho khoảng thời gian
+const timeRangeCtx = document.getElementById('timeRangeChart').getContext('2d');
+const timeRangeChart = new Chart(timeRangeCtx, {
+    type: 'bar',
+    data: {
+        labels: [], // Nhãn sẽ được cập nhật khi có dữ liệu từ server
+        datasets: [
+            {
+                label: 'Doanh thu (VNĐ)',
+                data: [], // Dữ liệu doanh thu sẽ được cập nhật
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                yAxisID: 'y'
+            },
+            {
+                label: 'Lợi nhuận (VNĐ)',
+                data: [],
+                backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1,
+                yAxisID: 'y1'
+            },
+        ]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                position: 'left',
+                title: {
+                    display: true,
+                    text: 'Doanh thu và lợi nhuận (VNĐ)'
+                }
+            },
+            y1: {
+                beginAtZero: true,
+                position: 'right',
+                title: {
+                    display: true,
+                    text: 'Lợi nhuận (VNĐ)'
+                },
+                grid: {
+                    drawOnChartArea: false 
+                }
+            },
+        }
+    }
+});
+
+// Hàm cập nhật biểu đồ theo khoảng thời gian
+function updateTimeRangeChart(data) {
+    const labels = data.labels; // Dữ liệu nhãn (ngày)
+    const revenues = data.revenues; // Dữ liệu doanh thu
+    const profits = data.profits; // Dữ liệu lợi nhuận
+
+    // Cập nhật dữ liệu của biểu đồ
+    timeRangeChart.data.labels = labels;
+    timeRangeChart.data.datasets[0].data = revenues;
+    timeRangeChart.data.datasets[1].data = profits;
+
+    // Cập nhật biểu đồ
+    timeRangeChart.update();
+}
+
+    // Hàm cập nhật biểu đồ hàng tháng
+    function updateMonthlyChart(data) {
+    monthlyChart.data.datasets[0].data = data.revenues; // Cập nhật doanh thu
+    monthlyChart.data.datasets[1].data = data.profits; // Cập nhật lợi nhuận
+    monthlyChart.update(); // Cập nhật biểu đồ
+}
 
         function updateChart(data) {
             hourlyChart.data.datasets[0].data = data.counts;

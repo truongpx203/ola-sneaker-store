@@ -79,6 +79,9 @@ Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
     Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
     Route::post('/statistics', [DashboardController::class, 'getStatistics'])->name('statistics');
     Route::post('/statisticsYear', [DashboardController::class, 'getStatisticsYear'])->name('statisticsYear');
+    Route::post('/statistics-month', [DashboardController::class, 'statisticsMonth'])->name('statisticsMonth');
+    Route::post('/statistics/time-range', [DashboardController::class, 'getStatisticsByTimeRange'])->name('statisticsTimeRange');
+
 
     Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
     Route::get('categories/create', [CategoryController::class, 'create'])->name('categories.create');
