@@ -484,75 +484,74 @@
 @section('scripts')
     <script>
 
-        document.getElementById('form-statistics').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const date = document.getElementById('date').value;
+document.getElementById('form-statistics').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const date = document.getElementById('date').value;
 
-            fetch('{{ route('statistics') }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        date: date
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    updateChart(data);
-                });
-        });
+    fetch('{{ route('statistics') }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            date: date
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        updateChart(data);
+    });
+});
 
-        const hourlyctx = document.getElementById('hourlyChart').getContext('2d');
-        const hourlyChart = new Chart(hourlyctx, {
-            type: 'bar',
-            data: {
-                labels: Array.from({
-                    length: 24
-                }, (_, i) => `${i}:00`),
-                datasets: [{
-                        label: 'Số lượng sản phẩm đã mua',
-                        data: Array(24).fill(0),
-                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1,
-                        yAxisID: 'y'
-                    },
-                    {
-                        label: 'Doanh thu (VNĐ)',
-                        data: Array(24).fill(0),
-                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1,
-                        yAxisID: 'y1'
-                    }
-                ]
+const hourlyctx = document.getElementById('hourlyChart').getContext('2d');
+const hourlyChart = new Chart(hourlyctx, {
+    type: 'bar',
+    data: {
+        labels: Array.from({ length: 24 }, (_, i) => `${i}:00`),
+        datasets: [
+            {
+                label: 'Doanh thu (VNĐ)',
+                data: Array(24).fill(0), // Dữ liệu mặc định cho doanh thu
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1,
+                yAxisID: 'y'
             },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        position: 'left',
-                        title: {
-                            display: true,
-                            text: 'Số lượng sản phẩm'
-                        }
-                    },
-                    y1: {
-                        beginAtZero: true,
-                        position: 'right',
-                        title: {
-                            display: true,
-                            text: 'Doanh thu (VNĐ)'
-                        },
-                        grid: {
-                            drawOnChartArea: false // Tắt đường lưới cho doanh thu
-                        }
-                    }
+            {
+                label: 'Lợi nhuận (VNĐ)',
+                data: Array(24).fill(0), // Dữ liệu mặc định cho lợi nhuận
+                backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1,
+                yAxisID: 'y1'
+            }
+        ]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                position: 'left',
+                title: {
+                    display: true,
+                    text: 'Doanh thu (VNĐ)'
+                }
+            },
+            y1: {
+                beginAtZero: true,
+                position: 'right',
+                title: {
+                    display: true,
+                    text: 'Lợi nhuận (VNĐ)'
+                },
+                grid: {
+                    drawOnChartArea: false // Tắt đường lưới cho lợi nhuận
                 }
             }
-        });
+        }
+    }
+});
         // Thống kê theo năm
         document.addEventListener('DOMContentLoaded', function() {
             const year = document.getElementById('year').value;
@@ -598,7 +597,7 @@
                     length: 12
                 }, (_, i) => `T${i+1}`),
                 datasets: [{
-                        label: 'Số lượng sản phẩm đã mua',
+                        label: 'Doanh thu (VNĐ)',
                         data: Array(12).fill(0),
                         backgroundColor: 'rgba(54, 162, 235, 0.6)',
                         borderColor: 'rgba(54, 162, 235, 1)',
@@ -606,7 +605,7 @@
                         yAxisID: 'y'
                     },
                     {
-                        label: 'Doanh thu (VNĐ)',
+                        label: 'Lợi nhuận (VNĐ)',
                         data: Array(12).fill(0),
                         backgroundColor: 'rgba(255, 99, 132, 0.6)',
                         borderColor: 'rgba(255, 99, 132, 1)',
@@ -622,7 +621,7 @@
                         position: 'left',
                         title: {
                             display: true,
-                            text: 'Số lượng sản phẩm'
+                            text: 'Doanh thu (VNĐ)'
                         }
                     },
                     y1: {
@@ -630,7 +629,7 @@
                         position: 'right',
                         title: {
                             display: true,
-                            text: 'Doanh thu (VNĐ)'
+                            text: 'Lợi nhuận (VNĐ)'
                         },
                         grid: {
                             drawOnChartArea: false // Tắt đường lưới cho doanh thu
@@ -680,8 +679,8 @@ const monthlyChart = new Chart(monthlyCtx, {
             {
                 label: 'Doanh thu (VNĐ)',
                 data: Array(31).fill(0), // Dữ liệu mặc định cho 31 ngày
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1,
                 yAxisID: 'y'
             },
@@ -773,8 +772,8 @@ const timeRangeChart = new Chart(timeRangeCtx, {
             {
                 label: 'Doanh thu (VNĐ)',
                 data: [], // Dữ liệu doanh thu sẽ được cập nhật
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1,
                 yAxisID: 'y'
             },
@@ -830,14 +829,14 @@ function updateTimeRangeChart(data) {
 
     // Hàm cập nhật biểu đồ hàng tháng
     function updateMonthlyChart(data) {
-    monthlyChart.data.datasets[0].data = data.revenues; // Cập nhật doanh thu
-    monthlyChart.data.datasets[1].data = data.profits; // Cập nhật lợi nhuận
-    monthlyChart.update(); // Cập nhật biểu đồ
+    monthlyChart.data.datasets[0].data = data.revenues;
+    monthlyChart.data.datasets[1].data = data.profits; 
+    monthlyChart.update(); 
 }
 
         function updateChart(data) {
-            hourlyChart.data.datasets[0].data = data.counts;
-            hourlyChart.data.datasets[1].data = data.revenues;
+            hourlyChart.data.datasets[0].data = data.revenues;
+            hourlyChart.data.datasets[1].data = data.profits;
             hourlyChart.update();
         }
 
@@ -845,76 +844,4 @@ function updateTimeRangeChart(data) {
         
     </script>
 
- 
-  
-    <script>
-         document.addEventListener("DOMContentLoaded", function() {
-            const currentMonth = new Date().getMonth() + 1; // Lấy tháng hiện tại
-            const currentYear = new Date().getFullYear();
-            const monthSelect = document.getElementById('monthSelect');
-
-            // Populate các tháng trong dropdown
-            for (let i = 1; i <= 12; i++) {
-                const option = document.createElement('option');
-                option.value = `${i}-${currentYear}`; // Gán giá trị là tháng-năm
-                option.text = ` ${i}/${currentYear}`;
-                if (i === currentMonth) {
-                    option.selected = true; // Chọn tháng hiện tại
-                }
-                monthSelect.appendChild(option);
-            }
-        });
-
-        const thongKeNgayTheoThangData = <?php echo json_encode($thongKeNgayTheoThangData); ?>;
-        // consolog.log(thongKeNgayTheoThangData);
-        // Tách dữ liệu doanh thu và lợi nhuận từ thongKeNgayTheoThangData
-        const labels = Array.from({
-            length: 30
-        }, (_, i) => i + 1);
-        const revenueData = new Array(30).fill(0); // Khởi tạo với 30 giá trị bằng 0
-        const profitData = new Array(30).fill(0);
-
-        thongKeNgayTheoThangData.forEach(item => {
-            const dayIndex = item.day - 1; // Ngày bắt đầu từ 1, mảng bắt đầu từ 0
-            revenueData[dayIndex] = parseFloat(item.total_revenue); // Gán doanh thu cho ngày
-            profitData[dayIndex] = parseFloat(item.total_profit); // Gán lợi nhuận cho ngày
-        });
-
-
-        const ctx = document.getElementById('doanhThuLoiNhuanChart').getContext('2d');
-
-        // Tạo biểu đồ
-        const doanhThuLoiNhuanChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels, // Các ngày trong tháng
-                datasets: [{
-                        label: 'Doanh thu',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1,
-                        data: revenueData // Dữ liệu doanh thu
-                    },
-                    {
-                        label: 'Lợi nhuận',
-                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                        borderColor: 'rgba(153, 102, 255, 1)',
-                        borderWidth: 1,
-                        data: profitData // Dữ liệu lợi nhuận
-                    }
-                ]
-            },
-            options: {
-                scales: {
-                    x: {
-                        stacked: false, // Hiển thị cột không chồng lên nhau
-                    },
-                    y: {
-                        beginAtZero: true // Bắt đầu từ 0 trên trục Y
-                    }
-                }
-            }
-        });
-
-    </script>
 @endsection

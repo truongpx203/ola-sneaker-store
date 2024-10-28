@@ -135,33 +135,43 @@ class DashboardController extends Controller
     }
 
     public function getStatistics(Request $request)
-    {
-        $date = $request->input('date') ?? Carbon::today()->toDateString();
+    {$date = $request->input('date');
 
-        // Truy vấn số lượng sản phẩm đã mua và doanh thu trong ngày, nhóm theo giờ
-        $data = DB::table('bills')
-            ->select(
-                DB::raw('HOUR(created_at) as hour'),
-                DB::raw('COUNT(*) as count'),
-                DB::raw('SUM(total_price) as revenue')
-            )
-            ->whereDate('created_at', $date)
-            ->groupBy('hour')
-            ->get();
+        // Truy vấn doanh thu theo giờ
+    $revenuePerHour = DB::table('bills')
+        ->select(DB::raw('HOUR(created_at) as hour'), DB::raw('SUM(total_price) as total_revenue'))
+        ->whereDate('created_at', $date)
+        ->where('bill_status', 'completed') // chỉ lấy những đơn đã hoàn thành
+        ->groupBy(DB::raw('HOUR(created_at)'))
+        ->orderBy('hour')
+        ->get();
 
-        // Tạo mảng 24 phần tử cho số lượng sản phẩm và doanh thu
-        $hourlyData = [
-            'counts' => array_fill(0, 24, 0),
-            'revenues' => array_fill(0, 24, 0.0)
-        ];
+    // Truy vấn lợi nhuận theo giờ
+    $profitPerHour = DB::table('bill_items')
+        ->join('bills', 'bill_items.bill_id', '=', 'bills.id')
+        ->select(DB::raw('HOUR(bills.created_at) as hour'), DB::raw('SUM((bill_items.sale_price - bill_items.import_price) * bill_items.variant_quantity) as total_profit'))
+        ->whereDate('bills.created_at', $date)
+        ->where('bills.bill_status', 'completed') // chỉ lấy những đơn đã hoàn thành
+        ->groupBy(DB::raw('HOUR(bills.created_at)'))
+        ->orderBy('hour')
+        ->get();
 
-        foreach ($data as $item) {
-            $hourlyData['counts'][$item->hour] = $item->count;
-            $hourlyData['revenues'][$item->hour] = $item->revenue;
-        }
+    // Chuyển đổi dữ liệu về định dạng mảng
+    $revenues = array_fill(0, 24, 0);
+    $profits = array_fill(0, 24, 0);
 
-        return response()->json($hourlyData);
+    foreach ($revenuePerHour as $revenue) {
+        $revenues[$revenue->hour] = $revenue->total_revenue;
+    }
 
+    foreach ($profitPerHour as $profit) {
+        $profits[$profit->hour] = $profit->total_profit;
+    }
+
+    return response()->json([
+        'revenues' => $revenues,
+        'profits' => $profits,
+    ]);
     }
     public function getStatisticsYear(Request $request)
     {
