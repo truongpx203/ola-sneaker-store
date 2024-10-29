@@ -173,30 +173,26 @@ class DashboardController extends Controller
         'profits' => $profits,
     ]);
     }
-    public function getStatisticsYear(Request $request)
+    public function getStatisticsByYear(Request $request)
     {
-        $year = $request->input('year') ?? Carbon::today()->format('Y');
-        $data = DB::table('bills')
+        $year = $request->input('year');
+        
+        // Lấy doanh thu và lợi nhuận theo tháng
+        $statistics = BillItem::join('bills', 'bill_items.bill_id', '=', 'bills.id')
             ->select(
-                DB::raw('MONTH(created_at) as month'),
-                DB::raw('COUNT(*) as count'),
-                DB::raw('SUM(total_price) as revenue')
+                DB::raw('MONTH(bills.created_at) as month'),
+                DB::raw('SUM(bill_items.sale_price * bill_items.variant_quantity) as total_revenue'), // Doanh thu
+                DB::raw('SUM((bill_items.sale_price - bill_items.import_price) * bill_items.variant_quantity) as total_profit') // Lợi nhuận
             )
-            ->whereYear('created_at', $year)
-            ->groupBy('month')
-            ->orderBy('month')
+            ->whereYear('bills.created_at', $year)
+            ->where('bills.bill_status', 'completed') // Chỉ tính cho đơn hàng hoàn thành
+            ->groupBy(DB::raw('MONTH(bills.created_at)'))
+            ->orderBy(DB::raw('MONTH(bills.created_at)'))
             ->get();
-        $monthlyData = [
-            'counts' => array_fill(0, 12, 0),
-            'revenues' => array_fill(0, 12, 0.0)
-        ];
-        foreach ($data as $item) {
-            $monthlyData['counts'][$item->month - 1] = $item->count;
-            $monthlyData['revenues'][$item->month - 1] = $item->revenue;
-        }
-        return response()->json($monthlyData);
-    }
 
+        // Trả về kết quả dưới dạng JSON
+        return response()->json($statistics);
+    }
     public function statisticsMonth(Request $request)
 {
  $request->validate([

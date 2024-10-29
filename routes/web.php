@@ -78,7 +78,7 @@ Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
 
     Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
     Route::post('/statistics', [DashboardController::class, 'getStatistics'])->name('statistics');
-    Route::post('/statisticsYear', [DashboardController::class, 'getStatisticsYear'])->name('statisticsYear');
+    Route::post('/statistics/year', [DashboardController::class, 'getStatisticsByYear'])->name('statisticsYear');
     Route::post('/statistics-month', [DashboardController::class, 'statisticsMonth'])->name('statisticsMonth');
     Route::post('/statistics/time-range', [DashboardController::class, 'getStatisticsByTimeRange'])->name('statisticsTimeRange');
 
