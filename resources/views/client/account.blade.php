@@ -64,7 +64,7 @@
                                                     </div>
                                                 @endif
                                                 <div class="account-details-form">
-                                                    <form action="" method="POST">
+                                                    {{-- <form action="" method="POST">
                                                         @csrf
                                                         <div class="row">
                                                             <div class="col-lg-6">
@@ -141,6 +141,70 @@
                                                         <div class="single-input-item">
                                                             <button type="submit" class="check-btn sqr-btn">Đổi mật
                                                                 khẩu</button>
+                                                        </div>
+                                                    </form> --}}
+                                                    <form action="{{ route('your.route.name') }}" method="POST">
+                                                        @csrf
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <div class="single-input-item">
+                                                                    <label for="first-name" class="required">Họ tên</label>
+                                                                    <input type="text" id="first-name" name="full_name" value="{{ Auth::user()->full_name }}">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-6">
+                                                                <div class="single-input-item">
+                                                                    <label for="last-name" class="required">Số điện thoại</label>
+                                                                    <input type="text" id="last-name" name="phone_number" value="{{ Auth::user()->phone_number }}">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="single-input-item">
+                                                            <label for="email" class="required">Email</label>
+                                                            <input type="email" id="email" name="email" value="{{ Auth::user()->email }}" disabled>
+                                                        </div>
+                                                        <div class="single-input-item">
+                                                            <label for="display-name" class="required">Địa chỉ</label>
+                                                            <input type="text" id="display-name" name="address" value="{{ Auth::user()->address }}">
+                                                        </div>
+                                                    
+                                                        <fieldset>
+                                                            <legend>Đổi mật khẩu</legend>
+                                                            @if (Session('error'))
+                                                                <div class="alert alert-danger" role="alert">
+                                                                    {{ Session('error') }}
+                                                                </div>
+                                                            @endif
+                                                            <div class="single-input-item">
+                                                                <label for="current-pwd" class="required">Mật khẩu hiện tại</label>
+                                                                <input type="password" class="form-control" id="current_password" name="current_password">
+                                                                @error('current_password')
+                                                                    <span class="text-danger">{{ $message }}</span>
+                                                                @enderror
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="single-input-item">
+                                                                        <label for="new-pwd" class="required">Mật khẩu mới</label>
+                                                                        <input type="password" class="form-control" id="new_password" name="new_password">
+                                                                        @error('new_password')
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="single-input-item">
+                                                                        <label for="confirm-pwd" class="required">Xác nhận mật khẩu mới</label>
+                                                                        <input type="password" class="form-control" id="new_password_confirmation" name="new_password_confirmation">
+                                                                        @error('new_password_confirmation')
+                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                        @enderror
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </fieldset>
+                                                        <div class="single-input-item">
+                                                            <button type="submit" class="check-btn sqr-btn">Lưu thông tin</button>
                                                         </div>
                                                     </form>
                                                 </div>

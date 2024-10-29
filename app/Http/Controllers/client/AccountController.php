@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\client;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\RegisterRequest;
-use App\Jobs\DeleteOldPasswordResetTokens;
-use App\Jobs\DeleteUserAfterTimeout;
-use App\Mail\forgotPassword;
+use App\Models\User;
 use App\Mail\verifyAccount;
 use Illuminate\Support\Str;
-use App\Models\PasswordResetToken;
-use App\Models\User;
+use App\Mail\forgotPassword;
 use Illuminate\Http\Request;
+use App\Models\PasswordResetToken;
+use App\Http\Controllers\Controller;
+use App\Jobs\DeleteUserAfterTimeout;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Requests\RegisterRequest;
+use App\Jobs\DeleteOldPasswordResetTokens;
 
 class AccountController extends Controller
 {
@@ -31,7 +32,7 @@ class AccountController extends Controller
     {
         $user = Auth::user();
         $bills = $user->bills()->orderBy('id', 'desc')->get();
-        return view('client.account',compact('user', 'bills'));
+        return view('client.account', compact('user', 'bills'));
     }
 
     // Đăng ký
@@ -41,7 +42,7 @@ class AccountController extends Controller
 
         // Tạo người dùng và ghi thời gian gửi email xác thực
         if ($user = User::create($data)) {
-            $user->email_verification_sent_at = now(); 
+            $user->email_verification_sent_at = now();
             $user->save();
 
             Mail::to($user->email)->send(new VerifyAccount($user));
@@ -121,47 +122,47 @@ class AccountController extends Controller
 
     // 001
 
-   public function check_forgot_password(Request $request)
-{
-    $request->validate([
-        'email' => 'required|email|exists:users,email',
-    ]);
+    public function check_forgot_password(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
 
-    $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)->first();
 
-    // Tạo token mới
-    $token = Str::random(40);
-    $tokenData = [
-        'email' => $request->email,
-        'token' => $token,
-        'created_at' => now(), // lưu thời gian tạo
-    ];
+        // Tạo token mới
+        $token = Str::random(40);
+        $tokenData = [
+            'email' => $request->email,
+            'token' => $token,
+            'created_at' => now(), // lưu thời gian tạo
+        ];
 
-    // Xóa token cũ nếu có
-    PasswordResetToken::where('email', $request->email)->delete();
+        // Xóa token cũ nếu có
+        PasswordResetToken::where('email', $request->email)->delete();
 
-    // Lưu token mới vào cơ sở dữ liệu
-    PasswordResetToken::create($tokenData);
+        // Lưu token mới vào cơ sở dữ liệu
+        PasswordResetToken::create($tokenData);
 
-    // Gửi email chứa token
-    Mail::to($request->email)->send(new ForgotPassword($user, $token));
+        // Gửi email chứa token
+        Mail::to($request->email)->send(new ForgotPassword($user, $token));
 
 
-    DeleteOldPasswordResetTokens::dispatch()->delay(now()->addMinutes(5));
+        DeleteOldPasswordResetTokens::dispatch()->delay(now()->addMinutes(5));
 
-    return redirect()->back()->with('message', 'Vui lòng kiểm tra email để tiếp tục!');
-}
-
-public function reset_password($token)
-{
-    $tokenData = PasswordResetToken::where('token', $token)->firstOrFail();
-
-    if ($tokenData->created_at < now()->subMinutes(5)) {
-        return redirect()->route('account.forgot_password')->with('error', 'Token đã hết hạn. Vui lòng gửi lại email.');
+        return redirect()->back()->with('message', 'Vui lòng kiểm tra email để tiếp tục!');
     }
 
-    return view('client.reset-password', ['token' => $token]);
-}
+    public function reset_password($token)
+    {
+        $tokenData = PasswordResetToken::where('token', $token)->firstOrFail();
+
+        if ($tokenData->created_at < now()->subMinutes(5)) {
+            return redirect()->route('account.forgot_password')->with('error', 'Token đã hết hạn. Vui lòng gửi lại email.');
+        }
+
+        return view('client.reset-password', ['token' => $token]);
+    }
 
     public function check_reset_password(Request $request, $token)
     {
@@ -189,5 +190,38 @@ public function reset_password($token)
             return redirect()->route('login')->with('message', 'Cập nhật mật khẩu thành công');
         }
         return redirect()->back()->with('error', 'Cập nhật mật khẩu thất bại');
+    }
+    public function updateProfile(Request $request)
+    {
+        // Validate the incoming request data
+        $request->validate([
+            'full_name' => 'required|string|max:255',
+            'phone_number' => 'required|string|max:15',
+            'address' => 'required|string|max:255',
+            'current_password' => 'required|string',
+            'new_password' => 'nullable|string|min:8|confirmed',
+        ]);
+
+        $user = Auth::user();
+
+        // Check if the current password is correct
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không đúng.']);
+        }
+
+        // Update user fields
+        $user->full_name = $request->full_name;
+        $user->phone_number = $request->phone_number;
+        $user->address = $request->address;
+
+        // Update password if provided
+        if ($request->new_password) {
+            $user->password = Hash::make($request->new_password);
+        }
+
+        // Save the user
+        $user->save();
+
+        return back()->with('success', 'Thông tin đã được cập nhật thành công.');
     }
 }

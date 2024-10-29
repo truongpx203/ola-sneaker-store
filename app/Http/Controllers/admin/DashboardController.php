@@ -27,27 +27,26 @@ class DashboardController extends Controller
         // Lấy top 5 sản phẩm bán chạy nhất
         $topBanChayNhat = DB::table('bill_items')
             ->join('bills', 'bill_items.bill_id', '=', 'bills.id') // Join với bảng bills
-            ->select('bill_items.variant_id', 'bill_items.product_name', 'bill_items.product_image_url', 'bill_items.sale_price', 'bill_items.listed_price', 'bill_items.import_price', DB::raw('COUNT(bill_items.variant_id) as appearances'))
-            ->where('bills.bill_status', 'delivered') // Điều kiện chỉ tính các đơn hàng có trạng thái hoàn thành
-            ->groupBy('bill_items.variant_id', 'bill_items.product_name', 'bill_items.product_image_url', 'bill_items.sale_price', 'bill_items.listed_price', 'bill_items.import_price')
+            ->select('bill_items.product_name', 'bill_items.product_image_url', DB::raw('SUM(bill_items.variant_quantity) as total_revenue'), DB::raw('COUNT(bill_items.product_name) as appearances'))
+            ->whereIn('bills.bill_status', ['delivered', 'completed']) // Lấy cả đơn hàng hoàn thành và thành công
+            ->groupBy('bill_items.product_name', 'bill_items.product_image_url')
             ->orderBy('appearances', 'desc')
             ->take(5)
             ->get();
 
+        // dd( $topBanChayNhat );
         // Lấy top 5 sản phẩm có doanh thu cao nhất
         $topDoanhThuCaoNhat = DB::table('bill_items')
             ->join('bills', 'bill_items.bill_id', '=', 'bills.id') // Join với bảng bills
             ->select(
-                'bill_items.variant_id',
                 'bill_items.product_name',
                 'bill_items.product_image_url',
                 DB::raw('SUM(bill_items.variant_quantity * bill_items.sale_price) as total_revenue') // Tính tổng doanh thu
             )
-            ->where('bills.bill_status', 'delivered') // Điều kiện chỉ tính các đơn hàng có trạng thái hoàn thành
+            ->whereIn('bills.bill_status', ['delivered', 'completed']) // Điều kiện chỉ tính các đơn hàng có trạng thái hoàn thành
             ->groupBy(
-                'bill_items.variant_id',
                 'bill_items.product_name',
-                'bill_items.product_image_url',
+                'bill_items.product_image_url'
             )
             ->orderBy('total_revenue', 'desc') // Sắp xếp theo tổng doanh thu giảm dần
             ->take(5)
@@ -58,20 +57,15 @@ class DashboardController extends Controller
         $topLoiNhuanCaoNhat = DB::table('bill_items')
             ->join('bills', 'bill_items.bill_id', '=', 'bills.id') // Join với bảng bills
             ->select(
-                'bill_items.variant_id',
                 'bill_items.product_name',
                 'bill_items.product_image_url',
                 DB::raw('SUM((bill_items.sale_price - bill_items.import_price) * bill_items.variant_quantity) as total_profit') // Tính tổng lợi nhuận
             )
-            ->where('bills.bill_status', 'delivered') // Điều kiện chỉ tính các đơn hàng có trạng thái hoàn thành
-            ->groupBy(
-                'bill_items.variant_id',
-                'bill_items.product_name',
-                'bill_items.product_image_url'
-            )
+            ->whereIn('bills.bill_status', ['delivered', 'completed'])  // Điều kiện chỉ tính các đơn hàng có trạng thái hoàn thành
+            ->groupBy('bill_items.product_name', 'bill_items.product_image_url') // Nhóm theo sản phẩm
             ->orderBy('total_profit', 'desc') // Sắp xếp theo tổng lợi nhuận giảm dần
             ->take(5) // Lấy top 5 sản phẩm có lợi nhuận cao nhất
-            ->get();     
+            ->get();
         // $month = request('month', date('m'));
         $monthYear = $request->query('month', date('m-Y'));
         [$month, $year] = explode('-', $monthYear);
@@ -82,14 +76,14 @@ class DashboardController extends Controller
                 DB::raw('SUM(bill_items.sale_price * bill_items.variant_quantity) as total_revenue'), // Tổng doanh thu
                 DB::raw('SUM((bill_items.sale_price - bill_items.import_price) * bill_items.variant_quantity) as total_profit') // Tổng lợi nhuận
             )
-            ->where('bills.bill_status', 'delivered') // Chỉ tính cho hóa đơn đã hoàn thành
+            ->whereIn('bills.bill_status', ['delivered', 'completed'])   // Chỉ tính cho hóa đơn đã hoàn thành
             ->whereMonth('bills.created_at', $month) // Lọc theo tháng
             ->groupBy(DB::raw('DAY(bills.created_at)')) // Nhóm theo ngày trong tháng
             ->get();
 
-            $thongKeNgayTheoThangData = $thongKeNgayTheoThang->toArray();
+        $thongKeNgayTheoThangData = $thongKeNgayTheoThang->toArray();
 
-            // dd( $thongKeNgayTheoThangData);
+        // dd( $thongKeNgayTheoThangData);
 
         return view('admin.dashboardThongke', compact(
             'choXacNhan',
@@ -135,48 +129,51 @@ class DashboardController extends Controller
     }
 
     public function getStatistics(Request $request)
-    {$date = $request->input('date');
+    {
+        $date = $request->input('date');
 
         // Truy vấn doanh thu theo giờ
-    $revenuePerHour = DB::table('bills')
-        ->select(DB::raw('HOUR(created_at) as hour'), DB::raw('SUM(total_price) as total_revenue'))
-        ->whereDate('created_at', $date)
-        ->where('bill_status', 'completed') // chỉ lấy những đơn đã hoàn thành
-        ->groupBy(DB::raw('HOUR(created_at)'))
-        ->orderBy('hour')
-        ->get();
+        $revenuePerHour = DB::table('bills')
+            ->select(DB::raw('HOUR(created_at) as hour'), DB::raw('SUM(total_price) as total_revenue'))
+            ->whereDate('created_at', $date)
+            // ->where('bill_status', 'completed') // chỉ lấy những đơn đã hoàn thành
+            ->whereIn('bills.bill_status', ['delivered', 'completed'])  
+            ->groupBy(DB::raw('HOUR(created_at)'))
+            ->orderBy('hour')
+            ->get();
 
-    // Truy vấn lợi nhuận theo giờ
-    $profitPerHour = DB::table('bill_items')
-        ->join('bills', 'bill_items.bill_id', '=', 'bills.id')
-        ->select(DB::raw('HOUR(bills.created_at) as hour'), DB::raw('SUM((bill_items.sale_price - bill_items.import_price) * bill_items.variant_quantity) as total_profit'))
-        ->whereDate('bills.created_at', $date)
-        ->where('bills.bill_status', 'completed') // chỉ lấy những đơn đã hoàn thành
-        ->groupBy(DB::raw('HOUR(bills.created_at)'))
-        ->orderBy('hour')
-        ->get();
+        // Truy vấn lợi nhuận theo giờ
+        $profitPerHour = DB::table('bill_items')
+            ->join('bills', 'bill_items.bill_id', '=', 'bills.id')
+            ->select(DB::raw('HOUR(bills.created_at) as hour'), DB::raw('SUM((bill_items.sale_price - bill_items.import_price) * bill_items.variant_quantity) as total_profit'))
+            ->whereDate('bills.created_at', $date)
+            // ->where('bills.bill_status', 'completed') 
+            ->whereIn('bills.bill_status', ['delivered', 'completed'])  // chỉ lấy những đơn đã hoàn thành
+            ->groupBy(DB::raw('HOUR(bills.created_at)'))
+            ->orderBy('hour')
+            ->get();
 
-    // Chuyển đổi dữ liệu về định dạng mảng
-    $revenues = array_fill(0, 24, 0);
-    $profits = array_fill(0, 24, 0);
+        // Chuyển đổi dữ liệu về định dạng mảng
+        $revenues = array_fill(0, 24, 0);
+        $profits = array_fill(0, 24, 0);
 
-    foreach ($revenuePerHour as $revenue) {
-        $revenues[$revenue->hour] = $revenue->total_revenue;
-    }
+        foreach ($revenuePerHour as $revenue) {
+            $revenues[$revenue->hour] = $revenue->total_revenue;
+        }
 
-    foreach ($profitPerHour as $profit) {
-        $profits[$profit->hour] = $profit->total_profit;
-    }
+        foreach ($profitPerHour as $profit) {
+            $profits[$profit->hour] = $profit->total_profit;
+        }
 
-    return response()->json([
-        'revenues' => $revenues,
-        'profits' => $profits,
-    ]);
+        return response()->json([
+            'revenues' => $revenues,
+            'profits' => $profits,
+        ]);
     }
     public function getStatisticsByYear(Request $request)
     {
         $year = $request->input('year');
-        
+
         // Lấy doanh thu và lợi nhuận theo tháng
         $statistics = BillItem::join('bills', 'bill_items.bill_id', '=', 'bills.id')
             ->select(
@@ -185,7 +182,8 @@ class DashboardController extends Controller
                 DB::raw('SUM((bill_items.sale_price - bill_items.import_price) * bill_items.variant_quantity) as total_profit') // Lợi nhuận
             )
             ->whereYear('bills.created_at', $year)
-            ->where('bills.bill_status', 'completed') // Chỉ tính cho đơn hàng hoàn thành
+            // ->where('bills.bill_status', 'completed') // Chỉ tính cho đơn hàng hoàn thành
+            ->whereIn('bills.bill_status', ['delivered', 'completed'])  
             ->groupBy(DB::raw('MONTH(bills.created_at)'))
             ->orderBy(DB::raw('MONTH(bills.created_at)'))
             ->get();
@@ -194,94 +192,94 @@ class DashboardController extends Controller
         return response()->json($statistics);
     }
     public function statisticsMonth(Request $request)
-{
- $request->validate([
-    'month' => 'required|date_format:m',
-    'year' => 'required|digits:4'
-]);
+    {
+        $request->validate([
+            'month' => 'required|date_format:m',
+            'year' => 'required|digits:4'
+        ]);
 
-$month = $request->input('month');
-$year = $request->input('year');
-$revenues = array_fill(0, 31, 0);
-$profits = array_fill(0, 31, 0); 
-$startDate = "$year-$month-01";
-$endDate = date("Y-m-t", strtotime($startDate));
-$bill_items = BillItem::whereBetween('created_at', [$startDate, $endDate])
-                 ->get();
-$bills = Bill::whereBetween('created_at', [$startDate, $endDate])
-->where('bill_status', 'completed')
-->get();
+        $month = $request->input('month');
+        $year = $request->input('year');
+        $revenues = array_fill(0, 31, 0);
+        $profits = array_fill(0, 31, 0);
+        $startDate = "$year-$month-01";
+        $endDate = date("Y-m-t", strtotime($startDate));
+        $bill_items = BillItem::whereBetween('created_at', [$startDate, $endDate])
+            ->get();
+        $bills = Bill::whereBetween('created_at', [$startDate, $endDate])
+            // ->where('bill_status', 'completed')
+            ->whereIn('bill_status', ['delivered', 'completed'])  
+            ->get();
 
-foreach ($bills as $bill) {
-    $day = (int) $bill->created_at->format('d');
-    $revenues[$day - 1] += $bill->total_price; // Tính doanh thu
-}
-foreach ($bill_items as $bill_item) {
-    $day = (int) $bill_item->created_at->format('d');
-    $profits[$day - 1] += ($bill_item->sale_price - $bill_item->import_price) * $bill_item->variant_quantity; // Tính lợi nhuận
-}
+        foreach ($bills as $bill) {
+            $day = (int) $bill->created_at->format('d');
+            $revenues[$day - 1] += $bill->total_price; // Tính doanh thu
+        }
+        foreach ($bill_items as $bill_item) {
+            $day = (int) $bill_item->created_at->format('d');
+            $profits[$day - 1] += ($bill_item->sale_price - $bill_item->import_price) * $bill_item->variant_quantity; // Tính lợi nhuận
+        }
 
-// Trả về dữ liệu
-return response()->json([
-    'revenues' => $revenues,
-    'profits' => $profits,
-]);
-}
-public function getStatisticsByTimeRange(Request $request)
-{
-    $validator = Validator::make($request->all(), [
-        'start_date' => 'required|date|date_format:Y-m-d',
-        'end_date' => 'required|date|date_format:Y-m-d|after_or_equal:start_date',
-    ]);
-    $startDate = $request->input('start_date', now()->subDays(30)->toDateString());
-    $endDate = $request->input('end_date', now()->toDateString());
-
-    // Kiểm tra khoảng thời gian có hợp lệ không
-    $start = Carbon::parse($startDate);
-    $end = Carbon::parse($endDate);
-
-    if ($end->diffInDays($start) > 30) {
+        // Trả về dữ liệu
         return response()->json([
-            'success' => false,
-            'message' => 'Khoảng thời gian không được vượt quá 30 ngày.',
-        ], 400);
+            'revenues' => $revenues,
+            'profits' => $profits,
+        ]);
     }
-    // Truy vấn số lượng đơn hàng theo ngày
-$data = DB::table('bills')
-->select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as count'))
-->whereBetween('created_at', [$startDate, $endDate])
-->groupBy('date')
-->orderBy('date', 'asc')
-->get();
-    // Truy vấn doanh thu theo ngày (chỉ tính đơn hàng đã hoàn thành)
-$revenuePerDay = DB::table('bills')
-->select(DB::raw('DATE(created_at) as order_date'), DB::raw('SUM(total_price) as total_revenue'))
-->whereBetween('created_at', [$startDate, $endDate])
-->where('bill_status', 'completed')
-->groupBy(DB::raw('DATE(created_at)'))
-->orderBy('order_date', 'asc')
-->get();
+    public function getStatisticsByTimeRange(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'start_date' => 'required|date|date_format:Y-m-d',
+            'end_date' => 'required|date|date_format:Y-m-d|after_or_equal:start_date',
+        ]);
+        $startDate = $request->input('start_date', now()->subDays(30)->toDateString());
+        $endDate = $request->input('end_date', now()->toDateString());
 
-// Truy vấn lợi nhuận theo ngày
-$profitPerDay = DB::table('bill_items')
-->join('bills', 'bill_items.bill_id', '=', 'bills.id')
-->select(DB::raw('DATE(bills.created_at) as order_date'), DB::raw('SUM((bill_items.sale_price - bill_items.import_price) * bill_items.variant_quantity) as total_profit'))
-->whereBetween('bills.created_at', [$startDate, $endDate])
-->where('bills.bill_status', 'completed')
-->groupBy(DB::raw('DATE(bills.created_at)'))
-->orderBy('order_date', 'asc')
-->get();
-// doanh thu lợi nhuận theo tháng  
-    // Trả về dữ liệu dưới dạng JSON
-    return response()->json([
-        'success' => true,
-        'labels' => $data->pluck('date'),
-        'orderCounts' => $data->pluck('count'),
-        'revenues' => $revenuePerDay->pluck('total_revenue'),
-        'profits' => $profitPerDay->pluck('total_profit'),
-    ]);
+        // Kiểm tra khoảng thời gian có hợp lệ không
+        $start = Carbon::parse($startDate);
+        $end = Carbon::parse($endDate);
+
+        if ($end->diffInDays($start) > 30) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Khoảng thời gian không được vượt quá 30 ngày.',
+            ], 400);
+        }
+        // Truy vấn số lượng đơn hàng theo ngày
+        $data = DB::table('bills')
+            ->select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as count'))
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy('date')
+            ->orderBy('date', 'asc')
+            ->get();
+        // Truy vấn doanh thu theo ngày (chỉ tính đơn hàng đã hoàn thành)
+        $revenuePerDay = DB::table('bills')
+            ->select(DB::raw('DATE(created_at) as order_date'), DB::raw('SUM(total_price) as total_revenue'))
+            ->whereBetween('created_at', [$startDate, $endDate])
+            // ->where('bill_status', 'completed')
+            ->whereIn('bill_status', ['delivered', 'completed'])  
+            ->groupBy(DB::raw('DATE(created_at)'))
+            ->orderBy('order_date', 'asc')
+            ->get();
+
+        // Truy vấn lợi nhuận theo ngày
+        $profitPerDay = DB::table('bill_items')
+            ->join('bills', 'bill_items.bill_id', '=', 'bills.id')
+            ->select(DB::raw('DATE(bills.created_at) as order_date'), DB::raw('SUM((bill_items.sale_price - bill_items.import_price) * bill_items.variant_quantity) as total_profit'))
+            ->whereBetween('bills.created_at', [$startDate, $endDate])
+            // ->where('bills.bill_status', 'completed')
+            ->whereIn('bills.bill_status', ['delivered', 'completed'])  
+            ->groupBy(DB::raw('DATE(bills.created_at)'))
+            ->orderBy('order_date', 'asc')
+            ->get();
+        // doanh thu lợi nhuận theo tháng  
+        // Trả về dữ liệu dưới dạng JSON
+        return response()->json([
+            'success' => true,
+            'labels' => $data->pluck('date'),
+            'orderCounts' => $data->pluck('count'),
+            'revenues' => $revenuePerDay->pluck('total_revenue'),
+            'profits' => $profitPerDay->pluck('total_profit'),
+        ]);
+    }
 }
-}
-
-    
-
