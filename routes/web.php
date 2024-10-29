@@ -161,6 +161,8 @@ Route::get('/logout', [AccountController::class, 'logout'])->name('logout');
 Route::middleware(['auth'])->group(function () {
     Route::get('/account', [AccountController::class, 'account'])->name('account');
 
+    Route::post('/updateProfile', [AccountController::class, 'updateProfile'])->name('your.route.name');
+
     // chi tiết đơn hàng truyền id bảng bill
     Route::get('order-details/{id}', [HomeController::class, 'detailBill'])->name('order-details');
     Route::post('/bills/{id}/cancel', [HomeController::class, 'cancelOrder'])->name('cancelOrder');
