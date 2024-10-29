@@ -81,8 +81,8 @@
             ];
 
             $paymentTypeMapping = [
-                'online' => 'Chuyển khoản trực tuyến',
-                'cod' => 'Thanh toán khi nhận hàng',
+                'online' => 'Thanh toán online',
+                'cod' => 'Thanh toán cod',
             ];
         @endphp
         <div class="card mb-4">

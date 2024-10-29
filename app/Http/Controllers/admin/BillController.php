@@ -4,8 +4,12 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\UpdateOrderStatus;
+use App\Mail\OrderCanceledMail;
+use App\Mail\OrderCompletedMail;
+use App\Mail\OrderStatusUpdatedMail;
 use App\Models\Bill;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class BillController extends Controller
 {
@@ -69,7 +73,7 @@ class BillController extends Controller
         $bill->save();
 
         // Tạo một mục lịch sử mới
-        $bill->histories()->create([
+        $history = $bill->histories()->create([
             'from_status' => $oldStatus,
             'to_status' => $bill->bill_status,
             'note' => $request->input('note'),
@@ -77,7 +81,20 @@ class BillController extends Controller
             'at_datetime' => now(),
         ]);
 
-        // Nếu trạng thái được cập nhật thành "delivered"
+        // Gửi email thông báo cho khách hàng
+        $customerEmail = $bill->user->email;
+
+        if ($bill->bill_status === 'canceled') {
+            Mail::to($customerEmail)->send(new OrderCanceledMail($bill, $request->input('note'), $history->at_datetime));
+        } 
+        else if ($bill->bill_status === 'completed') {
+            Mail::to($customerEmail)->send(new OrderCompletedMail($bill));
+        } 
+        else {
+            Mail::to($customerEmail)->send(new OrderStatusUpdatedMail($bill, $history->note, $history->at_datetime));
+        }
+
+        
         if ($bill->bill_status === 'delivered' && $oldStatus !== 'completed') {
             // UpdateOrderStatus::dispatch($bill->id)->delay(now()->addDays(3));
             UpdateOrderStatus::dispatch($bill->id)->delay(now()->addMinutes(1));
