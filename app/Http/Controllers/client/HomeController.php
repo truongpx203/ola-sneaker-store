@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\client;
 
 use App\Http\Controllers\Controller;
+use App\Mail\OrderCanceledMail;
+use App\Mail\OrderCompletedMail;
 use App\Models\Bill;
 use App\Models\BillHistory;
 use App\Models\BillItem;
 use App\Models\ProductReview;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class HomeController extends Controller
 {
@@ -25,7 +28,7 @@ class HomeController extends Controller
             // Kiểm tra xem người dùng đã đánh giá sản phẩm này trong đơn hàng này chưa
             $item->has_reviewed = ProductReview::where('variant_id', $item->variant->id)
                 ->where('user_id', $userId)
-                ->where('bill_id', $bill->id) 
+                ->where('bill_id', $bill->id)
                 ->exists();
         }
 
@@ -47,10 +50,10 @@ class HomeController extends Controller
             'note.max' => 'Lý do hủy đơn hàng không quá 255 ký tự.'
         ]);
 
-        // Cập nhật trạng thái hóa đơn
         $bill->bill_status = 'canceled';
         $bill->save();
 
+        $atDatetime = now();
         // Lưu vào lịch sử hủy đơn
         BillHistory::create([
             'bill_id' => $bill->id,
@@ -58,8 +61,12 @@ class HomeController extends Controller
             'from_status' => 'pending', // Trạng thái trước khi hủy
             'to_status' => 'canceled',
             'note' => $request->note,
-            'at_datetime' => now(),
+            'at_datetime' => $atDatetime,
         ]);
+
+        // Gửi email thông báo cho khách hàng
+        $customerEmail = $bill->user->email;
+        Mail::to($customerEmail)->send(new OrderCanceledMail($bill, $request->note, $atDatetime));
 
         return redirect()->back()->with('success', 'Đơn hàng đã được hủy thành công.');
     }
@@ -84,6 +91,10 @@ class HomeController extends Controller
             'note' => 'Đơn hàng đã được hoàn thành.',
             'at_datetime' => now(),
         ]);
+
+        // Gửi email thông báo cho khách hàng
+        $customerEmail = $bill->user->email;
+        Mail::to($customerEmail)->send(new OrderCompletedMail($bill));
 
         return redirect()->back()->with('success', 'Đơn hàng đã được hoàn thành.');
     }
