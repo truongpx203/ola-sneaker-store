@@ -215,7 +215,7 @@
                                                                     </div>
                                                                     <div class="p-3">
                                                                         <div class="form-group">
-                                                                            <button type="submit"
+                                                                            <button type="submit" onclick="return confirm('Bạn chỉ có thể đánh giá 1 lần bạn chắc với đánh giá hiện tại chứ!')"
                                                                                 class="btn btn-outline-danger"
                                                                                 style="margin-left: 87%; border-radius: 0">Đăng
                                                                                 bình luận</button>

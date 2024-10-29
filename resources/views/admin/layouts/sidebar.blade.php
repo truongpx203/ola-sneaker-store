@@ -43,6 +43,28 @@
                 </li> <!-- end Dashboard Menu -->
              
                 <li class="nav-item">
+                    <a class="nav-link menu-link" href="#user" data-bs-toggle="collapse"
+                        role="button" aria-expanded="false" aria-controls="user">
+                        <i class="ri-gift-line"></i> <span data-key="t-layouts">User</span> 
+                    </a>
+                    <div class="collapse menu-dropdown" id="user">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="{{ route('list.user') }}" class="nav-link"
+                                    data-key="t-horizontal">Danh sách</a>
+                             
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('products.create') }}" class="nav-link"
+                                    data-key="t-horizontal">Thêm mới </a>
+                             
+                            </li>
+                            
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarLayouts" data-bs-toggle="collapse"
                         role="button" aria-expanded="false" aria-controls="sidebarLayouts">
                         <i class="ri-layout-3-line"></i> <span data-key="t-layouts">Danh mục sản phẩm </span> 

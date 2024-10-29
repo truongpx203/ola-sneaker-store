@@ -16,17 +16,26 @@ class CheckRole
      */
     public function handle(Request $request, Closure $next): Response
     {
-    if (Auth::check()) {
-        $role = Auth::user()->role;
-        if ($role == 'admin') {
-            return $next($request);
-        } elseif ($role == 'user') {
-            return redirect()->route('account');
-        } else {
-            return redirect()->route('error.page');
-        }
-    }
+        if (Auth::check()) {
+            $user = Auth::user();
+            $role = $user->role;
+            $status = $user->status;
 
-    return redirect()->route('login');
+            if ($status == 'inactive') {
+                Auth::logout(); 
+                return redirect()->route('login')->with('error', 'Tài khoản của bạn đã bị khóa.');
+            }
+
+            // Kiểm tra vai trò
+            if ($role == 'admin') {
+                return $next($request); 
+            } elseif ($role == 'user') {
+                return redirect()->route('account'); 
+            } else {
+                return redirect()->route('error.page'); 
+            }
+        }
+
+        return redirect()->route('login'); 
     }
 }

@@ -27,7 +27,7 @@ class OrderConfirmationMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Xác nhận đơn hàng',
+            subject: 'Xác nhận đơn hàng: ' . $this->bill->code,
         );
     }
 

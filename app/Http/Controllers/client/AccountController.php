@@ -90,19 +90,20 @@ class AccountController extends Controller
                 return redirect()->back()->with('error', 'Tài khoản của bạn chưa được xác thực.');
             }
 
-            if ($user->status == 'active') {
-                $request->session()->regenerate();
-
-                if ($user->role == 'admin') {
-                    return redirect()->route('dashboard');
-                } else {
-                    return redirect()->route('account');
-                }
-            } else {
-                // Tài khoản không active
+            if ($user->status == 'inactive') {
                 Auth::logout();
                 return redirect()->back()->with('error', 'Tài khoản của bạn đã bị khóa.');
             }
+
+            // Nếu tài khoản là active
+            $request->session()->regenerate();
+
+            if ($user->role == 'admin') {
+                return redirect()->route('dashboard');
+            } else {
+                return redirect()->route('account');
+            }
+            
         } else {
             return redirect()->back()->with('error', 'Tên đăng nhập hoặc mật khẩu không đúng.');
         }
