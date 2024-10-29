@@ -27,7 +27,7 @@ class OrderCompletedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Đơn hàng của bạn đã hoàn thành: ' . $this->bill->code,
+            subject: 'Cập nhật trạng thái đơn hàng: ' . $this->bill->code,
         );
     }
 

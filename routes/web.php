@@ -7,6 +7,7 @@ use App\Http\Controllers\client\Account;
 use App\Http\Controllers\admin\BillController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\ProductReviewController as AdminProductReviewController;
+use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\client\AccountController;
@@ -137,6 +138,11 @@ Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
     Route::get('/reviews', [AdminProductReviewController::class, 'index'])->name('reviews.index');
     Route::get('/review/{id}', [AdminProductReviewController::class, 'update']);
 
+    // user
+    Route::get('/user', [UserController::class, 'index'])->name('list.user');
+    Route::get('/user/{id}', [UserController::class, 'update'])->name('user.updateStatus'); // cập nhật trạng thái
+    Route::get('/edit-user/{id}', [UserController::class, 'editUser'])->name('user.edit');
+    Route::put('/edit-user/{id}', [UserController::class, 'updateUser'])->name('user.update');
 });
 
 
