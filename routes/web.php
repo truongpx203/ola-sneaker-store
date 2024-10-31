@@ -18,6 +18,7 @@ use App\Http\Controllers\VariantController;
 use App\Http\Controllers\client\CartController;
 use App\Http\Controllers\ProductSizeController;
 use App\Http\Controllers\client\ProductReviewController;
+use App\Http\Controllers\WishlistController;
 
 
 /*
@@ -175,6 +176,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/bills/{bill}/complete', [HomeController::class, 'completeOrder'])->name('completeOrder');
     
     Route::post('/products/reviews', [ProductReviewController::class, 'storeReview'])->name('product.reviews.store');
+
+    // Sản phẩm yêu thích
+    Route::get('/wishlist',                     [WishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('/wishlist/store',              [WishlistController::class, 'store'])->name('wishlist.store');
+    Route::delete('/wishlist/{wishlist}/destroy',     [WishlistController::class, 'destroy'])->name('wishlist.destroy');
+
 });
 
 

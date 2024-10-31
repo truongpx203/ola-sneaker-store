@@ -110,7 +110,7 @@
                     <button class="shopping-search-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#AsideOffcanvasSearch" aria-controls="AsideOffcanvasSearch"><i class="pe-7s-search icon"></i></button>
                   </div>
                   <div class="shopping-wishlist">
-                    <a class="shopping-wishlist-btn" href="{{'shop-wishlist'}}">
+                    <a class="shopping-wishlist-btn" href="{{ route('wishlist.index') }}">
                       <i class="pe-7s-like icon"></i>
                     </a>
                   </div>

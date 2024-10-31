@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class WishlistController extends Controller
 {
@@ -12,15 +14,10 @@ class WishlistController extends Controller
      */
     public function index()
     {
-        //
-    }
+        // Hiển thị danh sách yêu thích của người dùng
+        $wishlists = Wishlist::where('user_id', Auth::id())->with('product')->get();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return view('client.shop-wishlist', compact('wishlists'));
     }
 
     /**
@@ -28,31 +25,35 @@ class WishlistController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        // Kiểm tra xem người dùng đã đăng nhập chưa
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Bạn cần đăng nhập để thêm sản phẩm vào yêu thích.');
+        }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Wishlist $wishlist)
-    {
-        //
-    }
+        $user = Auth::user();
+        $product_id = $request->input('product_id');
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Wishlist $wishlist)
-    {
-        //
-    }
+        // Kiểm tra xem sản phẩm có tồn tại không
+        $product = Product::find($product_id);
+        if (!$product) {
+            return redirect()->back()->with('error', 'Sản phẩm không tồn tại.');
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Wishlist $wishlist)
-    {
-        //
+        // Kiểm tra xem sản phẩm đã có trong wishlist chưa
+        $wishlist = Wishlist::where('user_id', $user->id)->where('product_id', $product_id)->first();
+
+        if ($wishlist) {
+            return redirect()->route('wishlist.index')->with('info', 'Sản phẩm đã có trong danh sách yêu thích.');
+        }
+
+        // Thêm sản phẩm vào wishlist
+        Wishlist::create([
+            'user_id' => $user->id,
+            'product_id' => $product_id,
+            'is_available' => true,
+        ]);
+
+        return redirect()->route('wishlist.index')->with('success', 'Đã thêm sản phẩm vào danh sách yêu thích.');
     }
 
     /**
@@ -60,6 +61,10 @@ class WishlistController extends Controller
      */
     public function destroy(Wishlist $wishlist)
     {
-        //
+        // Xóa mục khỏi danh sách yêu thích
+        $wishlist->delete();
+
+        // Chuyển hướng về trang danh sách yêu thích với thông báo thành công
+        return redirect()->route('wishlist.index')->with('success', 'Đã xóa sản phẩm khỏi danh sách yêu thích.');
     }
 }
