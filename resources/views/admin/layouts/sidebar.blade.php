@@ -174,6 +174,22 @@
                         </ul>
                     </div>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#voucher" data-bs-toggle="collapse"
+                        role="button" aria-expanded="false" aria-controls="voucher">
+                        <i class="ri-layout-3-line"></i> <span data-key="t-layouts">Mã giảm giá</span> 
+                    </a>
+                    <div class="collapse menu-dropdown" id="voucher">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="{{route('voucher.index')}}" target="_blank" class="nav-link"
+                                    data-key="t-horizontal">Danh sách</a>
+                             
+                            </li>
+                        </ul>
+                    </div>
+                </li>
                 
 
             </ul>

@@ -12,7 +12,8 @@ class VoucherController extends Controller
      */
     public function index()
     {
-        //
+        $vouchers = Voucher::query()->get();
+        return view('admin.vouchers.index', compact('vouchers'));
     }
 
     /**

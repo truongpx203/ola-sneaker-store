@@ -18,6 +18,7 @@ use App\Http\Controllers\VariantController;
 use App\Http\Controllers\client\CartController;
 use App\Http\Controllers\ProductSizeController;
 use App\Http\Controllers\client\ProductReviewController;
+use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\WishlistController;
 
 
@@ -144,6 +145,17 @@ Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
     Route::get('/user/{id}', [UserController::class, 'update'])->name('user.updateStatus'); // cập nhật trạng thái
     Route::get('/edit-user/{id}', [UserController::class, 'editUser'])->name('user.edit');
     Route::put('/edit-user/{id}', [UserController::class, 'updateUser'])->name('user.update');
+    
+    Route::prefix('voucher')
+        ->as('voucher.')
+        ->group(function () {
+            Route::get('/',                     [VoucherController::class, 'index'])->name('index');
+            Route::get('/create',               [VoucherController::class, 'create'])->name('create');
+            Route::post('/store',               [VoucherController::class, 'store'])->name('store');
+            Route::get('/edit/{id}',            [VoucherController::class, 'edit'])->name('edit');
+            Route::put('/update/{id}',          [VoucherController::class, 'update'])->name('update');
+            Route::delete('/delete/{id}',       [VoucherController::class, 'destroy'])->name('destroy');
+        });
 });
 
 
