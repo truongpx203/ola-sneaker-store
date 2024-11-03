@@ -19,9 +19,9 @@
             </div>
         </div>
     </div>
-    @if ($errors->has('size_error'))
+    @if ($errors->has('error_voucher'))
         <div class="alert alert-danger">
-            {{ $errors->first('size_error') }}
+            {{ $errors->first('error_voucher') }}
         </div>
     @endif
     <div class="row">
