@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\VoucherRequest;
 use App\Models\User;
+use App\Models\VoucerHistory;
 use App\Models\Voucher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -66,8 +67,15 @@ class VoucherController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Voucher $voucher)
+    public function destroy($id)
     {
-        //
+        $voucher = Voucher::find($id);
+        $voucerHistory = VoucerHistory::query()->where('voucher_id', $id)->first();
+        if ($voucerHistory) {
+            return redirect()->route('voucher.index')->withErrors(['error_voucher' => 'Voucher này đang có ràng buộc không thể xóa']);
+        } else {
+            $voucher->delete();
+            return redirect()->route('voucher.index');
+        }
     }
 }
