@@ -49,4 +49,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Bill::class);
     }
+    
+    public function vouchers()
+    {
+        return $this->hasMany(Voucher::class, 'for_user_ids');
+    }
 }
