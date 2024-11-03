@@ -71,11 +71,51 @@ class VoucherRequest extends FormRequest
                         break;
                 }
                 break;
-            
+            case 'PUT':
+                switch ($currentMethod) {
+                    case 'store':
+                        $rules = [
+                            'value' => [
+                                'required',
+                                'numeric',
+                                'min:1',
+                                'max:100',
+                            ],
+                            'description' => [
+                                'required',
+                            ],
+                            'max_price' => [
+                                'required',
+                                'numeric',
+                                'min:0',
+                            ],
+                            'start_datetime' => [
+                                'required',
+                                'after_or_equal:' . now()->format('Y-m-d H:i'),
+                            ],
+                            'end_datetime' => [
+                                'required',
+                                'after_or_equal:start_datetime',
+                            ],
+                            'quantity' => [
+                                'required',
+                                'numeric',
+                                'min:1',
+                            ],
+                            'for_user_ids' => [
+                                'required_without:user_use',
+                            ],
+                            'user_use' => [
+                                'required_without:for_user_ids',
+                            ],
+                        ];
+                        break;
+                }
+                break;
         }
         return $rules;
     }
-    
+
     public function messages()
     {
         return [

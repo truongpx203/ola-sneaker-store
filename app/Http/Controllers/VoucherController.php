@@ -25,10 +25,8 @@ class VoucherController extends Controller
      */
     public function create()
     {
-        $allUsers = User::where('id', '!=', Auth::user()->id)
-                             ->where('status', 'active') 
-                             ->get();
-        return view('admin.vouchers.create',compact('allUsers'));
+        $allUsers = User::where('status', 'active')->get();
+        return view('admin.vouchers.create', compact('allUsers'));
     }
 
     /**
@@ -36,7 +34,7 @@ class VoucherController extends Controller
      */
     public function store(VoucherRequest $request)
     {
-        $productSizes = Voucher::create($request->all());
+        $voucher = Voucher::create($request->all());
         return redirect()->route('voucher.index');
     }
 
@@ -51,17 +49,34 @@ class VoucherController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Voucher $voucher)
+    public function edit($id)
     {
-        //
+        $allUsers = User::where('status', 'active')->get();
+        $voucher = Voucher::find($id);
+        return view('admin.vouchers.edit', compact('voucher', 'allUsers'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Voucher $voucher)
+    public function update(VoucherRequest $request, $id)
     {
-        //
+        $voucher = Voucher::find($id);
+        $data = [
+            "value" => $request->value,
+            "quantity" => $request->quantity,
+            "max_price" => $request->max_price,
+            "start_datetime" => $request->start_datetime,
+            "end_datetime" => $request->end_datetime,
+            "description" => $request->description,
+        ];
+        if (is_null($request->for_user_ids)) {
+            $data["user_use"] = $request->user_use;
+        } else {
+            $data["for_user_ids"] = $request->for_user_ids;
+        }
+        $voucher->update($data);
+        return redirect()->route('voucher.index');
     }
 
     /**
