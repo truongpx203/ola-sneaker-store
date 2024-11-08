@@ -214,8 +214,6 @@ Route::post('/checkout/vnpay', [CheckoutController::class, 'processVNPAY'])->nam
 Route::post('/checkouts', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
 Route::get('/checkouts', [CheckoutController::class, 'checkout'])->name('checkouts');
 
-
-
 // show sp mới limit8
 
 Route::get('/', [ClientProductController::class, 'showNewProducts'])->name('/');

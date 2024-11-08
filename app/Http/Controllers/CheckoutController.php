@@ -51,13 +51,13 @@ class CheckoutController extends Controller
             'address' => 'required',
             'payment_type' => 'required|in:cod,online',
         ]);
-    
+
         DB::beginTransaction();
-    
+
         try {
             $user_id = Auth::id();
             $cartItems = Cart::where('user_id', $user_id)->get();
-    
+
             // Kiểm tra hàng tồn kho
             $outOfStockItems = [];
             foreach ($cartItems as $item) {
@@ -69,20 +69,42 @@ class CheckoutController extends Controller
                     ];
                 }
             }
-    
+
             if (!empty($outOfStockItems)) {
                 return redirect()->route('tt-that-bai')->withErrors([
                     'error' => 'Một số sản phẩm không còn hàng: ' . implode(', ', array_column($outOfStockItems, 'product_name'))
                 ]);
             }
-    
+
             // Tính toán tổng giá
             $total_price = $cartItems->sum(function ($item) {
                 return $item->variants->sale_price * $item->variant_quantity;
             });
-    
+
+            // // 7/11/2024
+            // // Lấy số điểm hiện tại của người dùng
+            // $user = Auth::user();
+            // $userPoints = $user->points; // Điểm của người dùng
+
+            // // Kiểm tra xem người dùng có chọn sử dụng điểm không
+            // $discount = 0;
+            // if ($request->has('points') && $request->points == '1') {
+            //     // Lấy số điểm người dùng muốn sử dụng
+            //     $pointsToUse = $request->input('points', 0);
+
+            //     // Đảm bảo người dùng không sử dụng quá số điểm họ có
+            //     $pointsToUse = min($pointsToUse, $userPoints);
+
+            //     // Tính mức giảm giá
+            //     $discount = $pointsToUse;
+            //     $total_price -= $discount; // Trừ điểm vào tổng giá trị đơn hàng
+            //     $user->points -= $discount; // Giảm số điểm của người dùng
+            //     $user->save(); // Lưu lại số điểm mới
+            // }
+
+            // Tạo mã hóa đơn
             $code = 'BILL-' . strtoupper(uniqid());
-    
+
             // Tạo hóa đơn
             $bill = Bill::create([
                 'user_id' => $user_id,
@@ -95,7 +117,7 @@ class CheckoutController extends Controller
                 'bill_status' => 'pending',
                 'payment_status' => 'pending',
             ]);
-    
+
             // Lưu mỗi sản phẩm trong hóa đơn
             foreach ($cartItems as $item) {
                 BillItem::create([
@@ -108,32 +130,32 @@ class CheckoutController extends Controller
                     'product_name' => $item->variants->product->name,
                     'product_image_url' => $item->variants->product->primary_image_url,
                 ]);
-    
+
                 // Giảm số lượng hàng tồn kho
                 $item->variants->decrement('stock', $item->variant_quantity);
             }
-    
+
             Cart::where('user_id', $user_id)->delete();
-    
+
             DB::commit();
-    
+
             // Gửi email xác nhận đơn hàng đến email của khách hàng
-            $userEmail = Auth::user()->email; 
+            $userEmail = Auth::user()->email;
             Mail::to($userEmail)->send(new OrderConfirmationMail($bill));
-    
+
             return view('client.tt-thanh-cong', compact('bill'));
         } catch (\Exception $e) {
             DB::rollBack();
-    
+
             Log::error('Checkout error: ' . $e->getMessage());
-    
+
             return redirect()->back()->withErrors(['error' => 'Có lỗi xảy ra trong quá trình đặt hàng. Vui lòng thử lại sau.']);
         }
     }
 
     public function processVNPAY(Request $request)
     {
-    
+
         $validateData = $request->validate([
             'full_name' => 'required|max:255',
             'phone_number' => 'required|regex:/^[0-9]{10}$/',
@@ -191,10 +213,10 @@ class CheckoutController extends Controller
                 'user_id' => $user_id,
                 'total_price' => $total_price,
             ]);
-        
+
             Cart::where('user_id', $user_id)->delete();
             DB::commit();
-           
+
             foreach ($cartItems as $item) {
                 BillItem::create([
                     'variant_id' => $item->variant_id,
@@ -207,11 +229,11 @@ class CheckoutController extends Controller
                     'product_image_url' => $item->variants->product->primary_image_url,
                 ]);
 
-                
+
                 $item->variants->decrement('stock', $item->variant_quantity);
             }
 
-           
+
             $vnp_TxnRef = $code;
             $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
             $vnp_Returnurl = route('checkout.vnpay.return');
@@ -294,8 +316,8 @@ class CheckoutController extends Controller
                 $bill->payment_status = 'completed';
                 $bill->bill_status = 'pending';
                 $bill->save();
-                
-                $userEmail = Auth::user()->email; 
+
+                $userEmail = Auth::user()->email;
                 Mail::to($userEmail)->send(new OrderConfirmationMail($bill));
 
                 return view('client.tt-thanh-cong', compact('bill'));
