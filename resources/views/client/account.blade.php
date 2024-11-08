@@ -46,6 +46,10 @@
                                                 <button class="nav-link" id="address-edit-tab" data-bs-toggle="tab"
                                                     data-bs-target="#address-edit" type="button" role="tab"
                                                     aria-controls="address-edit" aria-selected="false">Địa chỉ</button>
+                                                {{--7/11/2024  --}}
+                                                <button class="nav-link" id="points-tab" data-bs-toggle="tab"
+                                                    data-bs-target="#points" type="button" role="tab"
+                                                    aria-controls="points" aria-selected="false">Tích điểm</button>
                                                 <button class="nav-link" onclick="window.location.href='{{ route('logout') }}'"
                                                     type="button">Đăng xuất</button>
                                             @endauth
@@ -318,6 +322,14 @@
                                                 </address>
                                                 <a href="#/" class="check-btn sqr-btn"><i class="fa fa-edit"></i>Sửa
                                                     Địa Chỉ</a>
+                                            </div>
+                                        </div>
+
+                                        {{-- 7/11/2024 --}}
+
+                                        <div class="tab-pane fade" id="points" role="tabpanel" aria-labelledby="points-tab">
+                                            <div class="myaccount-content">
+                                                <p>Điểm tích lũy hiện tại của bạn: <strong>{{ $user->points }}</strong></p>
                                             </div>
                                         </div>
 
