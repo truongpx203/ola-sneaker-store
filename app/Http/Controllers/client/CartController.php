@@ -110,8 +110,13 @@ public function addToCart(Request $request)
     return redirect()->route('cart.show')->with('success', 'Sản phẩm đã được thêm vào giỏ hàng.');
 }
 
+// xóa từng sản phẩm trong giỏ hàng
+public function removeItem($id)
+{
+    Cart::where('id', $id)->delete();
+    return response()->json(['success' => 'Sản phẩm đã được xóa khỏi giỏ hàng.']);
+}
 
- 
 
 //  xóa toàn bộ giỏ hàng
 public function clear()
