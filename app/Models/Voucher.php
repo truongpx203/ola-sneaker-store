@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Voucher extends Model
 {
+    use HasFactory;
+
     protected $table = 'vouchers';
 
     // Chỉ định các cột có thể được gán giá trị
@@ -20,6 +22,7 @@ class Voucher extends Model
         'quantity',
         'used_quantity',
         'for_user_ids',
+        'user_use'
     ];
 
     // Kiểm tra mã voucher có hợp lệ hay không
@@ -39,5 +42,10 @@ class Voucher extends Model
 
         return $discountAmount;
     }
-    use HasFactory;
+    
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'for_user_ids');
+    }
+
 }

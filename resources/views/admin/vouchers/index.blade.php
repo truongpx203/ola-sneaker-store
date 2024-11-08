@@ -19,9 +19,9 @@
             </div>
         </div>
     </div>
-    @if ($errors->has('size_error'))
+    @if ($errors->has('error_voucher'))
         <div class="alert alert-danger">
-            {{ $errors->first('size_error') }}
+            {{ $errors->first('error_voucher') }}
         </div>
     @endif
     <div class="row">
@@ -43,9 +43,10 @@
                                 <th>Số tiền tối đa</th>
                                 <th>Ngày bắt đầu</th>
                                 <th>Ngày kết thúc</th>
-                                <th>Số lượng</th></th>
-                                <th>Số lượng đã sử dụng</th>
+                                <th>Số lượng</th>
+                                </th>
                                 <th>Cho người nào</th>
+                                <th>Số lượng đã sử dụng</th>
                                 <th>Thao tác</th>
                             </tr>
                         </thead>
@@ -60,8 +61,29 @@
                                     <td>{{ $item->start_datetime }}</td>
                                     <td>{{ $item->end_datetime }}</td>
                                     <td>{{ $item->quantity }}</td>
+                                    @if (is_null($item->for_user_ids))
+                                        <td>
+                                            @switch($item->user_use)
+                                                @case('everybody')
+                                                    Tất cả mọi người
+                                                @break
+
+                                                @case('male')
+                                                    Chỉ nam
+                                                @break
+
+                                                @case('female')
+                                                    Chỉ nữ
+                                                @break
+
+                                                @default
+                                                    Không xác định
+                                            @endswitch
+                                        </td>
+                                    @else
+                                        <td>{{ $item->user->id . ' - ' . $item->user->full_name }}</td>
+                                    @endif
                                     <td>{{ $item->used_quantity }}</td>
-                                    <td>{{ $item->for_user_ids }}</td>
                                     <td>
                                         <a href="{{ route('voucher.edit', $item->id) }}" type="submit"
                                             class="btn btn-warning">Sửa</a>
@@ -74,7 +96,7 @@
                                     </td>
                                 </tr>
                             @endforeach
-                            
+
 
                         </tbody>
                     </table>
