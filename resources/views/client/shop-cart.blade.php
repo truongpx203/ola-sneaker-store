@@ -81,7 +81,7 @@
                                                 <td class="product-quantity">
                                                     <div class="pro-qty">
                                                         <div class="dec qty-btn">-</div>
-                                                        <input type="number" class="quantity-input" name="variant_quantity[]" value="{{ $cart->variant_quantity }}" min="1" data-price="{{ $cart->variant->sale_price }}" required>
+                                                        <input type="number" class="quantity-input" name="variant_quantity[]" value="{{ $cart->variant_quantity }}" min="1" max="{{ $cart->variant->stock }}" data-price="{{ $cart->variant->sale_price }}" required>
                                                         <div class="inc qty-btn">+</div>
                                                     </div>
                                                 </td>
@@ -219,36 +219,38 @@
 $(document).ready(function() {
     // Khi nhấn nút xóa
     $('.product-remove a').click(function(event) {
-            event.preventDefault(); // Ngăn chặn hành động mặc định của liên kết
-            
-            let row = $(this).closest('.cart-product-item');
-            let productId = row.find('input[name="id[]"]').val();
+        event.preventDefault(); // Ngăn chặn hành động mặc định của liên kết
+        
+        let row = $(this).closest('.cart-product-item');
+        let productId = row.find('input[name="id[]"]').val();
 
-            // Gửi yêu cầu AJAX để xóa sản phẩm khỏi cơ sở dữ liệu
-            $.ajax({
-                url: `/cart/remove/${productId}`,
-                type: 'DELETE',
-                data: {
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    row.remove(); // Xóa dòng sản phẩm khỏi giao diện
-                    alert(response.success); // Thông báo xóa thành công
-                },
-                error: function(error) {
-                    console.error(error);
-                    alert('Có lỗi xảy ra, vui lòng thử lại.');
-                }
-            });
+        // Gửi yêu cầu AJAX để xóa sản phẩm khỏi cơ sở dữ liệu
+        $.ajax({
+            url: `/cart/remove/${productId}`,
+            type: 'DELETE',
+            data: {
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                alert(response.success); // Thông báo xóa thành công
+                window.location.reload(); // Tải lại trang giỏ hàng
+            },
+            error: function(error) {
+                console.error(error);
+                alert('Có lỗi xảy ra, vui lòng thử lại.');
+            }
         });
-    // hiển thị tổng tiền khi tăng giảm số lượng
-     $('.inc.qty-btn').off('click').on('click', function() {
+    });
+
+    // Hiển thị tổng tiền khi tăng giảm số lượng
+    $('.inc.qty-btn').off('click').on('click', function() {
         let quantityInput = $(this).siblings('.quantity-input');
         let quantity = parseInt(quantityInput.val()) || 0;
         quantity += 1;
         quantityInput.val(quantity);
         updateSubtotal(quantityInput);
     });
+
     $('.dec.qty-btn').off('click').on('click', function() {
         let quantityInput = $(this).siblings('.quantity-input');
         let quantity = parseInt(quantityInput.val()) || 1;
@@ -258,12 +260,14 @@ $(document).ready(function() {
             updateSubtotal(quantityInput);
         }
     });
+
     function updateSubtotal(input) {
         let quantity = parseInt(input.val()) || 0;
         let price = parseFloat(input.data('price'));
         let subtotal = price * quantity;
         input.closest('tr').find('.subtotal').text(new Intl.NumberFormat('vi-VN').format(subtotal) + ' VNĐ');
     }
+
     $('.quantity-input').on('input', function() {
         updateSubtotal($(this));
     });
