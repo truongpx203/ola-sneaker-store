@@ -232,8 +232,8 @@ $(document).ready(function() {
                 _token: '{{ csrf_token() }}'
             },
             success: function(response) {
-                alert(response.success); 
-                window.location.reload(); 
+                alert(response.success); // Thông báo xóa thành công
+                window.location.reload(); // Tải lại trang giỏ hàng
             },
             error: function(error) {
                 console.error(error);
