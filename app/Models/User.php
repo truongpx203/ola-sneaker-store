@@ -23,6 +23,7 @@ class User extends Authenticatable
         'password',
         'phone_number',
         'address',
+        'points', //7/11/2024
     ];
 
     /**
@@ -49,9 +50,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Bill::class);
     }
-    
+
     public function vouchers()
     {
         return $this->hasMany(Voucher::class, 'for_user_ids');
     }
+
 }
