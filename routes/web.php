@@ -20,7 +20,6 @@ use App\Http\Controllers\ProductSizeController;
 use App\Http\Controllers\client\ProductReviewController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\WishlistController;
-use App\Http\Controllers\client\CheckoutNowController;
 
 
 /*
@@ -235,11 +234,8 @@ Route::delete('/cart/remove/{id}', [CartController::class, 'removeItem'])->name(
 Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
 Route::post('/cart/voucher', [CartController::class, 'applyVoucher'])->name('cart.voucher');
 Route::post('/cart/update-all', [CartController::class, 'updateAll'])->name('cart.updateAll');
-//mua ngay
-Route::get('/payment/return', [CheckoutNowController::class, 'returnFromVNPAY'])->name('checkout.vnpay.return');
-Route::post('/checkout-now', [CheckoutNowController::class, 'checkoutNow'])->name('checkout.now');
-Route::post('/checkout-now/process', [CheckoutNowController::class, 'processCheckoutNow'])->name('checkout.now.process');
-Route::post('/checkout-now/vnpay', [CheckoutNowController::class, 'processVNPAYBuyNow'])->name('checkout.vnpay');
+//tìm kiếm theo tên sản phẩm
+Route::get('/search', [ProductController::class, 'search'])->name('search');
 
 
 

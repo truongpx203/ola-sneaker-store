@@ -98,12 +98,12 @@
               </div>
               <div class="header-middle-align-center">
                 <div class="header-search-area">
-                  <form class="header-searchbox">
-                    <input type="search" class="form-control" placeholder="Tìm kiếm">
-                    <button class="btn-submit" type="submit"><i class="pe-7s-search"></i></button>
-                  </form>
+                    <form class="header-searchbox" method="GET" action="{{ route('search') }}">
+                        <input type="search" name="name" class="form-control" placeholder="Tìm kiếm">
+                        <button class="btn-submit" type="submit"><i class="pe-7s-search"></i></button>
+                    </form>
                 </div>
-              </div>
+            </div>                                        
               <div class="header-middle-align-end">
                 <div class="header-action-area">
                   <div class="shopping-search">
@@ -163,11 +163,64 @@
     </div>
   </header>
   <!--== End Header Wrapper ==-->
-  
   <article>
+    <div class="row" id="productContainer"></div>
+            
+  <script>
+      document.getElementById('searchForm').addEventListener('submit', function(e) {
+          e.preventDefault(); // Ngăn chặn reload trang
+  
+          const query = document.getElementById('searchInput').value;
+          const productContainer = document.getElementById('productContainer');
+  
+          // Xóa nội dung cũ
+          productContainer.innerHTML = '';
+  
+          // Gửi yêu cầu AJAX
+          fetch(`/api/search?name=${encodeURIComponent(query)}`)
+              .then(response => response.json())
+              .then(products => {
+                  if (products.length > 0) {
+                      // Nếu có sản phẩm, hiển thị chúng
+                      products.forEach(product => {
+                          const productElement = document.createElement('div');
+                          productElement.classList.add('col-sm-6', 'col-lg-3');
+                          productElement.innerHTML = `
+                              <div class="product-item">
+                                  <div class="inner-content">
+                                      <div class="product-thumb">
+                                          <a href="/product-detail/${product.id}">
+                                              <img src="${product.primary_image_url}" alt="${product.name}" style="height: 271px; object-fit: cover">
+                                          </a>
+                                      </div>
+                                      <div class="product-info">
+                                          <h4 class="title"><a href="/product-detail/${product.id}">${product.name}</a></h4>
+                                          <div class="prices">
+                                              ${product.variants.length > 0 && product.variants[0].sale_price
+                                                  ? `<span class="price-old">${new Intl.NumberFormat().format(product.variants[0].listed_price)} đ</span> - 
+                                                     <span class="price">${new Intl.NumberFormat().format(product.variants[0].sale_price)} đ</span>`
+                                                  : `<span class="price">${new Intl.NumberFormat().format(product.listed_price)} đ</span>`
+                                              }
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          `;
+                          productContainer.appendChild(productElement);
+                      });
+                  } else {
+                      // Nếu không có sản phẩm, hiển thị thông báo
+                      productContainer.innerHTML = '<p>Không tìm thấy sản phẩm nào.</p>';
+                  }
+              })
+              .catch(error => {
+                  console.error('Lỗi khi tìm kiếm:', error);
+                  productContainer.innerHTML = '<p>Có lỗi xảy ra khi tìm kiếm sản phẩm.</p>';
+              });
+      });
+  </script>
     @yield('content')
   </article>
-
   <!--== Start Footer Area Wrapper ==-->
   <footer class="footer-area">
     <!--== Start Footer Main ==-->
@@ -387,8 +440,7 @@
       </div>
     </div>
   </aside>
-  <!--== End Aside Search Menu ==-->
-
+  <!--== End Aside Search Menu ==--> 
   <!--== Start Side Menu ==-->
   <div class="off-canvas-wrapper offcanvas offcanvas-start" tabindex="-1" id="AsideOffcanvasMenu" aria-labelledby="offcanvasExampleLabel">
     <div class="offcanvas-header">
