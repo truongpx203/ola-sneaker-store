@@ -502,6 +502,7 @@
                 .then(response => response.json())
                 .then(data => {
                     updateChart(data);
+                    updateTotal(data);
                 });
         });
 
@@ -509,24 +510,20 @@
         const hourlyChart = new Chart(hourlyctx, {
             type: 'bar',
             data: {
-                labels: Array.from({
-                    length: 24
-                }, (_, i) => `${i}:00`),
+                labels: Array.from({ length: 24 }, (_, i) => `${i}:00`),
                 datasets: [{
                         label: 'Doanh thu (VNĐ)',
                         data: Array(24).fill(0), // Dữ liệu mặc định cho doanh thu
                         backgroundColor: 'rgba(54, 162, 235, 0.6)',
                         borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1,
-                        yAxisID: 'y'
+                        borderWidth: 1
                     },
                     {
                         label: 'Lợi nhuận (VNĐ)',
                         data: Array(24).fill(0), // Dữ liệu mặc định cho lợi nhuận
                         backgroundColor: 'rgba(255, 99, 132, 0.6)',
                         borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1,
-                        yAxisID: 'y1'
+                        borderWidth: 1
                     }
                 ]
             },
@@ -534,21 +531,10 @@
                 scales: {
                     y: {
                         beginAtZero: true,
-                        position: 'left',
+                        position: 'left', // Gộp cả hai cột về trục bên trái
                         title: {
                             display: true,
-                            text: 'Doanh thu (VNĐ)'
-                        }
-                    },
-                    y1: {
-                        beginAtZero: true,
-                        position: 'right',
-                        title: {
-                            display: true,
-                            text: 'Lợi nhuận (VNĐ)'
-                        },
-                        grid: {
-                            drawOnChartArea: false // Tắt đường lưới cho lợi nhuận
+                            text: 'Doanh thu và Lợi nhuận (VNĐ)' // Tiêu đề chung cho trục
                         }
                     }
                 }
@@ -556,260 +542,214 @@
         });
         // Thống kê theo năm
         document.addEventListener('DOMContentLoaded', function() {
-            const year = document.getElementById('year').value;
+    const year = document.getElementById('year').value;
 
-            // Lấy dữ liệu ban đầu cho năm hiện tại
-            fetchStatistics(year);
+    // Lấy dữ liệu ban đầu cho năm hiện tại
+    fetchStatistics(year);
 
-            // Bắt sự kiện khi form được submit
-            document.getElementById('form-statistics-year').addEventListener('submit', function(event) {
-                event.preventDefault();
-                const year = document.getElementById('year').value;
-                fetchStatistics(year);
-            });
+    // Bắt sự kiện khi form được submit
+    document.getElementById('form-statistics-year').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const year = document.getElementById('year').value;
+        fetchStatistics(year);
+    });
+});
+
+// Hàm fetch dữ liệu và cập nhật biểu đồ
+function fetchStatistics(year) {
+    fetch('{{ route('statisticsYear') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                year: year
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            updateChartYear(data); // Cập nhật biểu đồ với dữ liệu mới
         });
+}
 
-        // Hàm fetch dữ liệu và cập nhật biểu đồ
-        function fetchStatistics(year) {
-            fetch('{{ route('statisticsYear') }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        year: year
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    updateChartYear(data); // Cập nhật biểu đồ với dữ liệu mới
-                });
+// Khởi tạo biểu đồ
+const hourlyctxYear = document.getElementById('hourlyChartYear').getContext('2d');
+const hourlyChartYear = new Chart(hourlyctxYear, {
+    type: 'bar',
+    data: {
+        labels: Array.from({
+            length: 12
+        }, (_, i) => `T${i + 1}`), // T1 đến T12
+        datasets: [{
+            label: 'Doanh thu (VNĐ)',
+            data: Array(12).fill(0), // Khởi tạo mảng doanh thu rỗng
+            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }, {
+            label: 'Lợi nhuận (VNĐ)',
+            data: Array(12).fill(0), // Khởi tạo mảng lợi nhuận rỗng
+            backgroundColor: 'rgba(255, 99, 132, 0.6)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                position: 'left', // Cả hai dùng chung trục y bên trái
+                title: {
+                    display: true,
+                    text: 'Doanh thu và Lợi nhuận (VNĐ)' // Tiêu đề chung
+                }
+            }
         }
+    }
+});
+// Theo tháng
+document.getElementById('form-statistics-month').addEventListener('submit', function(event) {
+    event.preventDefault(); // Ngăn chặn hành động gửi form mặc định
+    const month = document.getElementById('month').value; // Lấy tháng được chọn
+    const [year, monthValue] = month.split('-'); // Tách năm và tháng từ giá trị tháng
 
-        // Khởi tạo biểu đồ
-        const hourlyctxYear = document.getElementById('hourlyChartYear').getContext('2d');
-        const hourlyChartYear = new Chart(hourlyctxYear, {
-            type: 'bar',
-            data: {
-                labels: Array.from({
-                    length: 12
-                }, (_, i) => `T${i + 1}`), // T1 đến T12
-                datasets: [{
-                    label: 'Doanh thu (VNĐ)',
-                    data: Array(12).fill(0), // Khởi tạo mảng doanh thu rỗng
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1,
-                    yAxisID: 'y'
-                }, {
-                    label: 'Lợi nhuận (VNĐ)',
-                    data: Array(12).fill(0), // Khởi tạo mảng lợi nhuận rỗng
-                    backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 1,
-                    yAxisID: 'y1'
-                }]
+    fetch('{{ route('statisticsMonth') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        position: 'left',
-                        title: {
-                            display: true,
-                            text: 'Doanh thu (VNĐ)'
-                        }
-                    },
-                    y1: {
-                        beginAtZero: true,
-                        position: 'right',
-                        title: {
-                            display: true,
-                            text: 'Lợi nhuận (VNĐ)'
-                        },
-                        grid: {
-                            drawOnChartArea: false // Tắt đường lưới cho lợi nhuận
-                        }
-                    }
+            body: JSON.stringify({
+                month: monthValue,
+                year: year // Gửi thêm năm
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            updateMonthlyChart(data); // Cập nhật biểu đồ với dữ liệu mới
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+});
+
+// Khởi tạo biểu đồ tháng
+const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+const monthlyChart = new Chart(monthlyCtx, {
+    type: 'bar',
+    data: {
+        labels: Array.from({ length: 31 }, (_, i) => i + 1), // Tạo nhãn cho 31 ngày
+        datasets: [{
+                label: 'Doanh thu (VNĐ)',
+                data: Array(31).fill(0), // Dữ liệu mặc định cho 31 ngày
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            },
+            {
+                label: 'Lợi nhuận (VNĐ)',
+                data: Array(31).fill(0), // Dữ liệu mặc định cho 31 ngày
+                backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }
+        ]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                position: 'left', // Cả hai dùng chung trục y bên trái
+                title: {
+                    display: true,
+                    text: 'Doanh thu và lợi nhuận (VNĐ)' // Tiêu đề chung cho cả doanh thu và lợi nhuận
                 }
             }
-        });
-        // Theo tháng
-        document.getElementById('form-statistics-month').addEventListener('submit', function(event) {
-            event.preventDefault(); // Ngăn chặn hành động gửi form mặc định
-            const month = document.getElementById('month').value; // Lấy tháng được chọn
-            const [year, monthValue] = month.split('-'); // Tách năm và tháng từ giá trị tháng
-
-            fetch('{{ route('statisticsMonth') }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        month: monthValue,
-                        year: year // Gửi thêm năm
-                    })
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    updateMonthlyChart(data);
-                })
-                .catch(error => {
-                    console.error('There was a problem with the fetch operation:', error);
-                });
-        });
-
-        // Khởi tạo biểu đồ tháng
-        const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
-        const monthlyChart = new Chart(monthlyCtx, {
-            type: 'bar',
-            data: {
-                labels: Array.from({
-                    length: 31
-                }, (_, i) => i + 1), // Tạo nhãn cho 31 ngày
-                datasets: [{
-                        label: 'Doanh thu (VNĐ)',
-                        data: Array(31).fill(0), // Dữ liệu mặc định cho 31 ngày
-                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1,
-                        yAxisID: 'y'
-                    },
-                    {
-                        label: 'Lợi nhuận (VNĐ)',
-                        data: Array(31).fill(0), // Dữ liệu mặc định cho 31 ngày
-                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1,
-                        yAxisID: 'y1'
-                    },
-
-                ]
+        }
+    }
+});
+        // Theo khoảng thời gian
+document.getElementById('form-statistics-time').addEventListener('submit', function(event) {
+    event.preventDefault(); // Ngăn chặn hành động gửi form mặc định
+    const startDate = document.getElementById('start_date').value; // Lấy ngày bắt đầu
+    const endDate = document.getElementById('end_date').value; // Lấy ngày kết thúc
+    const errorDiv = document.getElementById('error-message');
+    if (errorDiv) {
+        errorDiv.remove();
+    }
+    fetch('{{ route('statisticsTimeRange') }}', { // Sử dụng route để gửi yêu cầu đến server
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        position: 'left',
-                        title: {
-                            display: true,
-                            text: 'Doanh thu và lợi nhuận (VNĐ)'
-                        }
-                    },
-                    y1: {
-                        beginAtZero: true,
-                        position: 'right',
-                        title: {
-                            display: true,
-                            text: 'Lợi nhuận (VNĐ)'
-                        },
-                        grid: {
-                            drawOnChartArea: false
-                        }
-                    },
+            body: JSON.stringify({
+                start_date: startDate,
+                end_date: endDate
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Khoảng thời gian không vượt quá 30 ngày');
+            }
+            return response.json();
+        })
+        .then(data => {
+            updateTimeRangeChart(data); // Cập nhật biểu đồ với dữ liệu mới
+        })
+        .catch(error => {
+            // Hiển thị thông báo lỗi nếu khoảng thời gian không hợp lệ
+            const errorMessage = document.createElement('div');
+            errorMessage.id = 'error-message';
+            errorMessage.classList.add('alert', 'alert-danger');
+            errorMessage.innerText = error.message;
 
+            // Chèn thông báo lỗi vào trước form
+            document.getElementById('form-statistics-time').insertAdjacentElement('beforebegin', errorMessage);
+        });
+});
+
+// Khởi tạo biểu đồ cho khoảng thời gian
+const timeRangeCtx = document.getElementById('timeRangeChart').getContext('2d');
+const timeRangeChart = new Chart(timeRangeCtx, {
+    type: 'bar',
+    data: {
+        labels: [], // Nhãn sẽ được cập nhật khi có dữ liệu từ server
+        datasets: [{
+                label: 'Doanh thu (VNĐ)',
+                data: [], // Dữ liệu doanh thu sẽ được cập nhật
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            },
+            {
+                label: 'Lợi nhuận (VNĐ)',
+                data: [],
+                backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }
+        ]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                position: 'left',
+                title: {
+                    display: true,
+                    text: 'Doanh thu và lợi nhuận (VNĐ)' // Tiêu đề chung cho cả doanh thu và lợi nhuận
                 }
             }
-        });
-        //theo khoảng thời gian
-        // Sự kiện submit cho thống kê theo khoảng thời gian
-        document.getElementById('form-statistics-time').addEventListener('submit', function(event) {
-            event.preventDefault(); // Ngăn chặn hành động gửi form mặc định
-            const startDate = document.getElementById('start_date').value; // Lấy ngày bắt đầu
-            const endDate = document.getElementById('end_date').value; // Lấy ngày kết thúc
-            const errorDiv = document.getElementById('error-message');
-            if (errorDiv) {
-                errorDiv.remove();
-            }
-            fetch('{{ route('statisticsTimeRange') }}', { // Sử dụng route để gửi yêu cầu đến server
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        start_date: startDate,
-                        end_date: endDate
-                    })
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Khoảng thời gian không vượt quá 30 ngày');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    updateTimeRangeChart(data); // Cập nhật biểu đồ với dữ liệu mới
-                })
-                .catch(error => {
-                    // Hiển thị thông báo lỗi nếu khoảng thời gian không hợp lệ
-                    const errorMessage = document.createElement('div');
-                    errorMessage.id = 'error-message';
-                    errorMessage.classList.add('alert', 'alert-danger');
-                    errorMessage.innerText = error.message;
-
-                    // Chèn thông báo lỗi vào trước form
-                    document.getElementById('form-statistics-time').insertAdjacentElement('beforebegin',
-                        errorMessage);
-                });
-        });
-
-        // Khởi tạo biểu đồ cho khoảng thời gian
-        const timeRangeCtx = document.getElementById('timeRangeChart').getContext('2d');
-        const timeRangeChart = new Chart(timeRangeCtx, {
-            type: 'bar',
-            data: {
-                labels: [], // Nhãn sẽ được cập nhật khi có dữ liệu từ server
-                datasets: [{
-                        label: 'Doanh thu (VNĐ)',
-                        data: [], // Dữ liệu doanh thu sẽ được cập nhật
-                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1,
-                        yAxisID: 'y'
-                    },
-                    {
-                        label: 'Lợi nhuận (VNĐ)',
-                        data: [],
-                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1,
-                        yAxisID: 'y1'
-                    },
-                ]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        position: 'left',
-                        title: {
-                            display: true,
-                            text: 'Doanh thu và lợi nhuận (VNĐ)'
-                        }
-                    },
-                    y1: {
-                        beginAtZero: true,
-                        position: 'right',
-                        title: {
-                            display: true,
-                            text: 'Lợi nhuận (VNĐ)'
-                        },
-                        grid: {
-                            drawOnChartArea: false
-                        }
-                    },
-                }
-            }
-        });
-
+        }
+    }
+});
         // Hàm cập nhật biểu đồ theo khoảng thời gian
         function updateTimeRangeChart(data) {
             const labels = data.labels; // Dữ liệu nhãn (ngày)
@@ -825,12 +765,22 @@
             timeRangeChart.update();
         }
 
-        // Hàm cập nhật biểu đồ hàng tháng
         function updateMonthlyChart(data) {
-            monthlyChart.data.datasets[0].data = data.revenues;
-            monthlyChart.data.datasets[1].data = data.profits;
-            monthlyChart.update();
-        }
+    const revenueData = Array(31).fill(0); // Dữ liệu doanh thu
+    const profitData = Array(31).fill(0); // Dữ liệu lợi nhuận
+
+    // Cập nhật dữ liệu cho biểu đồ từ dữ liệu trả về
+    data.forEach(item => {
+        const day = item.day; // Ngày trong tháng
+        revenueData[day - 1] = item.total_revenue; // Cập nhật doanh thu
+        profitData[day - 1] = item.total_profit; // Cập nhật lợi nhuận
+    });
+
+    // Cập nhật dữ liệu cho biểu đồ
+    monthlyChart.data.datasets[0].data = revenueData; // Doanh thu
+    monthlyChart.data.datasets[1].data = profitData; // Lợi nhuận
+    monthlyChart.update(); // Cập nhật biểu đồ
+}
 
         function updateChart(data) {
             hourlyChart.data.datasets[0].data = data.revenues;

@@ -86,15 +86,15 @@ class BillController extends Controller
 
         if ($bill->bill_status === 'canceled') {
             Mail::to($customerEmail)->send(new OrderCanceledMail($bill, $request->input('note'), $history->at_datetime));
-        } 
-        else if ($bill->bill_status === 'completed') {
+        } else if ($bill->bill_status === 'completed') {
             Mail::to($customerEmail)->send(new OrderCompletedMail($bill));
-        } 
-        else {
+            // Cộng điểm cho người dùng khi đơn hàng hoàn thành (7/11/2024)
+            $bill->awardPointsToUser(); // Cộng điểm cho người dùng
+        } else {
             Mail::to($customerEmail)->send(new OrderStatusUpdatedMail($bill, $history->note, $history->at_datetime));
         }
 
-        
+
         if ($bill->bill_status === 'delivered' && $oldStatus !== 'completed') {
             UpdateOrderStatus::dispatch($bill->id)->delay(now()->addDays(3));
             // UpdateOrderStatus::dispatch($bill->id)->delay(now()->addMinutes(1));
@@ -102,4 +102,5 @@ class BillController extends Controller
 
         return redirect()->route('bills.show', $id)->with('success', 'Trạng thái đơn hàng đã được cập nhật.');
     }
+
 }

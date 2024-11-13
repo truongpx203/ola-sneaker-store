@@ -18,6 +18,7 @@ use App\Http\Controllers\VariantController;
 use App\Http\Controllers\client\CartController;
 use App\Http\Controllers\ProductSizeController;
 use App\Http\Controllers\client\ProductReviewController;
+use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\WishlistController;
 
 
@@ -144,6 +145,17 @@ Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
     Route::get('/user/{id}', [UserController::class, 'update'])->name('user.updateStatus'); // cập nhật trạng thái
     Route::get('/edit-user/{id}', [UserController::class, 'editUser'])->name('user.edit');
     Route::put('/edit-user/{id}', [UserController::class, 'updateUser'])->name('user.update');
+    
+    Route::prefix('voucher')
+        ->as('voucher.')
+        ->group(function () {
+            Route::get('/',                     [VoucherController::class, 'index'])->name('index');
+            Route::get('/create',               [VoucherController::class, 'create'])->name('create');
+            Route::post('/store',               [VoucherController::class, 'store'])->name('store');
+            Route::get('/edit/{id}',            [VoucherController::class, 'edit'])->name('edit');
+            Route::put('/update/{id}',          [VoucherController::class, 'update'])->name('update');
+            Route::delete('/delete/{id}',       [VoucherController::class, 'destroy'])->name('destroy');
+        });
 });
 
 
@@ -202,8 +214,6 @@ Route::post('/checkout/vnpay', [CheckoutController::class, 'processVNPAY'])->nam
 Route::post('/checkouts', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
 Route::get('/checkouts', [CheckoutController::class, 'checkout'])->name('checkouts');
 
-
-
 // show sp mới limit8
 
 Route::get('/', [ClientProductController::class, 'showNewProducts'])->name('/');
@@ -220,11 +230,12 @@ Route::get('/shop/filter/price', [ClientProductController::class, 'filterByPrice
 //trang giỏ hàng
 Route::get('/cart', [CartController::class, 'showCart'])->name('cart.show');
 Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+Route::delete('/cart/remove/{id}', [CartController::class, 'removeItem'])->name('cart.remove');
 Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
 Route::post('/cart/voucher', [CartController::class, 'applyVoucher'])->name('cart.voucher');
 Route::post('/cart/update-all', [CartController::class, 'updateAll'])->name('cart.updateAll');
-
-
+//tìm kiếm theo tên sản phẩm
+Route::get('/search', [ProductController::class, 'search'])->name('search');
 
 
 

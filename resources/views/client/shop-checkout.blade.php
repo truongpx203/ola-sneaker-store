@@ -27,15 +27,15 @@
 
         <!--== Start Shopping Checkout Area Wrapper ==-->
         <section class="shopping-checkout-wrap">
-           
+
             <div class="container">
                 @if ($errors->any())
-                <div class="alert alert-danger">
+                    <div class="alert alert-danger">
                         @foreach ($errors->all() as $error)
                             {{ $error }}
                         @endforeach
-                </div>
-            @endif
+                    </div>
+                @endif
                 <form id="checkout-form" action="{{ route('checkout.process') }}" method="post">
                     @csrf
                     <input type="hidden" name="user_id" value="{{ Auth::id() }}">
@@ -160,8 +160,12 @@
                                                     </div>
                                                 </div>
                                             </div> --}}
+
+                                            {{-- 7/11/2024 --}}
+
                                             <div>
-                                                <input type="radio" id="payment_cod" name="payment_type" value="cod">
+                                                <input type="radio" id="payment_cod" name="payment_type"
+                                                    value="cod">
                                                 <label for="payment_cod">Thanh toán khi nhận hàng (COD)</label>
                                             </div>
 
@@ -171,7 +175,7 @@
                                                 <label for="payment_vnpay" aria-labelledby="check_payments4"
                                                     data-bs-parent="#PaymentMethodAccordion">Thanh toán với VNPAY</label>
                                             </div>
-                                            
+
                                             {{-- <div id="bankSelectionModal" class="modal">
                                                 <div class="modal-content">
                                                     <h4>Chọn ngân hàng</h4>
@@ -212,7 +216,7 @@
                 <script>
                     document.getElementById('checkout-form').addEventListener('submit', function(event) {
                         const paymentType = document.querySelector('input[name="payment_type"]:checked').value;
-                        
+
                         // Nếu chọn thanh toán online, chuyển hướng đến route VNPAY
                         if (paymentType === 'online') {
                             this.action = "{{ route('checkout.vnpay') }}"; // Chuyển đến route thanh toán VNPAY
@@ -263,6 +267,16 @@
             if (event.target == bankSelectionModal) {
                 bankSelectionModal.style.display = "none";
             }
+        }
+    });
+</script>
+
+<script>
+    document.getElementById('use_points').addEventListener('change', function () {
+        const pointsField = document.getElementById('points_field');
+        pointsField.style.display = this.checked ? 'block' : 'none';
+        if (!this.checked) {
+            document.getElementById('points').value = '';
         }
     });
 </script>

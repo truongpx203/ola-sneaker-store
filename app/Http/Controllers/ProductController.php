@@ -250,4 +250,10 @@ class ProductController extends Controller
 
         return redirect()->route('products.index')->with('success', 'Xóa sản phẩm thành công.');
     }
+    public function search(Request $request) {
+        $query = $request->input('name');
+    $products = Product::where('name', 'like', '%' . $query . '%')->with('variants')->get();
+
+    return view('client.search', compact('products', 'query'));
+    }
 }
