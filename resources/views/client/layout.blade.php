@@ -65,7 +65,7 @@
                   <div class="info-items">
                     <ul>
                       <li class="number"><i class="fa fa-phone"></i><a href="tel://0123456789">+00 123 456 789</a></li>
-                      <li class="email"><i class="fa fa-envelope"></i><a href="mailto://demo@example.com">demo@example.com</a></li>
+                      <li class="email"><i class="fa fa-envelope"></i><a href="mailto://datn@gmail.com">datn@gmail.com</a></li>
                       <li class="account">
                         <i class="fa fa-user"></i>
                         @if (Auth::check())

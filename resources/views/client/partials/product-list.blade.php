@@ -5,17 +5,24 @@
             <div class="inner-content">
                 <div class="product-thumb">
                     <a href="{{ route('product-detail', ['id' => $product->id]) }}">
-                        <img src="{{ Storage::url ($product->primary_image_url) }}" alt="{{ $product->name }}" style="height: 271px; object-fit: cover">
+                        <img src="{{ Storage::url($product->primary_image_url) }}" alt="{{ $product->name }}"
+                            style="height: 271px; object-fit: cover">
                     </a>
                     <div class="product-flag">
                         <ul>
                             @if ($product->variants->isNotEmpty() && $product->variants->first()->sale_price)
-                                <li class="discount">-{{ round((($product->variants->first()->listed_price - $product->variants->first()->sale_price) / $product->variants->first()->listed_price) * 100) }}%</li>
+                                <li class="discount">
+                                    -{{ round((($product->variants->first()->listed_price - $product->variants->first()->sale_price) / $product->variants->first()->listed_price) * 100) }}%
+                                </li>
                             @endif
                         </ul>
                     </div>
                     <div class="product-action">
-                        <a class="btn-product-wishlist" href="shop-wishlist.html"><i class="fa fa-heart"></i></a>
+                        <form action="{{ route('wishlist.store') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                            <button type="submit" class="btn-product-wishlist"><i class="fa fa-heart"></i></button>
+                        </form>
                         <a class="btn-product-cart" href="shop-cart.html"><i class="fa fa-shopping-cart"></i></a>
                         <button type="button" class="btn-product-quick-view-open">
                             <i class="fa fa-arrows"></i>
@@ -24,7 +31,8 @@
                     <a class="banner-link-overlay" href="shop.html"></a>
                 </div>
                 <div class="product-info">
-                    <h4 class="title"><a href="{{ route('product-detail', ['id' => $product->id]) }}">{{ $product->name }}</a></h4>
+                    <h4 class="title"><a
+                            href="{{ route('product-detail', ['id' => $product->id]) }}">{{ $product->name }}</a></h4>
                     <div class="prices">
                         @if ($product->variants->isNotEmpty())
                             @php
@@ -76,20 +84,24 @@
 
 <style>
     .pagination li {
-    margin: 0 5px;
-}
+        margin: 0 5px;
+    }
 
-.pagination li a {
-    color: #000; /* Màu mặc định */
-    text-decoration: none;
-}
+    .pagination li a {
+        color: #000;
+        /* Màu mặc định */
+        text-decoration: none;
+    }
 
-.pagination li.active a {
-    color: #f6931f; /* Màu cho trang hiện tại */
-    font-weight: bold; /* Đậm hơn */
-}
+    .pagination li.active a {
+        color: #f6931f;
+        /* Màu cho trang hiện tại */
+        font-weight: bold;
+        /* Đậm hơn */
+    }
 
-.pagination li.disabled a {
-    color: #ccc; /* Màu cho trang không khả dụng */
-}
+    .pagination li.disabled a {
+        color: #ccc;
+        /* Màu cho trang không khả dụng */
+    }
 </style>

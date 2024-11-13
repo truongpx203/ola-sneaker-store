@@ -51,74 +51,87 @@
                         @endif
 
                         <div class="shopping-wishlist-table table-responsive">
-                            <table class="table text-center">
-                                <thead>
-                                    <tr>
-                                        <th class="product-remove">&nbsp;</th>
-                                        <th class="product-thumb">&nbsp;</th>
-                                        <th class="product-name">Sản phẩm</th>
-                                        <th class="product-price">Giá</th>
-                                        <th class="product-action">&nbsp;</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($wishlists as $item)
-                                        <tr class="cart-wishlist-item">
-                                            <td class="product-remove">
-                                                <form action="{{ route('wishlist.destroy', $item->id) }}" method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit"
-                                                        onclick="return confirm('Bạn có thật sự muốn xóa không??')"
-                                                        style="background: none; border: none; padding: 0; cursor: pointer;">
-                                                        <i class="fa fa-trash-o"></i></button>
-                                                </form>
-                                            </td>
-                                            <td class="product-thumb">
-                                                <a href="single-product.html">
-                                                    <img src="{{ Storage::url($item->product->primary_image_url) }}"
-                                                        width="90" height="110" alt="{{ $item->product->name }}">
-                                                </a>
-                                            </td>
-                                            <td class="product-name">
-                                                <h4 class="title"><a
-                                                        href="{{ route('product-detail', ['id' => $item->product->id]) }}">{{ $item->product->name }}</a>
-                                                </h4>
-                                            </td>
-                                            <td class="product-price">
-                                                <span class="prices">
-                                                    @if ($item->product->variants->isNotEmpty())
-                                                        @php
-                                                            $variant = $item->product->variants->first();
-                                                        @endphp
-                                                        @if ($variant->sale_price)
-                                                            <span
-                                                                class="text-decoration-line-through">{{ number_format($variant->listed_price) }}
-                                                                đ</span>
-                                                            <span class="sep">-</span>
-                                                            <span class="price">{{ number_format($variant->sale_price) }}
-                                                                đ</span>
+                            @if ($wishlists->isEmpty())
+                                <div class="text-center">
+                                    <p>Chưa có sản phẩm yêu thích</p>
+                                    <a class="btn-cart"
+                                        href="{{ route('shop.filter') }}">
+                                        -- Trang danh sách sản phẩm -- 
+                                    </a>
+                                </div>
+                            @else
+                                <table class="table text-center">
+                                    <thead>
+                                        <tr>
+                                            <th class="product-remove">&nbsp;</th>
+                                            <th class="product-thumb">&nbsp;</th>
+                                            <th class="product-name">Sản phẩm</th>
+                                            <th class="product-price">Giá</th>
+                                            <th class="product-action">&nbsp;</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($wishlists as $item)
+                                            <tr class="cart-wishlist-item">
+                                                <td class="product-remove">
+                                                    <form action="{{ route('wishlist.destroy', $item->id) }}"
+                                                        method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit"
+                                                            onclick="return confirm('Bạn có thật sự muốn xóa không??')"
+                                                            style="background: none; border: none; padding: 0; cursor: pointer;">
+                                                            <i class="fa fa-trash-o"></i></button>
+                                                    </form>
+                                                </td>
+                                                <td class="product-thumb">
+                                                    <a href="single-product.html">
+                                                        <img src="{{ Storage::url($item->product->primary_image_url) }}"
+                                                            width="90" height="110" alt="{{ $item->product->name }}">
+                                                    </a>
+                                                </td>
+                                                <td class="product-name">
+                                                    <h4 class="title"><a
+                                                            href="{{ route('product-detail', ['id' => $item->product->id]) }}">{{ $item->product->name }}</a>
+                                                    </h4>
+                                                </td>
+                                                <td class="product-price">
+                                                    <span class="prices">
+                                                        @if ($item->product->variants->isNotEmpty())
+                                                            @php
+                                                                $variant = $item->product->variants->first();
+                                                            @endphp
+                                                            @if ($variant->sale_price)
+                                                                <span
+                                                                    class="text-decoration-line-through">{{ number_format($variant->listed_price) }}
+                                                                    đ</span>
+                                                                <span class="sep">-</span>
+                                                                <span
+                                                                    class="price">{{ number_format($variant->sale_price) }}
+                                                                    đ</span>
+                                                            @else
+                                                                <span
+                                                                    class="price">{{ number_format($variant->listed_price) }}
+                                                                    đ</span>
+                                                            @endif
                                                         @else
                                                             <span
-                                                                class="price">{{ number_format($variant->listed_price) }}
+                                                                class="price">{{ number_format($item->product->listed_price) }}
                                                                 đ</span>
                                                         @endif
-                                                    @else
-                                                        <span
-                                                            class="price">{{ number_format($item->product->listed_price) }}
-                                                            đ</span>
-                                                    @endif
-                                                </span>
-                                            </td>
-                                            <td class="product-action">
-                                                <a class="btn-cart"
-                                                    href="{{ route('product-detail', ['id' => $item->product->id]) }}">Chi
-                                                    tiết sản phẩm</a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                                    </span>
+                                                </td>
+                                                <td class="product-action">
+                                                    <a class="btn-cart"
+                                                        href="{{ route('product-detail', ['id' => $item->product->id]) }}">Chi
+                                                        tiết sản phẩm</a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @endif
+
                         </div>
                     </div>
                 </div>
