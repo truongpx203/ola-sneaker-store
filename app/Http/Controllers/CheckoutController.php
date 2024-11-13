@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Mail\OrderConfirmationMail;
+use App\Models\Product;
 use Illuminate\Support\Facades\Mail;
 
 class CheckoutController extends Controller
@@ -43,11 +44,15 @@ class CheckoutController extends Controller
 
     public function processCheckout(Request $request)
     {
+        // Kiểm tra nếu giỏ hàng trống
+        $cartItems = Cart::where('user_id', Auth::id())->get();
+        if ($cartItems->isEmpty()) {
+            return redirect()->back()->withErrors(['error' => 'Giỏ hàng của bạn đang trống. Vui lòng thêm sản phẩm trước khi thanh toán.']);
+        }
 
         $validateData = $request->validate([
             'full_name' => 'required|max:255',
             'phone_number' => 'required|regex:/^[0-9]{10}$/',
-            'email' => 'required|email',
             'address' => 'required',
             'payment_type' => 'required|in:cod,online',
         ]);
@@ -64,6 +69,7 @@ class CheckoutController extends Controller
                 if ($item->variant_quantity > $item->variants->stock) {
                     $outOfStockItems[] = [
                         'product_name' => $item->variants->product->name,
+                        'size' => $item->variants->size->name,
                         'available_stock' => $item->variants->stock,
                         'requested_quantity' => $item->variant_quantity,
                     ];
@@ -71,8 +77,14 @@ class CheckoutController extends Controller
             }
 
             if (!empty($outOfStockItems)) {
+                // Tạo chuỗi thông báo lỗi chi tiết bao gồm tên sản phẩm và kích thước
+                $errorMessages = [];
+                foreach ($outOfStockItems as $outOfStock) {
+                    $errorMessages[] = "{$outOfStock['product_name']} (Size: {$outOfStock['size']})";
+                }
+
                 return redirect()->route('tt-that-bai')->withErrors([
-                    'error' => 'Một số sản phẩm không còn hàng: ' . implode(', ', array_column($outOfStockItems, 'product_name'))
+                    'error' => 'Một số sản phẩm không còn hàng: ' . implode(', ', $errorMessages)
                 ]);
             }
 
@@ -80,27 +92,6 @@ class CheckoutController extends Controller
             $total_price = $cartItems->sum(function ($item) {
                 return $item->variants->sale_price * $item->variant_quantity;
             });
-
-            // // 7/11/2024
-            // // Lấy số điểm hiện tại của người dùng
-            // $user = Auth::user();
-            // $userPoints = $user->points; // Điểm của người dùng
-
-            // // Kiểm tra xem người dùng có chọn sử dụng điểm không
-            // $discount = 0;
-            // if ($request->has('points') && $request->points == '1') {
-            //     // Lấy số điểm người dùng muốn sử dụng
-            //     $pointsToUse = $request->input('points', 0);
-
-            //     // Đảm bảo người dùng không sử dụng quá số điểm họ có
-            //     $pointsToUse = min($pointsToUse, $userPoints);
-
-            //     // Tính mức giảm giá
-            //     $discount = $pointsToUse;
-            //     $total_price -= $discount; // Trừ điểm vào tổng giá trị đơn hàng
-            //     $user->points -= $discount; // Giảm số điểm của người dùng
-            //     $user->save(); // Lưu lại số điểm mới
-            // }
 
             // Tạo mã hóa đơn
             $code = 'BILL-' . strtoupper(uniqid());
@@ -143,7 +134,7 @@ class CheckoutController extends Controller
             $userEmail = Auth::user()->email;
             Mail::to($userEmail)->send(new OrderConfirmationMail($bill));
 
-            return view('client.tt-thanh-cong', compact('bill'));
+            return redirect()->route('tt-thanh-cong')->with('success', 'Thanh toán thành công!');
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -155,134 +146,94 @@ class CheckoutController extends Controller
 
     public function processVNPAY(Request $request)
     {
+        // Kiểm tra nếu giỏ hàng trống
+        $cartItems = Cart::where('user_id', Auth::id())->get();
+        if ($cartItems->isEmpty()) {
+            return redirect()->back()->withErrors(['error' => 'Giỏ hàng của bạn đang trống. Vui lòng thêm sản phẩm trước khi thanh toán.']);
+        }
 
         $validateData = $request->validate([
             'full_name' => 'required|max:255',
             'phone_number' => 'required|regex:/^[0-9]{10}$/',
-            'email' => 'required|email',
             'address' => 'required',
-
-            'payment_type' => 'required|in:online',
+            'payment_type' => 'required|in:cod,online',
         ]);
 
-        DB::beginTransaction();
-
-        try {
-            $user_id = Auth::id();
-            $cartItems = Cart::where('user_id', $user_id)->get();
-
-            // Kiểm tra hàng tồn kho
-            $outOfStockItems = [];
-            foreach ($cartItems as $item) {
-                if ($item->variant_quantity > $item->variants->stock) {
-                    $outOfStockItems[] = [
-                        'product_name' => $item->variants->product->name,
-                        'available_stock' => $item->variants->stock,
-                        'requested_quantity' => $item->variant_quantity,
-                    ];
-                }
-            }
-
-            if (!empty($outOfStockItems)) {
-                return redirect()->route('tt-that-bai')->withErrors([
-                    'error' => 'Một số sản phẩm không còn hàng: ' . implode(', ', array_column($outOfStockItems, 'product_name'))
-                ]);
-            }
-
-            // Tính tổng giá
-            $total_price = $cartItems->sum(function ($item) {
-                return $item->variants->sale_price * $item->variant_quantity;
-            });
-
-            $code = 'BILL-' . strtoupper(uniqid());
-
-            // Tạo hóa đơn
-            $bill = Bill::create([
-                'user_id' => $user_id,
-                'code' => $code,
-                'full_name' => $validateData['full_name'],
-                'phone_number' => $validateData['phone_number'],
-                'address' => $validateData['address'],
-                'payment_type' => 'online',
-                'total_price' => $total_price,
-                'bill_status' => 'pending',
-                'payment_status' => 'pending',
-            ]);
-            Log::info('Created bill:', [
-                'bill_code' => $bill->code,
-                'user_id' => $user_id,
-                'total_price' => $total_price,
-            ]);
-
-            Cart::where('user_id', $user_id)->delete();
-            DB::commit();
-
-            foreach ($cartItems as $item) {
-                BillItem::create([
-                    'variant_id' => $item->variant_id,
-                    'bill_id' => $bill->id,
-                    'sale_price' => $item->variants->sale_price,
-                    'listed_price' => $item->variants->listed_price,
-                    'import_price' => $item->variants->import_price,
-                    'variant_quantity' => $item->variant_quantity,
-                    'product_name' => $item->variants->product->name,
-                    'product_image_url' => $item->variants->product->primary_image_url,
-                ]);
+        // Lưu thông tin vào session
+        session([
+            'payment.full_name' => $validateData['full_name'],
+            'payment.phone_number' => $validateData['phone_number'],
+            'payment.address' => $validateData['address']
+        ]);
 
 
-                $item->variants->decrement('stock', $item->variant_quantity);
-            }
+          // Kiểm tra hàng tồn kho
+          $outOfStockItems = [];
+          foreach ($cartItems as $item) {
+              if ($item->variant_quantity > $item->variants->stock) {
+                  $outOfStockItems[] = [
+                      'product_name' => $item->variants->product->name,
+                      'size' => $item->variants->size->name,
+                      'available_stock' => $item->variants->stock,
+                      'requested_quantity' => $item->variant_quantity,
+                  ];
+              }
+          }
 
+          if (!empty($outOfStockItems)) {
+              // Tạo chuỗi thông báo lỗi chi tiết bao gồm tên sản phẩm và kích thước
+              $errorMessages = [];
+              foreach ($outOfStockItems as $outOfStock) {
+                  $errorMessages[] = "{$outOfStock['product_name']} (Size: {$outOfStock['size']})";
+              }
 
-            $vnp_TxnRef = $code;
-            $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-            $vnp_Returnurl = route('checkout.vnpay.return');
-            $vnp_TmnCode = "KA1BV3N8";
-            $vnp_HashSecret = "12GUKMUAGMQR4QW57D26MKG56RCYN9G8";
+              return redirect()->route('tt-that-bai')->withErrors([
+                  'error' => 'Một số sản phẩm không còn hàng: ' . implode(', ', $errorMessages)
+              ]);
+          }
 
-            $vnp_OrderInfo = "Thanh toán VNPAY - Mã đơn hàng: " . $vnp_TxnRef;
-            $vnp_Amount = $total_price * 100;
-            $vnp_Locale = "VN";
-            $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
+          
+        // Tính tổng giá trị giỏ hàng
+        $total_price = $cartItems->sum(function ($item) {
+            return $item->variants->sale_price * $item->variant_quantity;
+        });
 
-            // Chuẩn bị dữ liệu gửi đến VNPAY
-            $inputData = [
-                "vnp_Version" => "2.1.0",
-                "vnp_TmnCode" => $vnp_TmnCode,
-                "vnp_Amount" => $vnp_Amount,
-                "vnp_Command" => "pay",
-                "vnp_CreateDate" => date('YmdHis'),
-                "vnp_CurrCode" => "VND",
-                "vnp_IpAddr" => $vnp_IpAddr,
-                "vnp_Locale" => $vnp_Locale,
-                "vnp_OrderInfo" => $vnp_OrderInfo,
-                "vnp_OrderType" => 'billpayment',
-                "vnp_ReturnUrl" => $vnp_Returnurl,
-                "vnp_TxnRef" => $vnp_TxnRef,
-            ];
+        // Tạo mã đơn hàng duy nhất
+        $code = 'BILL-' . strtoupper(uniqid());
 
-            // Sắp xếp và tạo chuỗi truy vấn
-            ksort($inputData);
-            $hashdata = http_build_query($inputData);
-            $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
-            $query = $hashdata . '&vnp_SecureHash=' . $vnpSecureHash;
+        $vnp_TxnRef = $code;
+        $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+        $vnp_Returnurl = route('checkout.vnpay.returnFrom');
+        $vnp_TmnCode = "KA1BV3N8";
+        $vnp_HashSecret = "12GUKMUAGMQR4QW57D26MKG56RCYN9G8";
 
-            // Ghi log thông tin trước khi gửi đến VNPAY
-            Log::info('Preparing data for VNPAY', [
-                'vnp_TxnRef' => $vnp_TxnRef,
-                'vnp_Amount' => $vnp_Amount,
-                'vnp_OrderInfo' => $vnp_OrderInfo,
-                'vnp_ReturnUrl' => $vnp_Returnurl,
-                'vnp_IpAddr' => $vnp_IpAddr,
-            ]);
+        $vnp_OrderInfo = "Thanh toán VNPAY - Mã đơn hàng: " . $vnp_TxnRef;
+        $vnp_Amount = $total_price * 100;
+        $vnp_Locale = "VN";
+        $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
 
-            // Chuyển hướng đến VNPAY
-            return redirect($vnp_Url . "?" . $query);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('VNPAY transaction error: ' . $e->getMessage());
-            return redirect()->back()->withErrors(['error' => 'Có lỗi xảy ra trong quá trình thanh toán. Vui lòng thử lại sau.']);
-        }
+        // Chuẩn bị dữ liệu gửi đến VNPAY
+        $inputData = [
+            "vnp_Version" => "2.1.0",
+            "vnp_TmnCode" => $vnp_TmnCode,
+            "vnp_Amount" => $vnp_Amount,
+            "vnp_Command" => "pay",
+            "vnp_CreateDate" => date('YmdHis'),
+            "vnp_CurrCode" => "VND",
+            "vnp_IpAddr" => $vnp_IpAddr,
+            "vnp_Locale" => $vnp_Locale,
+            "vnp_OrderInfo" => $vnp_OrderInfo,
+            "vnp_OrderType" => 'billpayment',
+            "vnp_ReturnUrl" => $vnp_Returnurl,
+            "vnp_TxnRef" => $vnp_TxnRef,
+        ];
+
+        ksort($inputData);
+        $hashdata = http_build_query($inputData);
+        $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
+        $query = $hashdata . '&vnp_SecureHash=' . $vnpSecureHash;
+
+        return redirect($vnp_Url . "?" . $query);
     }
 
 
@@ -294,39 +245,322 @@ class CheckoutController extends Controller
         $vnp_TxnRef = $request->input('vnp_TxnRef');
         $vnp_SecureHash = $request->input('vnp_SecureHash');
 
-        // Kiểm tra mã bảo mật
         $vnp_HashSecret = "12GUKMUAGMQR4QW57D26MKG56RCYN9G8";
         $inputData = $request->except('vnp_SecureHash');
         ksort($inputData);
         $hashdata = http_build_query($inputData);
         $secureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
 
-        // Ghi log kiểm tra hóa đơn
-        Log::info('Checking bill for TxnRef:', [
-            'txn_ref' => $vnp_TxnRef,
-            'bill_check' => Bill::where('code', $vnp_TxnRef)->first(), // Kiểm tra hóa đơn
-        ]);
-
-        // Kiểm tra mã giao dịch và mã bảo mật
         if ($vnp_ResponseCode == '00' && $secureHash == $vnp_SecureHash) {
-            // Kiểm tra hóa đơn
-            $bill = Bill::where('code', $vnp_TxnRef)->first();
-            if ($bill) {
-                // Cập nhật trạng thái hóa đơn
-                $bill->payment_status = 'completed';
-                $bill->bill_status = 'pending';
-                $bill->save();
+            DB::beginTransaction();
+
+            try {
+                $user_id = Auth::id();
+                $cartItems = Cart::where('user_id', $user_id)->get();
+
+                $outOfStockItems = [];
+                foreach ($cartItems as $item) {
+                    if ($item->variant_quantity > $item->variants->stock) {
+                        $outOfStockItems[] = [
+                            'product_name' => $item->variants->product->name,
+                            'size' => $item->variants->size->name,
+                            'available_stock' => $item->variants->stock,
+                            'requested_quantity' => $item->variant_quantity,
+                        ];
+                    }
+                }
+
+                if (!empty($outOfStockItems)) {
+                    // Tạo chuỗi thông báo lỗi chi tiết bao gồm tên sản phẩm và kích thước
+                    $errorMessages = [];
+                    foreach ($outOfStockItems as $outOfStock) {
+                        $errorMessages[] = "{$outOfStock['product_name']} (Size: {$outOfStock['size']})";
+                    }
+
+                    return redirect()->route('tt-that-bai')->withErrors([
+                        'error' => 'Một số sản phẩm không còn hàng: ' . implode(', ', $errorMessages)
+                    ]);
+                }
+
+                // Lấy lại thông tin từ session
+                $full_name = session('payment.full_name');
+                $phone_number = session('payment.phone_number');
+                $address = session('payment.address');
+
+                // Tính tổng giá trị giỏ hàng
+                $total_price = $cartItems->sum(function ($item) {
+                    return $item->variants->sale_price * $item->variant_quantity;
+                });
+
+                // Tạo hóa đơn
+                $bill = Bill::create([
+                    'user_id' => $user_id,
+                    'code' => $vnp_TxnRef,
+                    'full_name' => $full_name,
+                    'phone_number' => $phone_number,
+                    'address' => $address,
+                    'payment_type' => 'online',
+                    'total_price' => $total_price,
+                    'bill_status' => 'pending',
+                    'payment_status' => 'completed',
+                ]);
+
+                foreach ($cartItems as $item) {
+                    BillItem::create([
+                        'variant_id' => $item->variant_id,
+                        'bill_id' => $bill->id,
+                        'sale_price' => $item->variants->sale_price,
+                        'listed_price' => $item->variants->listed_price,
+                        'import_price' => $item->variants->import_price,
+                        'variant_quantity' => $item->variant_quantity,
+                        'product_name' => $item->variants->product->name,
+                        'product_image_url' => $item->variants->product->primary_image_url,
+                    ]);
+
+                    $item->variants->decrement('stock', $item->variant_quantity);
+                }
+
+                Cart::where('user_id', $user_id)->delete();
+                DB::commit();
 
                 $userEmail = Auth::user()->email;
                 Mail::to($userEmail)->send(new OrderConfirmationMail($bill));
 
-                return view('client.tt-thanh-cong', compact('bill'));
-            } else {
-                Log::error('Bill not found for TxnRef: ' . $vnp_TxnRef);
-                return redirect()->route('tt-that-bai')->withErrors(['error' => 'Không tìm thấy hóa đơn.']);
+                return redirect()->route('tt-thanh-cong')->with('success', 'Thanh toán thành công!');
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Log::error('Error saving bill after VNPAY success: ' . $e->getMessage());
+                return redirect()->route('tt-that-bai')->withErrors(['error' => 'Không thể lưu hóa đơn. Vui lòng thử lại sau.']);
             }
         } else {
             return redirect()->route('tt-that-bai')->withErrors(['error' => 'Thanh toán không thành công.']);
+        }
+    }
+
+
+
+
+
+
+
+    // mua ngay
+    public function buyNow(Request $request)
+    {
+        if (!Auth::check()) {
+            // Lưu thông báo vào session
+            return redirect()->route('login')->with('error', 'Bạn cần đăng nhập để mua hàng.');
+        }
+
+        $user = Auth::user();
+
+        // Lấy thông tin sản phẩm từ request
+        $variantId = $request->input('variant_id');
+        $quantity = $request->input('variant_quantity');
+
+        // Kiểm tra nếu variantId và quantity tồn tại
+        if (!$variantId || !$quantity) {
+            return redirect()->back()->withErrors('Không có thông tin sản phẩm.');
+        }
+
+        // Tìm sản phẩm tương ứng
+        $variant = Variant::findOrFail($variantId);
+        $product = $variant->product;
+
+        return view('client.buy-now', [
+            'user' => $user,
+            'product' => $product,
+            'variant' => $variant,
+            'quantity' => $quantity,
+        ]);
+    }
+
+
+
+    // mua ngay 
+    public function processBuyNow(Request $request)
+    {
+        // Xác thực dữ liệu từ form
+        $validatedData = $request->validate([
+            'full_name' => 'required|max:255',
+            'phone_number' => 'required|regex:/^[0-9]{10}$/',
+            'email' => 'required|email',
+            'address' => 'required',
+            'payment_type' => 'required|in:cod,online',
+            'variant_id' => 'required|exists:variants,id',
+            'variant_quantity' => 'required|integer|min:1',
+        ]);
+
+        // Lấy thông tin sản phẩm
+        $variant = Variant::find($validatedData['variant_id']);
+
+        // Kiểm tra số lượng tồn kho
+        if ($variant->stock < $validatedData['variant_quantity']) {
+            return redirect()->route('tt-that-bai')->withErrors([
+                'error' => 'Sản phẩm ' . $variant->product->name . ' (Size: ' . $variant->size->name . ') không còn đủ hàng trong kho.'
+            ]);
+        }
+
+
+        $totalPrice = $variant->sale_price * $validatedData['variant_quantity'];
+
+        // Tạo mã đơn hàng
+        $billCode = 'BILL-' . strtoupper(uniqid());
+
+        // Xử lý thanh toán dựa trên phương thức đã chọn
+        if ($validatedData['payment_type'] === 'online') {
+            return $this->paymentVNPAY($billCode, $totalPrice, $validatedData, $variant);
+        } else {
+            // Thanh toán COD, lưu vào cơ sở dữ liệu
+            $bill = Bill::create([
+                'user_id' => Auth::id(),
+                'code' => $billCode,
+                'bill_status' => 'pending',
+                'payment_type' => $validatedData['payment_type'],
+                'payment_status' => 'pending',
+                'total_price' => $totalPrice,
+                'full_name' => $validatedData['full_name'],
+                'phone_number' => $validatedData['phone_number'],
+                'address' => $validatedData['address'],
+            ]);
+
+            // Lưu thông tin vào bảng bill_items
+            BillItem::create([
+                'variant_id' => $variant->id,
+                'bill_id' => $bill->id,
+                'sale_price' => $variant->sale_price,
+                'listed_price' => $variant->listed_price,
+                'import_price' => $variant->import_price,
+                'variant_quantity' => $validatedData['variant_quantity'],
+                'product_name' => $variant->product->name,
+                'product_image_url' => $variant->product->primary_image_url,
+            ]);
+
+            // Giảm số lượng hàng tồn kho
+            $variant->decrement('stock', $validatedData['variant_quantity']);
+
+            $userEmail = Auth::user()->email;
+            Mail::to($userEmail)->send(new OrderConfirmationMail($bill));
+            return redirect()->route('tt-thanh-cong')->with('success', 'Đặt hàng thành công!');
+        }
+    }
+
+    private function paymentVNPAY($billCode, $totalPrice, $validatedData, $variant)
+    {
+        // Kiểm tra lại tồn kho trước khi thực hiện thanh toán
+        if ($variant->stock < $validatedData['variant_quantity']) {
+            return redirect()->route('tt-that-bai')->withErrors([
+                'error' => 'Sản phẩm ' . $variant->product->name . ' (Size: ' . $variant->size->name . ') không còn đủ hàng trong kho.'
+            ]);
+        }
+
+        $vnp_TxnRef = $billCode;
+        $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+        $vnp_Returnurl = route('checkout.vnpay.return');
+        $vnp_TmnCode = "KA1BV3N8";
+        $vnp_HashSecret = "12GUKMUAGMQR4QW57D26MKG56RCYN9G8";
+
+        $vnp_OrderInfo = "Thanh toán VNPAY - Mã đơn hàng: " . $vnp_TxnRef;
+        $vnp_Amount = $totalPrice * 100;
+        $vnp_Locale = "VN";
+        $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
+
+        // Chuẩn bị dữ liệu gửi đến VNPAY
+        $inputData = [
+            "vnp_Version" => "2.1.0",
+            "vnp_TmnCode" => $vnp_TmnCode,
+            "vnp_Amount" => $vnp_Amount,
+            "vnp_Command" => "pay",
+            "vnp_CreateDate" => date('YmdHis'),
+            "vnp_CurrCode" => "VND",
+            "vnp_IpAddr" => $vnp_IpAddr,
+            "vnp_Locale" => $vnp_Locale,
+            "vnp_OrderInfo" => $vnp_OrderInfo,
+            "vnp_OrderType" => 'billpayment',
+            "vnp_ReturnUrl" => $vnp_Returnurl,
+            "vnp_TxnRef" => $vnp_TxnRef,
+        ];
+
+        // Sắp xếp và tạo chuỗi truy vấn
+        ksort($inputData);
+        $hashdata = http_build_query($inputData);
+        $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
+        $query = $hashdata . '&vnp_SecureHash=' . $vnpSecureHash;
+
+        // Lưu thông tin tạm thời vào session
+        session(['pending_order' => $validatedData]);
+
+        // Chuyển hướng đến VNPAY
+        return redirect($vnp_Url . "?" . $query);
+    }
+
+    public function vnpayReturn(Request $request)
+    {
+        // Xử lý kết quả trả về từ VNPAY
+        $vnp_ResponseCode = $request->input('vnp_ResponseCode');
+        $vnp_TxnRef = $request->input('vnp_TxnRef');
+        $vnp_SecureHash = $request->input('vnp_SecureHash');
+        $vnp_HashSecret = "12GUKMUAGMQR4QW57D26MKG56RCYN9G8";
+
+        // Lấy dữ liệu không bao gồm mã bảo mật
+        $inputData = $request->except('vnp_SecureHash');
+        ksort($inputData);
+        $hashdata = http_build_query($inputData);
+        $secureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
+
+        if ($vnp_SecureHash === $secureHash) {
+            if ($vnp_ResponseCode === '00') {
+                // Thanh toán thành công
+                $validatedData = session('pending_order');
+                $variant = Variant::find($validatedData['variant_id']);
+
+                // Kiểm tra tồn kho trước khi tạo hóa đơn
+                if ($variant->stock < $validatedData['variant_quantity']) {
+                    return redirect()->route('tt-that-bai')->withErrors([
+                        'error' => 'Sản phẩm ' . $variant->product->name . ' (Size: ' . $variant->size->name . ') không còn đủ hàng trong kho.'
+                    ]);
+                }
+
+                $totalPrice = $variant->sale_price * $validatedData['variant_quantity'];
+
+                // Tạo hóa đơn
+                $bill = Bill::create([
+                    'user_id' => Auth::id(),
+                    'code' => $vnp_TxnRef,
+                    'bill_status' => 'pending',
+                    'payment_type' => 'online',
+                    'payment_status' => 'completed',
+                    'total_price' => $totalPrice,
+                    'full_name' => $validatedData['full_name'],
+                    'phone_number' => $validatedData['phone_number'],
+                    'address' => $validatedData['address'],
+                ]);
+
+                // Lưu chi tiết hóa đơn
+                BillItem::create([
+                    'variant_id' => $variant->id,
+                    'bill_id' => $bill->id,
+                    'sale_price' => $variant->sale_price,
+                    'listed_price' => $variant->listed_price,
+                    'import_price' => $variant->import_price,
+                    'variant_quantity' => $validatedData['variant_quantity'],
+                    'product_name' => $variant->product->name,
+                    'product_image_url' => $variant->product->primary_image_url,
+                ]);
+
+                // Giảm số lượng hàng tồn kho
+                $variant->decrement('stock', $validatedData['variant_quantity']);
+
+                // Gửi email xác nhận
+                $userEmail = Auth::user()->email;
+                Mail::to($userEmail)->send(new OrderConfirmationMail($bill));
+
+                session()->forget('pending_order');
+                return redirect()->route('tt-thanh-cong')->with('success', 'Thanh toán thành công!');
+            } else {
+                return redirect()->route('tt-that-bai')->with('error', 'Thanh toán thất bại!');
+            }
+        } else {
+            return redirect()->route('tt-that-bai')->with('error', 'Thông tin không hợp lệ!');
         }
     }
 }

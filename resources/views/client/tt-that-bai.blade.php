@@ -1,6 +1,6 @@
 @extends('client.layout')
 
-@section('title', 'Thanh toán thành công')
+@section('title', 'Thanh toán thất bại')
 
 @section('content')
     <main class="main-content">

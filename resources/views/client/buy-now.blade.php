@@ -36,9 +36,10 @@
                         @endforeach
                     </div>
                 @endif
-                <form id="checkout-form" action="{{ route('checkout.process') }}" method="post">
+                <form id="checkout-form" action="{{ route('buy.now.process') }}" method="post">
                     @csrf
-                    <input type="hidden" name="user_id" value="{{ Auth::id() }}">
+                    <input type="hidden" name="variant_id" value="{{ $variant->id }}">
+                    <input type="hidden" name="variant_quantity" value="{{ $quantity }}">
 
                     <div class="row">
                         <div class="col-lg-6">
@@ -78,7 +79,7 @@
                                                         title="required">*</abbr></label>
                                                 <input id="email" type="text" name="email" class="form-control"
                                                     placeholder="Nhập email người nhận"
-                                                    value="{{ old('name', $user->email) }}" disabled>
+                                                    value="{{ old('name', $user->email) }}">
                                                 @error('email')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
@@ -117,20 +118,23 @@
                                             </tr>
                                         </thead>
                                         <tbody class="table-body">
-                                            @foreach ($cartItems as $item)
+                                            {{-- @foreach ($variant as $variant) --}}
                                                 <tr class="cart-item">
-                                                    <td class="product-name">{{ $item->variants->product->name }}<span
-                                                            class="product-quantity">× {{ $item->variant_quantity }}</span>
+                                                    <td class="product-name">{{ $variant->product->name }}<span
+                                                            class="product-quantity"> × {{ $quantity }} </span>
                                                     </td>
                                                     <td class="product-total">
-                                                        {{ number_format($item->variants->sale_price * $item->variant_quantity) }}
+                                                        {{ number_format($variant->sale_price * $quantity) }}
                                                         VNĐ</td>
                                                 </tr>
-                                            @endforeach
+                                            {{-- @endforeach --}}
 
                                         </tbody>
                                         <tfoot class="table-foot">
-
+                                            <tr class="shipping">
+                                                <th>Size</th>
+                                                <td>{{$variant->size->name}}</td>
+                                            </tr>
                                             <tr class="shipping">
                                                 <th>Phí vận chuyển</th>
                                                 <td>Miễn phí</td>
@@ -138,28 +142,13 @@
                                             <tr class="order-total">
                                                 <th>Tổng cộng</th>
 
-                                                <td>{{ number_format($total_price) }} VND</td>
+                                                <td> {{ number_format($variant->sale_price * $quantity) }} VND</td> 
                                             </tr>
                                         </tfoot>
                                     </table>
 
                                     <div class="shop-payment-method">
                                         <div id="PaymentMethodAccordion">
-
-                                            {{-- <div class="card">
-                                                <div class="card-header" id="check_payments4">
-                                                    <h5 class="title" data-bs-toggle="collapse" data-bs-target="#itemFour"
-                                                        aria-controls="itemTwo" aria-expanded="false">Thanh toán nhanh
-                                                        Vnpay <img src="assets/img/photos/Logo-VNPAY-QR.webp"
-                                                            width="60" height="46" alt="Image-HasTech"></h5>
-                                                </div>
-                                                <div id="itemFour"  >
-                                                    <div class="card-body">
-                                                        <p>Thanh toán qua PayPal; bạn có thể thanh toán bằng thẻ tín dụng
-                                                            nếu bạn không có tài khoản PayPal.</p>
-                                                    </div>
-                                                </div>
-                                            </div> --}}
 
                                             {{-- 7/11/2024 --}}
 
@@ -176,31 +165,6 @@
                                                     data-bs-parent="#PaymentMethodAccordion">Thanh toán với VNPAY</label>
                                             </div>
 
-                                            {{-- <div id="bankSelectionModal" class="modal">
-                                                <div class="modal-content">
-                                                    <h4>Chọn ngân hàng</h4>
-                                                    <div class="bank-options">
-                                                        <label>
-                                                            <input type="radio" name="bank_code" value="NCB">
-                                                            <img src="/images/banks/ncb_logo.png" alt="NCB"
-                                                                class="bank-logo"> Ngân hàng NCB
-                                                        </label>
-                                                        <label>
-                                                            <input type="radio" name="bank_code" value="VCB">
-                                                            <img src="/images/banks/vcb_logo.png" alt="Vietcombank"
-                                                                class="bank-logo"> Ngân hàng Vietcombank
-                                                        </label>
-                                                        <label>
-                                                            <input type="radio" name="bank_code" value="ACB">
-                                                            <img src="/images/banks/acb_logo.png" alt="ACB"
-                                                                class="bank-logo"> Ngân hàng ACB
-                                                        </label>
-                                                        <!-- Add other banks as needed -->
-                                                    </div>
-                                                    <button type="button" id="confirmBankButton" class="btn-theme">Xác
-                                                        nhận</button>
-                                                </div>
-                                            </div> --}}
                                         </div>
                                         @error('payment_type')
                                             <span class="text-danger">{{ $message }}</span>
@@ -213,34 +177,16 @@
                         </div>
                     </div>
                 </form>
-
-                <script>
+                {{-- <script>
                     document.getElementById('checkout-form').addEventListener('submit', function(event) {
                         const paymentType = document.querySelector('input[name="payment_type"]:checked').value;
-                        
-                        // Đặt lại action của form dựa trên phương thức thanh toán được chọn
+
+                        // Nếu chọn thanh toán online, chuyển hướng đến route VNPAY
                         if (paymentType === 'online') {
-                            this.action = "{{ route('checkout.vnpay') }}"; // Route thanh toán VNPAY
-                        } else {
-                            this.action = "{{ route('checkout.process') }}"; // Route thanh toán COD
+                            this.action = "{{ route('checkout.vnpay') }}"; // Chuyển đến route thanh toán VNPAY
                         }
                     });
-                
-                    // Thêm sự kiện để cập nhật action của form khi thay đổi phương thức thanh toán
-                    document.querySelectorAll('input[name="payment_type"]').forEach(radio => {
-                        radio.addEventListener('change', function() {
-                            const paymentType = document.querySelector('input[name="payment_type"]:checked').value;
-                
-                            // Cập nhật action của form
-                            if (paymentType === 'online') {
-                                document.getElementById('checkout-form').action = "{{ route('checkout.vnpay') }}";
-                            } else {
-                                document.getElementById('checkout-form').action = "{{ route('checkout.process') }}";
-                            }
-                        });
-                    });
-                </script>
-                
+                </script> --}}
             </div>
         </section>
         <!--== End Shopping Checkout Area Wrapper ==-->

@@ -207,12 +207,19 @@ Route::get('tt-thanh-cong', function () {
     return view('client.tt-thanh-cong');
 })->name('tt-thanh-cong');
 
-Route::get('/payment/return', [CheckoutController::class, 'returnFromVNPAY'])->name('checkout.vnpay.return');
+Route::get('/payment/return', [CheckoutController::class, 'returnFromVNPAY'])->name('checkout.vnpay.returnFrom');
 Route::post('/checkout/vnpay', [CheckoutController::class, 'processVNPAY'])->name('checkout.vnpay');
 
 // Route::post('/checkout/cod', [CheckoutController::class, 'processCheckout'])->name('checkout.cod');
 Route::post('/checkouts', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
 Route::get('/checkouts', [CheckoutController::class, 'checkout'])->name('checkouts');
+
+// mua ngay
+Route::get('/buy-now', [CheckoutController::class, 'buyNow'])->name('buy.now');
+Route::post('/buy-now/process', [CheckoutController::class, 'processBuyNow'])->name('buy.now.process');
+Route::get('/checkout/vnpay/return', [CheckoutController::class, 'vnpayReturn'])->name('checkout.vnpay.return');
+
+
 
 // show sp mới limit8
 
@@ -234,6 +241,7 @@ Route::delete('/cart/remove/{id}', [CartController::class, 'removeItem'])->name(
 Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
 Route::post('/cart/voucher', [CartController::class, 'applyVoucher'])->name('cart.voucher');
 Route::post('/cart/update-all', [CartController::class, 'updateAll'])->name('cart.updateAll');
+
 //tìm kiếm theo tên sản phẩm
 Route::get('/search', [ProductController::class, 'search'])->name('search');
 
