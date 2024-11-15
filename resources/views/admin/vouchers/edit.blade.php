@@ -113,69 +113,19 @@
                             <div class="row gy-4">
                                 <div class="col-md-6">
                                     <div>
-                                        <label for="for_user_ids" class="form-label">Chọn người được dùng riêng có thể bỏ
-                                            qua</label>
-                                        <select class="form-control" name="for_user_ids" id="for_user_ids">
-                                            @if (is_null($voucher->for_user_ids))
-                                                <option value="" disabled selected>Chọn người dùng</option>
-                                                @foreach ($allUsers as $item)
-                                                    <option value="{{ $item->id }}">{{ $item->full_name }}</option>
-                                                @endforeach
-                                            @else
-                                                @foreach ($allUsers as $item)
-                                                    @if ($voucher->for_user_ids == $item->id)
-                                                        <option value="{{ $item->id }}" selected>
-                                                            {{ $item->full_name }}
-                                                        </option>
-                                                    @else
-                                                        <option value="{{ $item->id }}">{{ $item->full_name }}
-                                                        </option>
-                                                    @endif
-                                                @endforeach
-                                            @endif
+                                        <label for="for_user_ids" class="form-label">Chọn người dùng (giữ Ctrl để chọn
+                                            nhiều)</label>
+                                        <select class="form-control" name="for_user_ids[]" id="for_user_ids" multiple>
+                                            @foreach ($allUsers as $item)
+                                                <option value="{{ $item->id }}"
+                                                    @if (in_array($item->id, json_decode($voucher->for_user_ids))) selected @endif>
+                                                    Email: {{ $item->email }} - Họ và tên: {{ $item->full_name }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div>
-                                        <label for="user_use" class="form-label">Chọn khối người được dùng</label>
-                                        <select class="form-control" name="user_use" id="user_use">
-                                            @if (is_null($voucher->user_use))
-                                                <option value="" disabled selected>Chọn khối người dùng</option>
-                                                <option value="everybody">1) Ai cũng có thể dùng</option>
-                                                <option value="male">2) Chỉ nam được dùng</option>
-                                                <option value="female">3) Chỉ nữ được dùng</option>
-                                            @else
-                                                @switch($voucher->user_use)
-                                                    @case('everybody')
-                                                        <option value="everybody" selected>1) Ai cũng có thể dùng</option>
-                                                        <option value="male">2) Chỉ nam được dùng</option>
-                                                        <option value="female">3) Chỉ nữ được dùng</option>
-                                                    @break
-
-                                                    @case('male')
-                                                        <option value="everybody">1) Ai cũng có thể dùng</option>
-                                                        <option value="male" selected>2) Chỉ nam được dùng</option>
-                                                        <option value="female">3) Chỉ nữ được dùng</option>
-                                                    @break
-
-                                                    @case('female')
-                                                        <option value="everybody">1) Ai cũng có thể dùng</option>
-                                                        <option value="male">2) Chỉ nam được dùng</option>
-                                                        <option value="female" selected>3) Chỉ nữ được dùng</option>
-                                                    @break
-                                                @endswitch
-                                            @endif
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="live-preview">
-                            <div class="row gy-4">
-                                <div class="col-md-12">
                                     <div>
                                         <label for="description" class="form-label">Mô tả</label>
                                         <input type="text" class="form-control" value="{{ $voucher->description }}"

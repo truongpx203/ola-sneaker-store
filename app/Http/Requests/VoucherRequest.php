@@ -62,10 +62,7 @@ class VoucherRequest extends FormRequest
                                 'min:1'
                             ],
                             'for_user_ids' => [
-                                'required_without:user_use',
-                            ],
-                            'user_use' => [
-                                'required_without:for_user_ids',
+                                'required',
                             ]
                         ];
                         break;
@@ -73,7 +70,7 @@ class VoucherRequest extends FormRequest
                 break;
             case 'PUT':
                 switch ($currentMethod) {
-                    case 'store':
+                    case 'update':
                         $rules = [
                             'value' => [
                                 'required',
@@ -103,11 +100,8 @@ class VoucherRequest extends FormRequest
                                 'min:1',
                             ],
                             'for_user_ids' => [
-                                'required_without:user_use',
-                            ],
-                            'user_use' => [
-                                'required_without:for_user_ids',
-                            ],
+                                'required',
+                            ]
                         ];
                         break;
                 }
@@ -127,7 +121,6 @@ class VoucherRequest extends FormRequest
             'start_datetime.after_or_equal' => ':attribute phải lớn hơn ngày hiện tại',
             'end_datetime.after_or_equal' => ':attribute phải lớn hơn ngày bắt đầu',
             'date' => ':attribute không phải là một ngày hợp lệ',
-            'required_without' => 'Cần ít nhất một trong hai trường: ' . $this->attributes()['for_user_ids'] . ' hoặc ' . $this->attributes()['user_use'] . '.',
         ];
     }
     public function attributes()
@@ -140,8 +133,7 @@ class VoucherRequest extends FormRequest
             'start_datetime'  => 'Ngày bắt đầu',
             'end_datetime'  => 'Ngày kết thúc',
             'quantity'  => 'Số lượng',
-            'for_user_ids'  => 'Người được cấp riêng',
-            'user_use'  => 'Khối người dùng'
+            'for_user_ids'  => 'Người được cấp riêng'
         ];
     }
 }

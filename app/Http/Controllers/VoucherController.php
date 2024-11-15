@@ -30,10 +30,13 @@ class VoucherController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created resource in storage. 
      */
     public function store(VoucherRequest $request)
     {
+        $request->merge([
+            'for_user_ids' => json_encode($request->for_user_ids)
+        ]);
         $voucher = Voucher::create($request->all());
         return redirect()->route('voucher.index');
     }
@@ -41,9 +44,12 @@ class VoucherController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Voucher $voucher)
+    public function show($id)
     {
-        //
+        $voucher = Voucher::query()->where('id', $id)->first();
+        $userIds = json_decode($voucher['for_user_ids'], true);
+        $users = User::whereIn('id', $userIds)->get();
+        return view('admin.vouchers.detail', compact('voucher', 'users'));
     }
 
     /**
@@ -69,12 +75,8 @@ class VoucherController extends Controller
             "start_datetime" => $request->start_datetime,
             "end_datetime" => $request->end_datetime,
             "description" => $request->description,
+            "for_user_ids" => json_encode($request->for_user_ids)
         ];
-        if (is_null($request->for_user_ids)) {
-            $data["user_use"] = $request->user_use;
-        } else {
-            $data["for_user_ids"] = $request->for_user_ids;
-        }
         $voucher->update($data);
         return redirect()->route('voucher.index');
     }
