@@ -153,6 +153,7 @@ Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
             Route::get('/create',               [VoucherController::class, 'create'])->name('create');
             Route::post('/store',               [VoucherController::class, 'store'])->name('store');
             Route::get('/edit/{id}',            [VoucherController::class, 'edit'])->name('edit');
+            Route::get('/detail/{id}',          [VoucherController::class, 'show'])->name('detail');
             Route::put('/update/{id}',          [VoucherController::class, 'update'])->name('update');
             Route::delete('/delete/{id}',       [VoucherController::class, 'destroy'])->name('destroy');
         });

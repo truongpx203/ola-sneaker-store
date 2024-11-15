@@ -44,8 +44,6 @@
                                 <th>Ngày bắt đầu</th>
                                 <th>Ngày kết thúc</th>
                                 <th>Số lượng</th>
-                                </th>
-                                <th>Cho người nào</th>
                                 <th>Số lượng đã sử dụng</th>
                                 <th>Thao tác</th>
                             </tr>
@@ -61,32 +59,12 @@
                                     <td>{{ $item->start_datetime }}</td>
                                     <td>{{ $item->end_datetime }}</td>
                                     <td>{{ $item->quantity }}</td>
-                                    @if (is_null($item->for_user_ids))
-                                        <td>
-                                            @switch($item->user_use)
-                                                @case('everybody')
-                                                    Tất cả mọi người
-                                                @break
-
-                                                @case('male')
-                                                    Chỉ nam
-                                                @break
-
-                                                @case('female')
-                                                    Chỉ nữ
-                                                @break
-
-                                                @default
-                                                    Không xác định
-                                            @endswitch
-                                        </td>
-                                    @else
-                                        <td>{{ $item->user->id . ' - ' . $item->user->full_name }}</td>
-                                    @endif
                                     <td>{{ $item->used_quantity }}</td>
                                     <td>
                                         <a href="{{ route('voucher.edit', $item->id) }}" type="submit"
                                             class="btn btn-warning">Sửa</a>
+                                        <a href="{{ route('voucher.detail', $item->id) }}" type="submit"
+                                            class="btn btn-warning">Xem chi tiết</a>
                                         <form action="{{ route('voucher.destroy', $item->id) }}" method="post">
                                             @csrf
                                             @method('DELETE')
