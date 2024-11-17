@@ -26,6 +26,8 @@ class User extends Authenticatable
         'points', //7/11/2024
     ];
 
+
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -44,6 +46,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'points' => 'integer', // Đảm bảo kiểu dữ liệu là số nguyên 7/11/2024
     ];
 
     public function bills()

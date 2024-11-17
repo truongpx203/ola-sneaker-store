@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bill;
+use App\Models\User;
 use App\Models\BillItem;
 use App\Models\Cart;
 use App\Models\Variant;
@@ -30,6 +31,9 @@ class CheckoutController extends Controller
             return $item->variants->sale_price * $item->variant_quantity;
         });
 
+        // Lấy số điểm của người dùng (7/11/2024)
+        $userPoints = $user->points;
+
         // Lấy thông tin hóa đơn nếu cần
         $bills = Bill::where('user_id', $user->id)->get();
 
@@ -38,7 +42,8 @@ class CheckoutController extends Controller
             'cartItems' => $cartItems,
             'total_price' => $total_price,
             'user' => $user,
-            'bills' => $bills
+            'bills' => $bills,
+            'userPoints' => $userPoints // Thêm số điểm vào view(7/11/2024)
         ]);
     }
 
@@ -55,11 +60,13 @@ class CheckoutController extends Controller
             'phone_number' => 'required|regex:/^[0-9]{10}$/',
             'address' => 'required',
             'payment_type' => 'required|in:cod,online',
+            'points_to_use' => 'nullable|integer|min:0', // Validate số điểm(7/11/2024)
         ]);
 
         DB::beginTransaction();
 
         try {
+            $user = Auth::user(); //7/11/2024
             $user_id = Auth::id();
             $cartItems = Cart::where('user_id', $user_id)->get();
 
@@ -88,10 +95,19 @@ class CheckoutController extends Controller
                 ]);
             }
 
-            // Tính toán tổng giá
+            // Tính toán tổng giá ban đầu
             $total_price = $cartItems->sum(function ($item) {
                 return $item->variants->sale_price * $item->variant_quantity;
             });
+
+            // 7/11/2024
+            /// Xác định điểm sử dụng và tính giảm giá
+            $pointsToUse = $request->input('points_to_use', 0);
+            if ($pointsToUse > $user->points) {
+                return redirect()->back()->withErrors(['error' => 'Số điểm bạn nhập không hợp lệ.']);
+            }
+            $discountAmount = $pointsToUse * 10000;
+            $finalPrice = max(0, $total_price - $discountAmount);
 
             // Tạo mã hóa đơn
             $code = 'BILL-' . strtoupper(uniqid());
@@ -104,9 +120,12 @@ class CheckoutController extends Controller
                 'phone_number' => $validateData['phone_number'],
                 'address' => $validateData['address'],
                 'payment_type' => 'cod',
-                'total_price' => $total_price,
+                // 'total_price' => $total_price,
+                'total_price' => $finalPrice, //7/11/2024
                 'bill_status' => 'pending',
                 'payment_status' => 'pending',
+                'discount_amount' => $discountAmount, //7/11/2024
+                'points_used' => $pointsToUse, // Lưu số điểm đã sử dụng 7/11/2024
             ]);
 
             // Lưu mỗi sản phẩm trong hóa đơn
@@ -126,6 +145,10 @@ class CheckoutController extends Controller
                 $item->variants->decrement('stock', $item->variant_quantity);
             }
 
+            // Trừ điểm đã sử dụng và xóa giỏ hàng (7/11/2024)
+            $user->points -= $pointsToUse;
+            $user->save();      
+
             Cart::where('user_id', $user_id)->delete();
 
             DB::commit();
@@ -137,7 +160,6 @@ class CheckoutController extends Controller
             return redirect()->route('tt-thanh-cong')->with('success', 'Thanh toán thành công!');
         } catch (\Exception $e) {
             DB::rollBack();
-
             Log::error('Checkout error: ' . $e->getMessage());
 
             return redirect()->back()->withErrors(['error' => 'Có lỗi xảy ra trong quá trình đặt hàng. Vui lòng thử lại sau.']);
@@ -157,6 +179,7 @@ class CheckoutController extends Controller
             'phone_number' => 'required|regex:/^[0-9]{10}$/',
             'address' => 'required',
             'payment_type' => 'required|in:cod,online',
+            'points_to_use' => 'nullable|integer|min:0', // Số điểm người dùng muốn sử dụng (7/11/2024)
         ]);
 
         // Lưu thông tin vào session
@@ -167,36 +190,52 @@ class CheckoutController extends Controller
         ]);
 
 
-          // Kiểm tra hàng tồn kho
-          $outOfStockItems = [];
-          foreach ($cartItems as $item) {
-              if ($item->variant_quantity > $item->variants->stock) {
-                  $outOfStockItems[] = [
-                      'product_name' => $item->variants->product->name,
-                      'size' => $item->variants->size->name,
-                      'available_stock' => $item->variants->stock,
-                      'requested_quantity' => $item->variant_quantity,
-                  ];
-              }
-          }
 
-          if (!empty($outOfStockItems)) {
-              // Tạo chuỗi thông báo lỗi chi tiết bao gồm tên sản phẩm và kích thước
-              $errorMessages = [];
-              foreach ($outOfStockItems as $outOfStock) {
-                  $errorMessages[] = "{$outOfStock['product_name']} (Size: {$outOfStock['size']})";
-              }
 
-              return redirect()->route('tt-that-bai')->withErrors([
-                  'error' => 'Một số sản phẩm không còn hàng: ' . implode(', ', $errorMessages)
-              ]);
-          }
+        // Kiểm tra hàng tồn kho
+        $outOfStockItems = [];
+        foreach ($cartItems as $item) {
+            if ($item->variant_quantity > $item->variants->stock) {
+                $outOfStockItems[] = [
+                    'product_name' => $item->variants->product->name,
+                    'size' => $item->variants->size->name,
+                    'available_stock' => $item->variants->stock,
+                    'requested_quantity' => $item->variant_quantity,
+                ];
+            }
+        }
 
-          
+        if (!empty($outOfStockItems)) {
+            // Tạo chuỗi thông báo lỗi chi tiết bao gồm tên sản phẩm và kích thước
+            $errorMessages = [];
+            foreach ($outOfStockItems as $outOfStock) {
+                $errorMessages[] = "{$outOfStock['product_name']} (Size: {$outOfStock['size']})";
+            }
+
+            return redirect()->route('tt-that-bai')->withErrors([
+                'error' => 'Một số sản phẩm không còn hàng: ' . implode(', ', $errorMessages)
+            ]);
+        }
+
+        // Lấy số điểm người dùng muốn sử dụng (7/11/2024)
+        $pointsToUse = $validateData['points_to_use'] ?? 0;
+        $user = Auth::user();
+
+        // Kiểm tra số điểm người dùng có
+        if ($pointsToUse > $user->points) {
+            return redirect()->back()->withErrors(['error' => 'Số điểm bạn nhập vượt quá số điểm hiện có.']);
+        }
+
+
         // Tính tổng giá trị giỏ hàng
-        $total_price = $cartItems->sum(function ($item) {
+        $totalPrice = $cartItems->sum(function ($item) {
             return $item->variants->sale_price * $item->variant_quantity;
         });
+
+        // Tính số tiền giảm giá từ điểm
+        $pointValue = 10000; // Giá trị mỗi điểm là 10,000 VND
+        $discountAmount = $pointsToUse * $pointValue;
+        $finalPrice = max(0, $totalPrice - $discountAmount); // Đảm bảo giá cuối không âm
 
         // Tạo mã đơn hàng duy nhất
         $code = 'BILL-' . strtoupper(uniqid());
@@ -208,7 +247,8 @@ class CheckoutController extends Controller
         $vnp_HashSecret = "12GUKMUAGMQR4QW57D26MKG56RCYN9G8";
 
         $vnp_OrderInfo = "Thanh toán VNPAY - Mã đơn hàng: " . $vnp_TxnRef;
-        $vnp_Amount = $total_price * 100;
+        // $vnp_Amount = $total_price * 100;
+        $vnp_Amount = intval($finalPrice * 100); // Đơn vị tiền VNPAY là VND x 100 7/11/2024
         $vnp_Locale = "VN";
         $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
 
@@ -282,13 +322,21 @@ class CheckoutController extends Controller
                     ]);
                 }
 
+                // Lấy số điểm người dùng đã sử dụng7/11/2024
+                $pointsToUse = session('payment.points_to_use', 0);
+                $user = Auth::user();
+
+                // Trừ điểm người dùng đã sử dụng 7/11/2024
+                $user->points -= $pointsToUse;
+                $user->save();
+
                 // Lấy lại thông tin từ session
                 $full_name = session('payment.full_name');
                 $phone_number = session('payment.phone_number');
                 $address = session('payment.address');
 
                 // Tính tổng giá trị giỏ hàng
-                $total_price = $cartItems->sum(function ($item) {
+                $totalPrice = $cartItems->sum(function ($item) {
                     return $item->variants->sale_price * $item->variant_quantity;
                 });
 
@@ -300,7 +348,8 @@ class CheckoutController extends Controller
                     'phone_number' => $phone_number,
                     'address' => $address,
                     'payment_type' => 'online',
-                    'total_price' => $total_price,
+                    // 'total_price' => $total_price,
+                    'total_price' => $totalPrice - ($pointsToUse * 10000), // Giảm giá từ điểm 7/11/2024
                     'bill_status' => 'pending',
                     'payment_status' => 'completed',
                 ]);
@@ -366,11 +415,16 @@ class CheckoutController extends Controller
         $variant = Variant::findOrFail($variantId);
         $product = $variant->product;
 
+        // Tính tổng giá trị sản phẩm 7/11/2024
+        $totalPrice = $variant->sale_price * $quantity;
+
         return view('client.buy-now', [
             'user' => $user,
             'product' => $product,
             'variant' => $variant,
             'quantity' => $quantity,
+            'total_price' => $totalPrice,
+            'userPoints' => $user->points, // Điểm tích lũy của người dùng 7/11/2024
         ]);
     }
 
@@ -388,28 +442,44 @@ class CheckoutController extends Controller
             'payment_type' => 'required|in:cod,online',
             'variant_id' => 'required|exists:variants,id',
             'variant_quantity' => 'required|integer|min:1',
+            'points_to_use' => 'nullable|integer|min:0', // Số điểm người dùng muốn sử dụng 7/11/2024
         ]);
 
-        // Lấy thông tin sản phẩm
-        $variant = Variant::find($validatedData['variant_id']);
+        DB::beginTransaction(); //7/11/2024
 
-        // Kiểm tra số lượng tồn kho
-        if ($variant->stock < $validatedData['variant_quantity']) {
-            return redirect()->route('tt-that-bai')->withErrors([
-                'error' => 'Sản phẩm ' . $variant->product->name . ' (Size: ' . $variant->size->name . ') không còn đủ hàng trong kho.'
-            ]);
-        }
+        try {
+            $user = Auth::user(); //7/11/2024
+            // Lấy thông tin sản phẩm
+            $variant = Variant::find($validatedData['variant_id']);
+
+            // Kiểm tra số lượng tồn kho
+            if ($variant->stock < $validatedData['variant_quantity']) {
+                return redirect()->route('tt-that-bai')->withErrors([
+                    'error' => 'Sản phẩm ' . $variant->product->name . ' (Size: ' . $variant->size->name . ') không còn đủ hàng trong kho.'
+                ]);
+            }
+
+            // Tính tổng giá trị sản phẩm
+            $totalPrice = $variant->sale_price * $validatedData['variant_quantity'];
+
+            // Xử lý số điểm giảm giá(7/11/2024)
+            $pointsToUse = $validatedData['points_to_use'] ?? 0;
+            if ($pointsToUse > $user->points) {
+                return redirect()->back()->withErrors(['error' => 'Số điểm bạn nhập vượt quá số điểm hiện có.']);
+            }
+            $pointValue = 10000; // Giá trị mỗi điểm là 10,000 VND
+            $discountAmount = $pointsToUse * $pointValue;
+            $finalPrice = max(0, $totalPrice - $discountAmount); // Không cho phép giá trị âm
 
 
-        $totalPrice = $variant->sale_price * $validatedData['variant_quantity'];
+            // Tạo mã đơn hàng
+            $billCode = 'BILL-' . strtoupper(uniqid());
 
-        // Tạo mã đơn hàng
-        $billCode = 'BILL-' . strtoupper(uniqid());
+            // Xử lý thanh toán dựa trên phương thức đã chọn
+            if ($validatedData['payment_type'] === 'online') {
+                return $this->paymentVNPAY($billCode, $totalPrice, $validatedData, $variant);
+            }
 
-        // Xử lý thanh toán dựa trên phương thức đã chọn
-        if ($validatedData['payment_type'] === 'online') {
-            return $this->paymentVNPAY($billCode, $totalPrice, $validatedData, $variant);
-        } else {
             // Thanh toán COD, lưu vào cơ sở dữ liệu
             $bill = Bill::create([
                 'user_id' => Auth::id(),
@@ -417,10 +487,13 @@ class CheckoutController extends Controller
                 'bill_status' => 'pending',
                 'payment_type' => $validatedData['payment_type'],
                 'payment_status' => 'pending',
-                'total_price' => $totalPrice,
+                // 'total_price' => $totalPrice,
+                'total_price' => $finalPrice, // Giá sau giảm giá (7/11/2024)
+                'discount_amount' => $discountAmount, // Số tiền giảm giá (7/11/2024)
                 'full_name' => $validatedData['full_name'],
                 'phone_number' => $validatedData['phone_number'],
                 'address' => $validatedData['address'],
+                'points_used' => $pointsToUse, // Lưu số điểm đã sử dụng vào hóa đơn(7/11/2024)
             ]);
 
             // Lưu thông tin vào bảng bill_items
@@ -438,14 +511,41 @@ class CheckoutController extends Controller
             // Giảm số lượng hàng tồn kho
             $variant->decrement('stock', $validatedData['variant_quantity']);
 
+            // Trừ điểm người dùng đã sử dụng(7/11/2024)
+            $user->points -= $pointsToUse;
+            $user->save();
+
+            DB::commit();
+
+
             $userEmail = Auth::user()->email;
             Mail::to($userEmail)->send(new OrderConfirmationMail($bill));
             return redirect()->route('tt-thanh-cong')->with('success', 'Đặt hàng thành công!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('BuyNow error: ' . $e->getMessage());
+
+            return redirect()->back()->withErrors(['error' => 'Có lỗi xảy ra trong quá trình đặt hàng. Vui lòng thử lại sau.']);
         }
     }
 
     private function paymentVNPAY($billCode, $totalPrice, $validatedData, $variant)
     {
+        $user = Auth::user(); //7/11/2024
+
+        // Kiểm tra điểm tích lũy(7/11/2024)
+        $pointsToUse = $validatedData['points_to_use'] ?? 0;
+        $pointValue = 10000; // Mỗi điểm giảm giá 10,000 VND
+
+        if ($pointsToUse > $user->points) {
+            return redirect()->route('checkout')->withErrors(['error' => 'Bạn không có đủ điểm để sử dụng!']);
+        }
+
+        // Tính số tiền giảm giá(7/11/2024)
+        $discountAmount = $pointsToUse * $pointValue;
+        $finalPrice = max(0, $totalPrice - $discountAmount);
+
         // Kiểm tra lại tồn kho trước khi thực hiện thanh toán
         if ($variant->stock < $validatedData['variant_quantity']) {
             return redirect()->route('tt-that-bai')->withErrors([
@@ -460,7 +560,8 @@ class CheckoutController extends Controller
         $vnp_HashSecret = "12GUKMUAGMQR4QW57D26MKG56RCYN9G8";
 
         $vnp_OrderInfo = "Thanh toán VNPAY - Mã đơn hàng: " . $vnp_TxnRef;
-        $vnp_Amount = $totalPrice * 100;
+        // $vnp_Amount = $totalPrice * 100;
+        $vnp_Amount = $finalPrice * 100; //7/11/2024
         $vnp_Locale = "VN";
         $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
 
@@ -487,7 +588,12 @@ class CheckoutController extends Controller
         $query = $hashdata . '&vnp_SecureHash=' . $vnpSecureHash;
 
         // Lưu thông tin tạm thời vào session
-        session(['pending_order' => $validatedData]);
+        session([
+            'pending_order' => $validatedData,
+            'used_points' => $pointsToUse, //7/11/2024
+            'discount_amount' => $discountAmount //7/11/2024
+        ]);
+
 
         // Chuyển hướng đến VNPAY
         return redirect($vnp_Url . "?" . $query);
@@ -511,6 +617,9 @@ class CheckoutController extends Controller
             if ($vnp_ResponseCode === '00') {
                 // Thanh toán thành công
                 $validatedData = session('pending_order');
+                $usedPoints = session('used_points'); //7/11/2024
+                $discountAmount = session('discount_amount'); //7/11/2024
+
                 $variant = Variant::find($validatedData['variant_id']);
 
                 // Kiểm tra tồn kho trước khi tạo hóa đơn
@@ -530,6 +639,8 @@ class CheckoutController extends Controller
                     'payment_type' => 'online',
                     'payment_status' => 'completed',
                     'total_price' => $totalPrice,
+                    'discount_amount' => $discountAmount, // Số tiền giảm giá 7/11/2024
+                    'used_points' => $usedPoints, // Số điểm đã sử dụng 7/11/2024
                     'full_name' => $validatedData['full_name'],
                     'phone_number' => $validatedData['phone_number'],
                     'address' => $validatedData['address'],
@@ -549,6 +660,10 @@ class CheckoutController extends Controller
 
                 // Giảm số lượng hàng tồn kho
                 $variant->decrement('stock', $validatedData['variant_quantity']);
+
+                // Trừ điểm của người dùng
+                $user = Auth::user();
+                $user->decrement('points', $usedPoints);
 
                 // Gửi email xác nhận
                 $userEmail = Auth::user()->email;
