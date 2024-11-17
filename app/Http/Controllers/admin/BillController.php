@@ -86,6 +86,10 @@ class BillController extends Controller
 
         if ($bill->bill_status === 'canceled') {
             Mail::to($customerEmail)->send(new OrderCanceledMail($bill, $request->input('note'), $history->at_datetime));
+            // Hoàn lại điểm nếu đơn hàng bị hủy và người dùng đã sử dụng điểm để giảm giá(7/11/2024)
+            if ($bill->points_used > 0) {
+                $bill->returnPointsToUser();
+            }
         } else if ($bill->bill_status === 'completed') {
             Mail::to($customerEmail)->send(new OrderCompletedMail($bill));
             // Cộng điểm cho người dùng khi đơn hàng hoàn thành (7/11/2024)
