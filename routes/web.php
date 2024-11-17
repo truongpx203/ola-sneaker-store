@@ -16,6 +16,7 @@ use App\Http\Controllers\client\ProductController as ClientProductController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\VariantController;
 use App\Http\Controllers\client\CartController;
+use App\Http\Controllers\client\ContactController;
 use App\Http\Controllers\ProductSizeController;
 use App\Http\Controllers\client\ProductReviewController;
 use App\Http\Controllers\VoucherController;
@@ -214,6 +215,10 @@ Route::post('/checkout/vnpay', [CheckoutController::class, 'processVNPAY'])->nam
 // Route::post('/checkout/cod', [CheckoutController::class, 'processCheckout'])->name('checkout.cod');
 Route::post('/checkouts', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
 Route::get('/checkouts', [CheckoutController::class, 'checkout'])->name('checkouts');
+
+// Liên hệ
+Route::get('/contact', [ContactController::class, 'showForm'])->name('contact.form');
+Route::post('/contact', [ContactController::class, 'submitForm'])->name('contact.submit');
 
 // mua ngay
 Route::get('/buy-now', [CheckoutController::class, 'buyNow'])->name('buy.now');
