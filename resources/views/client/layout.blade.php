@@ -153,7 +153,7 @@
                   <li><a href="#"><span>GIỚI THIỆU</span></a></li>
                   <li><a href="{{route('shop.filter')}}"><span>SẢN PHẨM</span></a></li>
                   <li><a href="{{route('/blog')}}"><span>Blog</span></a></li>
-                  <li><a href="{{route('contact')}}"><span>LIÊN HỆ</span></a></li>
+                  <li><a href="{{route('contact.form')}}"><span>LIÊN HỆ</span></a></li>
                 </ul>
               </div>
             </div>

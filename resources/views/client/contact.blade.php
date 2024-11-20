@@ -36,26 +36,40 @@
             </div>
             <!--== Start Contact Form ==-->
             <div class="contact-form">
-              <form id="contact-form" action="https://whizthemes.com/mail-php/raju/arden/mail.php" method="POST">
+              @if(session('success'))
+                <div class="alert alert-success">{{ session('success') }}</div>
+              @endif
+
+              <form action="{{ route('contact.submit') }}" method="POST">
+                @csrf
                 <div class="row row-gutter-20">
                   <div class="col-md-6">
-                    <div class="form-group">
-                      <input class="form-control" type="text" name="con_name" placeholder="Họ tên *">
+                    <div class="form-group"> 
+                      <input class="form-control" type="text" name="name" placeholder="Họ tên *" value="{{ old('name', $user->full_name ?? '') }}" required>
+                      @error('name')
+                        <small style="color: red;">{{ $message }}</small>
+                      @enderror
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
-                      <input class="form-control" type="email" name="con_email" placeholder="Email *">
+                      <input class="form-control" type="email" name="email" placeholder="Email *" value="{{ old('email', $user->email ?? '') }}" required>
+                      @error('email')
+                        <small style="color: red;">{{ $message }}</small>
+                      @enderror
                     </div>
                   </div>
                   <div class="col-12">
                     <div class="form-group">
-                      <input class="form-control" type="text" placeholder="Tiêu đề">
+                      <input class="form-control" type="text" name="subject" placeholder="Tiêu đề" value="{{ old('subject') }}">
                     </div>
                   </div>
                   <div class="col-12">
                     <div class="form-group mb--0">
-                      <textarea class="form-control" name="con_message" placeholder="Nội dung"></textarea>
+                      <textarea class="form-control" name="message" placeholder="Nội dung">{{ old('message') }}</textarea>
+                      @error('message')
+                        <small style="color: red;">{{ $message }}</small>
+                      @enderror
                     </div>
                   </div>
                   <div class="col-12">

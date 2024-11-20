@@ -232,7 +232,8 @@
                                             <tr class="order-total">
                                                 <th>Tổng cộng</th>
 
-                                                <td> {{ number_format($variant->sale_price * $quantity) }} VND</td>
+                                                {{-- 7/11/2024 --}}
+                                                <td id="finalTotal"> {{ number_format($variant->sale_price * $quantity) }} VND</td> 
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -241,6 +242,16 @@
                                         <div id="PaymentMethodAccordion">
 
                                             {{-- 7/11/2024 --}}
+                                            <!-- Hiển thị điểm tích lũy -->
+                                            <div>
+                                                <p>Bạn có <strong>{{ $userPoints }}</strong> điểm tích lũy</p>
+
+                                                <!-- Nhập số điểm muốn sử dụng -->
+                                                <label for="points_to_use">Số điểm muốn sử dụng:</label>
+                                                <input type="number" id="points_to_use" name="points_to_use"
+                                                    min="0" max="{{ $userPoints }}" value="0"
+                                                    oninput="calculateDiscount()">
+                                            </div>
 
                                             <div>
                                                 <input type="radio" id="payment_cod" name="payment_type"
@@ -267,6 +278,27 @@
                         </div>
                     </div>
                 </form>
+                <script>
+                    function calculateDiscount() {
+                        // Lấy giá trị nhập từ ô input
+                        const pointsToUse = parseInt(document.getElementById('points_to_use').value) || 0;
+                
+                        // Giá trị mỗi điểm (10,000 VND mỗi điểm)
+                        const pointValue = 10000;
+                
+                        // Tổng tiền ban đầu
+                        const originalTotal = {{ $variant->sale_price * $quantity }};
+                
+                        // Tính số tiền giảm giá
+                        const discountAmount = pointsToUse * pointValue;
+                
+                        // Tính tổng tiền sau giảm giá (không cho phép âm)
+                        const finalTotal = Math.max(0, originalTotal - discountAmount);
+                
+                        // Cập nhật giao diện tổng tiền
+                        document.getElementById('finalTotal').innerText = new Intl.NumberFormat().format(finalTotal) + ' VND';
+                    }
+                </script>
                 {{-- <script>
                     document.getElementById('checkout-form').addEventListener('submit', function(event) {
                         const paymentType = document.querySelector('input[name="payment_type"]:checked').value;
