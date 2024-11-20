@@ -44,6 +44,7 @@
             <thead>
                 <tr>
                     <th>Mã hóa đơn</th>
+                    <th>Thời gian</th>
                     <th>Tên khách hàng</th>
                     <th>Tổng tiền</th>
                     <th>Trạng thái</th>
@@ -65,6 +66,7 @@
                 @foreach ($bills as $bill)
                     <tr>
                         <td>{{ $bill->code }}</td>
+                        <td>{{ \Carbon\Carbon::parse($bill->created_at)->format('d/m/Y H:i') }}</td>
                         <td>{{ $bill->full_name }}</td>
                         <td>{{ number_format($bill->total_price) }} đ</td>
                         <td>

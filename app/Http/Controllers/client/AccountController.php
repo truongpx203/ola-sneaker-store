@@ -31,7 +31,7 @@ class AccountController extends Controller
     public function account()
     {
         $user = Auth::user();
-        $bills = $user->bills()->orderBy('id', 'desc')->get();
+        $bills = $user->bills()->orderBy('id', 'desc')->paginate(10);
         return view('client.account', compact('user', 'bills'));
     }
 

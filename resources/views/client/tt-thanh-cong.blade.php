@@ -19,7 +19,7 @@
                             {{-- <p class="desc" data-aos="fade-down" data-aos-duration="1400">Đơn hàng của bạn đã được xử lý thành công. Bạn có thể tiếp tục mua sắm hoặc xem chi tiết đơn hàng của mình bằng cách sử dụng các nút bên dưới.</p> --}}
                             <div class="btn-group mt-4">
                                 <a class="btn btn-outline-success me-2 custom-btn" href="{{route('shop.filter')}}" data-aos="fade-down" data-aos-duration="1600">Tiếp tục mua hàng</a>
-                                <a class="btn btn-outline-danger order-detail-btn" href="order-tracking.html" data-aos="fade-down" data-aos-duration="1600">Chi tiết đơn hàng</a>
+                                <a class="btn btn-outline-danger order-detail-btn" href="{{route('order-details', ['id' => $bill->id]) }}" data-aos="fade-down" data-aos-duration="1600">Chi tiết đơn hàng</a>
                             </div>
                         </div>
                     </div>

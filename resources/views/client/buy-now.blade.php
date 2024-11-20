@@ -3,6 +3,50 @@
 @section('title', 'Thanh toán')
 
 @section('content')
+    <style>
+        /* Các form-group */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .form-group label .required {
+            color: #e63946;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 0px;
+        }
+
+        .form-control:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+            outline: none;
+        }
+
+        .text-danger {
+            font-size: 14px;
+            color: #e63946;
+            margin-top: 5px;
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+            background-color: #f7f7f7
+        }
+    </style>
     <main class="main-content">
         <!--== Start Page Header Area Wrapper ==-->
         <div class="page-header-area" data-bg-img="assets/img/photos/bg3.webp">
@@ -36,6 +80,42 @@
                         @endforeach
                     </div>
                 @endif
+                <div class="row">
+                    <div class="col-12">
+                      <div class="checkout-page-coupon-wrap">
+                        <!--== Start Checkout Coupon Accordion ==-->
+                        <div class="coupon-accordion" id="CouponAccordion">
+                          <div class="card">
+                            <h3>
+                              <i class="fa fa-info-circle"></i>
+                              Có phiếu giảm giá?
+                              <a href="#/" data-bs-toggle="collapse" data-bs-target="#couponaccordion">Nhấp vào đây để nhập mã của bạn</a>
+                            </h3>
+                            <div id="couponaccordion" class="collapse" data-bs-parent="#CouponAccordion">
+                              <div class="card-body">
+                                <div class="apply-coupon-wrap mb-60">
+                                  <p>Nếu bạn có mã giảm giá, vui lòng áp dụng bên dưới.</p>
+                                  <form action="#" method="post">
+                                    <div class="row">
+                                      <div class="col-md-6">
+                                        <div class="form-group">
+                                          <input class="form-control" type="text" placeholder="Mã gỉảm giá">
+                                        </div>
+                                      </div>
+                                      <div class="col-md-6">
+                                        <button class="btn-coupon">Áp dụng</button>
+                                      </div>
+                                    </div>
+                                  </form>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!--== End Checkout Coupon Accordion ==-->
+                      </div>
+                    </div>
+                  </div>
                 <form id="checkout-form" action="{{ route('buy.now.process') }}" method="post">
                     @csrf
                     <input type="hidden" name="variant_id" value="{{ $variant->id }}">
@@ -79,7 +159,7 @@
                                                         title="required">*</abbr></label>
                                                 <input id="email" type="text" name="email" class="form-control"
                                                     placeholder="Nhập email người nhận"
-                                                    value="{{ old('name', $user->email) }}">
+                                                    value="{{ old('name', $user->email) }}" disabled>
                                                 @error('email')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
@@ -93,6 +173,16 @@
                                                     class="form-control" placeholder="Nhập địa chỉ người nhận"
                                                     value="{{ old('name', $user->address) }}">
                                                 @error('address')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group mb--0">
+                                                <label for="order-notes">Ghi chú (Nếu có)</label>
+                                                <textarea id="order-notes" class="form-control" name="note"
+                                                    placeholder="Ghi chú về đơn hàng của bạn. Ví dụ ghi chú đặc biệt về việc giao hàng."></textarea>
+                                                @error('note')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
@@ -119,21 +209,21 @@
                                         </thead>
                                         <tbody class="table-body">
                                             {{-- @foreach ($variant as $variant) --}}
-                                                <tr class="cart-item">
-                                                    <td class="product-name">{{ $variant->product->name }}<span
-                                                            class="product-quantity"> × {{ $quantity }} </span>
-                                                    </td>
-                                                    <td class="product-total">
-                                                        {{ number_format($variant->sale_price * $quantity) }}
-                                                        VNĐ</td>
-                                                </tr>
+                                            <tr class="cart-item">
+                                                <td class="product-name">{{ $variant->product->name }}<span
+                                                        class="product-quantity"> × {{ $quantity }} </span>
+                                                </td>
+                                                <td class="product-total">
+                                                    {{ number_format($variant->sale_price * $quantity) }}
+                                                    VNĐ</td>
+                                            </tr>
                                             {{-- @endforeach --}}
 
                                         </tbody>
                                         <tfoot class="table-foot">
                                             <tr class="shipping">
                                                 <th>Size</th>
-                                                <td>{{$variant->size->name}}</td>
+                                                <td>{{ $variant->size->name }}</td>
                                             </tr>
                                             <tr class="shipping">
                                                 <th>Phí vận chuyển</th>
@@ -141,6 +231,7 @@
                                             </tr>
                                             <tr class="order-total">
                                                 <th>Tổng cộng</th>
+
                                                 {{-- 7/11/2024 --}}
                                                 <td id="finalTotal"> {{ number_format($variant->sale_price * $quantity) }} VND</td> 
                                             </tr>
@@ -224,6 +315,7 @@
     </main>
 @endsection
 
+@section('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const checkoutButton = document.getElementById('checkoutButton');
@@ -267,7 +359,7 @@
 </script>
 
 <script>
-    document.getElementById('use_points').addEventListener('change', function () {
+    document.getElementById('use_points').addEventListener('change', function() {
         const pointsField = document.getElementById('points_field');
         pointsField.style.display = this.checked ? 'block' : 'none';
         if (!this.checked) {
@@ -275,3 +367,5 @@
         }
     });
 </script>
+
+@endsection

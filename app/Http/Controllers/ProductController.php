@@ -66,6 +66,7 @@ class ProductController extends Controller
             $product->code = $request->code;
             $product->summary = $request->summary;
             $product->detailed_description = html_entity_decode(strip_tags($request->detailed_description));
+            $product->is_visible = $request->has('is_visible') ? true : false;
 
             // Xử lý upload ảnh
             if ($request->hasFile('primary_image_url')) {
@@ -152,7 +153,7 @@ class ProductController extends Controller
             // Xử lý ảnh chính (primary image)
             if ($request->hasFile('primary_image_url')) {
                 $imagePath = $request->file('primary_image_url')->store('products', 'public');
-                Storage::disk('public')->delete($product->primary_image_url);
+                // Storage::disk('public')->delete($product->primary_image_url);
                 $product->update(['primary_image_url' => $imagePath]);
             }
     
