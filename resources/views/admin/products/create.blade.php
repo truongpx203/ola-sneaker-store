@@ -52,6 +52,19 @@
                                         @enderror
                                     </div>
                                     <div class="mt-3">
+                                        <label for="is_visible" class="form-label">Hiển thị</label>
+                                        
+                                        <!-- Checkbox for "Hiển thị" (Visible) -->
+                                        <input type="checkbox" name="is_visible" id="is_visible" class="form-check-input" 
+                                               value="1" {{ old('is_visible', 1) == 1 ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="is_visible">Có</label>
+                                    
+                                        @error('is_visible')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                    
+                                    <div class="mt-3">
                                         <label for="primary_image_url" class="form-label">Hình ảnh</label>
                                         <input type="file"
                                             class="form-control @error('primary_image_url') is-invalid @enderror"

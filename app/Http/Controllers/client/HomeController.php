@@ -24,6 +24,11 @@ class HomeController extends Controller
         // Lấy ID của người dùng đã đăng nhập
         $userId = auth()->id();
 
+        if ($bill->user_id != $userId) {
+            // Nếu không phải, chuyển hướng về trang khác và hiển thị thông báo lỗi
+            return redirect()->route('page-not-found')->with('error', 'Bạn không có quyền truy cập vào đơn hàng này.');
+        }
+
         foreach ($bill->items as $item) {
             // Kiểm tra xem người dùng đã đánh giá sản phẩm này trong đơn hàng này chưa
             $item->has_reviewed = ProductReview::where('variant_id', $item->variant->id)

@@ -16,10 +16,31 @@ class ProductController extends Controller
             $query->where('is_show', 1) // Chỉ lấy biến thể có is_show bằng 1
                 ->whereNotNull('sale_price') // Chỉ lấy biến thể có giá sale
                 ->orderBy('sale_price', 'asc');
-        }])->orderBy('id', 'desc')->take(8)->get();
+        }])->where('is_visible', 1)->orderBy('id', 'desc')->take(8)->get();
 
         return view('client.home', compact('products'));
     }
+
+    // show sản phẩm bán chạy nhất
+
+    // public function showTopSellingProducts(){
+    //     $productsTopSelling = Product::with(['variants' => function ($query) {
+    //         $query->where('is_show', 1) // Only variants that are visible
+    //               ->whereNotNull('sale_price') // Only variants with a sale price
+    //               ->orderBy('sale_price', 'asc');
+    //     }])
+    //     ->where('is_visible', 1) // Only products that are visible
+    //     ->join('variants', 'products.id', '=', 'variants.product_id') // Join products with variants
+    //     ->join('bill_items', 'variants.id', '=', 'bill_items.variant_id') // Join with bill items to count sales
+    //     ->selectRaw('products.*, SUM(bill_items.variant_quantity) as total_quantity_sold') // Calculate total quantity sold
+    //     ->groupBy('products.id') // Group by product ID
+    //     ->orderByDesc('total_quantity_sold') // Order by total sales
+    //     ->take(8) // Limit to 8 products
+    //     ->get();
+    
+    //     return view('client.home', compact('productsTopSelling'));
+    // }
+
     public function show($id)
     {
         $product = Product::with(['variants' => function ($query) {
@@ -27,9 +48,9 @@ class ProductController extends Controller
                 ->join('product_sizes', 'variants.product_size_id', '=', 'product_sizes.id')
                 ->select('variants.*', 'product_sizes.name as name')
                 ->orderBy('product_sizes.name');
-        }, 'productImages'])->findOrFail($id);
+        }, 'productImages'])->where('is_visible', 1)->findOrFail($id);
 
-        // Tính toán và cập nhật average_rating nếu cần
+        // Tính toán và cập nhật average_rating 
         $product->average_rating = $product->calculateAverageRating();
         $product->save();
 
@@ -54,6 +75,7 @@ class ProductController extends Controller
                     ->whereNotNull('sale_price')
                     ->orderBy('sale_price', 'asc');
             }])
+            ->where('is_visible', 1)
             ->get()
             ->sortBy(function ($product) {
                 return $product->variants->min('sale_price');
@@ -77,6 +99,7 @@ class ProductController extends Controller
             ->when($categoryId, function ($query) use ($categoryId) {
                 return $query->where('category_id', $categoryId);
             })
+            ->where('is_visible', 1)
             ->orderBy('id', direction: 'desc')
             ->paginate(12);
 
@@ -100,6 +123,7 @@ class ProductController extends Controller
             ->when($categoryId, function ($query) use ($categoryId) {
                 return $query->where('category_id', $categoryId);
             })
+            ->where('is_visible', 1)
             ->orderBy('id', 'desc')
             ->paginate(12);
 
@@ -132,6 +156,7 @@ class ProductController extends Controller
                     ->havingRaw('MIN(sale_price) >= ?', [$minPrice])
                     ->havingRaw('MIN(sale_price) <= ?', [$maxPrice]);
             })
+            ->where('is_visible', 1)
             ->orderBy('id', 'desc')
             ->paginate(12);
 

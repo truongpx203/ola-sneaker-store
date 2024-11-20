@@ -246,8 +246,8 @@
                                                             @endphp
                                                             @php
                                                                 $paymentTypeMapping = [
-                                                                    'online' => 'Chuyển khoản trực tuyến',
-                                                                    'cod' => 'Thanh toán khi nhận hàng',
+                                                                    'online' => 'Thanh toán online',
+                                                                    'cod' => 'Thanh toán cod',
                                                                 ];
                                                             @endphp
 
@@ -269,6 +269,11 @@
                                                                 @endforeach
                                                             </tbody>
                                                         </table>
+                                                        <div class="d-flex justify-content-end">
+                                                            <div class="pagination-wrap hstack gap-2">
+                                                                {{ $bills->appends(request()->input())->links('pagination::bootstrap-4') }}
+                                                            </div>
+                                                        </div>
                                                     @endif
                                                 </div>
                                             </div>
