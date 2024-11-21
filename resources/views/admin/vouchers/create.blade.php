@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    @if ($errors->any())
+    {{-- @if ($errors->any())
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -37,7 +37,7 @@
                 </div>
             </div>
         </div>
-    @endif
+    @endif --}}
 
     <form action="{{ route('voucher.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
@@ -145,4 +145,35 @@
             </div>
         </div>
     </form>
+@endsection
+@section('scriptsToastr')
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'error', // Hoặc 'warning', 'error', v.v.
+                // title: 'Thành công',
+                text: '{{ session('error') }}',
+                confirmButtonText: 'OK',
+                timer: 5000,
+                timerProgressBar: true,
+            });
+        </script>
+    @endif
+
+@endsection
+@section('scriptsToastr')
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success', // Hoặc 'warning', 'error', v.v.
+                title: 'Thành công',
+                text: '{{ session('success') }}',
+                confirmButtonText: 'OK',
+                timer: 5000,
+                timerProgressBar: true,
+
+            });
+        </script>
+    @endif
+
 @endsection

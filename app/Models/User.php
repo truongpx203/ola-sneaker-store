@@ -59,4 +59,14 @@ class User extends Authenticatable
         return $this->hasMany(Voucher::class, 'for_user_ids');
     }
 
+    // app/User.php
+
+
+public function messages()
+{
+  return $this->hasMany(Message::class);
+}
+
+
+
 }

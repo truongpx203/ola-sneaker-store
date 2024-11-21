@@ -2,6 +2,21 @@
 
 @section('title', 'Chi tiết sản phẩm')
 
+@section('scriptsToastr')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success', // Hoặc 'warning', 'error', v.v.
+                title: 'Thành công',
+                text: '{{ session('success') }}',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    @endif
+
+@endsection
 @section('content')
     <main class="main-content">
         <!--== Start Page Header Area Wrapper ==-->
@@ -26,11 +41,11 @@
         <!--== End Page Header Area Wrapper ==-->
 
         <!--== Start Product Single Area Wrapper ==-->
-        @if (session('message'))
+        {{-- @if (session('message'))
             <div class="alert alert-warning">
                 {{ session('message') }}
             </div>
-        @endif
+        @endif --}}
 
         <section class="product-area product-single-area">
             <div class="container">
@@ -235,7 +250,13 @@
                                                 addToCartBtn.href = '#';
                                                 addToCartBtn.onclick = function(event) {
                                                     event.preventDefault();
-                                                    alert('Size bạn chọn đã hết hàng !');
+                                                    Swal.fire({
+                                                        icon: 'error', // Hoặc 'warning', 'error', v.v.
+                                                        title: 'Thành công',
+                                                        text: 'Size bạn chọn đã hết hàng.',
+                                                        confirmButtonText: 'OK'
+                                                    });
+                                                    // alert('Size bạn chọn đã hết hàng !');
                                                 };
                                             }
 
@@ -249,7 +270,12 @@
                                             function addToCart(event) {
                                                 if (!selectedVariantId || selectedStock == 0) {
                                                     event.preventDefault();
-                                                    alert('Bạn cần chọn kích thước trước khi thêm vào giỏ hàng!');
+                                                    Swal.fire({
+                                                        icon: 'warning', // Loại thông báo, có thể là 'warning', 'success', 'error', 'info', v.v.
+                                                        // title: 'Cảnh báo',
+                                                        text: 'Vui lòng chọn kích thước sản phẩm trước.',
+                                                        confirmButtonText: 'OK'
+                                                    });
                                                 } else {
                                                     // Optional: send data via AJAX instead of form submit
                                                     let formData = new FormData();
@@ -269,7 +295,12 @@
                                                                 // Nếu thêm vào giỏ hàng thành công, chuyển hướng đến trang giỏ hàng
                                                                 window.location.href = '{{ route('cart.show') }}'; // Đường dẫn tới trang giỏ hàng
                                                             } else {
-                                                                alert('Đã xảy ra lỗi khi thêm vào giỏ hàng.');
+                                                                Swal.fire({
+                                                                    icon: 'warning', // Loại thông báo, có thể là 'warning', 'success', 'error', 'info', v.v.
+                                                                    // title: 'Cảnh báo',
+                                                                    text: 'Đã xảy ra lỗi khi thêm vào giỏ hàng.',
+                                                                    confirmButtonText: 'OK'
+                                                                });
                                                             }
                                                         })
                                                         .catch(error => console.error('Error:', error));
@@ -283,7 +314,12 @@
                                                 buyNowBtn.href = '#';
                                                 buyNowBtn.onclick = function(event) {
                                                     event.preventDefault();
-                                                    alert('Size bạn chọn đã hết hàng!');
+                                                    Swal.fire({
+                                                        icon: 'error', // Hoặc 'warning', 'error', v.v.
+                                                        title: 'Thành công',
+                                                        text: 'Size bạn chọn đã hết hàng ',
+                                                        confirmButtonText: 'OK'
+                                                    });
                                                 };
                                             }
 
@@ -303,19 +339,36 @@
 
                                                 // Kiểm tra nếu variantId không có giá trị
                                                 if (!variantId) {
-                                                    alert('Vui lòng chọn kích thước sản phẩm trước.');
+                                                    Swal.fire({
+                                                        icon: 'warning', // Loại thông báo, có thể là 'warning', 'success', 'error', 'info', v.v.
+                                                        // title: 'Cảnh báo',
+                                                        text: 'Vui lòng chọn kích thước sản phẩm trước.',
+                                                        confirmButtonText: 'OK'
+                                                    });
                                                     return;
                                                 }
 
                                                 // Kiểm tra nếu quantity không có giá trị hoặc không hợp lệ
                                                 if (!quantity || quantity <= 0) {
-                                                    alert('Vui lòng nhập số lượng hợp lệ.');
+                                                    // alert('Vui lòng nhập số lượng hợp lệ.');
+                                                    Swal.fire({
+                                                        icon: 'warning', // Hoặc 'warning', 'error', v.v.
+                                                        title: 'Thành công',
+                                                        text: 'Vui lòng nhập số lượng hợp lệ.',
+                                                        confirmButtonText: 'OK'
+                                                    });
                                                     return;
                                                 }
 
                                                 // Kiểm tra nếu số lượng vượt quá số lượng tồn kho
                                                 if (quantity > selectedStock) {
-                                                    alert(`Số lượng bạn chọn vượt quá số lượng tồn kho! Vui lòng chọn số lượng từ 1 đến ${selectedStock}.`);
+                                                    //  alert(`Số lượng bạn chọn vượt quá số lượng tồn kho! Vui lòng chọn số lượng từ 1 đến ${selectedStock}.`);
+                                                    Swal.fire({
+                                                        icon: 'warning', // Hoặc 'warning', 'error', v.v.
+                                                        title: 'Thành công',
+                                                        text: `Số lượng bạn chọn vượt quá số lượng tồn kho! Vui lòng chọn số lượng từ 1 đến ${selectedStock}.`,
+                                                        confirmButtonText: 'OK'
+                                                    });
                                                     quantityInput.value = Math.min(quantity, selectedStock); // Đặt lại số lượng về giá trị hợp lệ
                                                     return;
                                                 }

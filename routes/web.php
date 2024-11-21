@@ -21,6 +21,9 @@ use App\Http\Controllers\ProductSizeController;
 use App\Http\Controllers\client\ProductReviewController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\MessageController;
+
+
 
 
 /*
@@ -76,7 +79,8 @@ Route::get('account', function () {
 
 
 
-// Admin  
+
+// Admin
 Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
 
 
@@ -146,7 +150,7 @@ Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
     Route::get('/user/{id}', [UserController::class, 'update'])->name('user.updateStatus'); // cập nhật trạng thái
     Route::get('/edit-user/{id}', [UserController::class, 'editUser'])->name('user.edit');
     Route::put('/edit-user/{id}', [UserController::class, 'updateUser'])->name('user.update');
-    
+
     Route::prefix('voucher')
         ->as('voucher.')
         ->group(function () {
@@ -158,6 +162,8 @@ Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
             Route::put('/update/{id}',          [VoucherController::class, 'update'])->name('update');
             Route::delete('/delete/{id}',       [VoucherController::class, 'destroy'])->name('destroy');
         });
+
+
 });
 
 
@@ -188,13 +194,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('order-details/{id}', [HomeController::class, 'detailBill'])->name('order-details');
     Route::post('/bills/{id}/cancel', [HomeController::class, 'cancelOrder'])->name('cancelOrder');
     Route::post('/bills/{bill}/complete', [HomeController::class, 'completeOrder'])->name('completeOrder');
-    
+
     Route::post('/products/reviews', [ProductReviewController::class, 'storeReview'])->name('product.reviews.store');
 
     // Sản phẩm yêu thích
     Route::get('/wishlist',                     [WishlistController::class, 'index'])->name('wishlist.index');
     Route::post('/wishlist/store',              [WishlistController::class, 'store'])->name('wishlist.store');
     Route::delete('/wishlist/{wishlist}/destroy',     [WishlistController::class, 'destroy'])->name('wishlist.destroy');
+
+
+    Route::get('/chat', [App\Http\Controllers\MessageController::class, 'showChat'])->name('chat.show');
+    Route::post('/chat/message', [App\Http\Controllers\MessageController::class, 'messageReceived'])->name('chat.message');
+    Route::post('/chat/greet/{receiver}', [App\Http\Controllers\MessageController::class, 'greetReceived'])->name('chat.greet');
 
 });
 
@@ -256,3 +267,7 @@ Route::get('/search', [ProductController::class, 'search'])->name('search');
 Route::get('show-bill-item', function () {
     return view('admin.bills.show-bill-item');
 });
+
+
+//chat
+

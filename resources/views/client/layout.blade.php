@@ -11,6 +11,11 @@
     <meta name="keywords" content="footwear, shoes, modern, shop, store, ecommerce, responsive, e-commerce"/>
     <meta name="author" content="codecarnival"/>
 
+    {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script> --}}
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>@yield('title')</title>
 
     <!--== Favicon ==-->
@@ -41,6 +46,9 @@
     <script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    @vite(['resources/js/app.js'])
+
+
 </head>
 
 <body>
@@ -103,7 +111,7 @@
                         <button class="btn-submit" type="submit"><i class="pe-7s-search"></i></button>
                     </form>
                 </div>
-            </div>                                        
+            </div>
               <div class="header-middle-align-end">
                 <div class="header-action-area">
                   <div class="shopping-search">
@@ -165,17 +173,17 @@
   <!--== End Header Wrapper ==-->
   <article>
     <div class="row" id="productContainer"></div>
-            
+
   <script>
       document.getElementById('searchForm').addEventListener('submit', function(e) {
           e.preventDefault(); // Ngăn chặn reload trang
-  
+
           const query = document.getElementById('searchInput').value;
           const productContainer = document.getElementById('productContainer');
-  
+
           // Xóa nội dung cũ
           productContainer.innerHTML = '';
-  
+
           // Gửi yêu cầu AJAX
           fetch(`/api/search?name=${encodeURIComponent(query)}`)
               .then(response => response.json())
@@ -197,7 +205,7 @@
                                           <h4 class="title"><a href="/product-detail/${product.id}">${product.name}</a></h4>
                                           <div class="prices">
                                               ${product.variants.length > 0 && product.variants[0].sale_price
-                                                  ? `<span class="price-old">${new Intl.NumberFormat().format(product.variants[0].listed_price)} đ</span> - 
+                                                  ? `<span class="price-old">${new Intl.NumberFormat().format(product.variants[0].listed_price)} đ</span> -
                                                      <span class="price">${new Intl.NumberFormat().format(product.variants[0].sale_price)} đ</span>`
                                                   : `<span class="price">${new Intl.NumberFormat().format(product.listed_price)} đ</span>`
                                               }
@@ -219,6 +227,8 @@
               });
       });
   </script>
+   @yield('scriptsToastr')
+
     @yield('content')
   </article>
   <!--== Start Footer Area Wrapper ==-->
@@ -440,7 +450,7 @@
       </div>
     </div>
   </aside>
-  <!--== End Aside Search Menu ==--> 
+  <!--== End Aside Search Menu ==-->
   <!--== Start Side Menu ==-->
   <div class="off-canvas-wrapper offcanvas offcanvas-start" tabindex="-1" id="AsideOffcanvasMenu" aria-labelledby="offcanvasExampleLabel">
     <div class="offcanvas-header">

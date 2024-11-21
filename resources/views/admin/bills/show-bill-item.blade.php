@@ -62,7 +62,7 @@
     </style>
     <div class="container">
         <h2 class="mb-4">Chi Tiết Đơn Hàng #{{ $bill->code }}</h2>
-        @if (session('success'))
+        {{-- @if (session('success'))
             <div class="alert alert-success" role="alert">
                 {{ session('success') }}
             </div>
@@ -72,7 +72,7 @@
             <div class="alert alert-danger" role="alert">
                 {{ session('error') }}
             </div>
-        @endif
+        @endif --}}
         @php
             $paymentStatusMapping = [
                 'pending' => 'Chưa thanh toán',
@@ -293,3 +293,31 @@
         </div>
     </div>
 @endsection
+@section('scriptsToastr')
+
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success', // Hoặc 'warning', 'error', v.v.
+                title: 'Thành công',
+                text: '{{ session('success') }}',
+                confirmButtonText: 'OK',
+                timer: 5000, // Thời gian hiển thị thông báo (5000ms = 5 giây)
+                timerProgressBar: true,
+            });
+        </script>
+    @endif
+    @if (session('error'))
+    <script>
+        Swal.fire({
+            icon: 'error', // Hoặc 'warning', 'error', v.v.
+            // title: 'Thành công',
+            text: '{{ session('error') }}',
+            confirmButtonText: 'OK',
+            timer: 5000, // Thời gian hiển thị thông báo (5000ms = 5 giây)
+            timerProgressBar: true,
+        });
+    </script>
+    @endif
+@endsection
+
