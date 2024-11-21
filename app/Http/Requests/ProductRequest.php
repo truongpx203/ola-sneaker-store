@@ -26,6 +26,7 @@ class ProductRequest extends FormRequest
             'code' => 'required|string|max:50|unique:products,code,' . ($this->route('product') ? $this->route('product')->id : 'NULL'),
             'category_id' => 'required|exists:categories,id',
             'summary' => 'required|string',
+            'is_visible' => 'nullable|boolean',
             'detailed_description' => 'required|string',
 
           'variants.*.size_id' => [

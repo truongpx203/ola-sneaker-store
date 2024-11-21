@@ -18,7 +18,8 @@ class Bill extends Model
         'total_price',
         'full_name',
         'phone_number',
-        'address'
+        'address',
+        'note'
     ];
 
     public function items()

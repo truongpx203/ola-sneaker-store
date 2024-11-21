@@ -94,9 +94,8 @@
                         <input type="text" class="form-control" id="orderID" value="{{ $bill->code }}" readonly>
                     </div>
                     <div class="col-md-6">
-                        <label for="paymentStatus" class="form-label">Trạng Thái Thanh Toán</label>
-                        <input type="text" class="form-control" id="paymentStatus"
-                            value="{{ $paymentStatusMapping[$bill->payment_status] ?? ucfirst($bill->payment_status) }}"
+                        <label for="customerName" class="form-label">Tên Khách Hàng</label>
+                        <input type="text" class="form-control" id="customerName" value="{{ $bill->full_name }}"
                             readonly>
                     </div>
                 </div>
@@ -114,13 +113,20 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label for="customerName" class="form-label">Tên Khách Hàng</label>
-                        <input type="text" class="form-control" id="customerName" value="{{ $bill->full_name }}"
+                        <label for="paymentStatus" class="form-label">Trạng Thái Thanh Toán</label>
+                        <input type="text" class="form-control" id="paymentStatus"
+                            value="{{ $paymentStatusMapping[$bill->payment_status] ?? ucfirst($bill->payment_status) }}"
                             readonly>
                     </div>
                     <div class="col-md-6">
                         <label for="address" class="form-label">Địa Chỉ</label>
                         <input type="text" class="form-control" id="address" value="{{ $bill->address }}" readonly>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="address" class="form-label">Thời gian mua</label>
+                        <input type="text" class="form-control" id="address" value="{{ \Carbon\Carbon::parse($bill->created_at)->format('d/m/Y H:i') }}" readonly>
                     </div>
                 </div>
             </div>

@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('full_name');
             $table->string('phone_number');
             $table->text('address');
+            $table->text('note')->nullable();
             $table->timestamps();
         });
     }

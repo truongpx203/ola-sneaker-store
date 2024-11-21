@@ -158,7 +158,8 @@
                                         @foreach($categories as $category)
                                             <li>
                                                 <a href="#" class="filter-category {{ request('category_id') == $category->id ? 'active' : '' }}" data-category-id="{{ $category->id }}">
-                                                    {{ $category->name }} <span>({{ $category->products_count }})</span>
+                                                    {{ $category->name }} 
+                                                    {{-- <span>({{ $category->products_count }})</span> --}}
                                                 </a>
                                             </li>
                                         @endforeach

@@ -13,7 +13,7 @@ class Product extends Model
 
     protected $table = 'products';
 
-    protected $fillable = ['name', 'code', 'summary', 'detailed_description', 'average_rating', 'primary_image_url', 'category_id'];
+    protected $fillable = ['name', 'code', 'summary', 'detailed_description', 'average_rating', 'primary_image_url', 'category_id', 'is_visible'];
 
     public function category():BelongsTo{
         return $this->belongsTo(Category::class);  // Assuming CategoryModel has a 'id' field and 'products' table has 'category_id' field.  Change the model and field names as per your database schema.

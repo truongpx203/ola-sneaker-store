@@ -56,11 +56,29 @@ class CheckoutController extends Controller
         }
 
         $validateData = $request->validate([
-            'full_name' => 'required|max:255',
+            'full_name' => 'required|string|max:255',
             'phone_number' => 'required|regex:/^[0-9]{10}$/',
-            'address' => 'required',
+            'address' => 'required|string|max:500',
             'payment_type' => 'required|in:cod,online',
             'points_to_use' => 'nullable|integer|min:0', // Validate số điểm(7/11/2024)
+            'note' => 'nullable|string|max:1000',
+        ], [
+            'full_name.required' => 'Họ và tên là bắt buộc.',
+            'full_name.string' => 'Họ và tên phải là chuỗi văn bản.',
+            'full_name.max' => 'Họ và tên không được vượt quá :max ký tự.',
+
+            'phone_number.required' => 'Số điện thoại là bắt buộc.',
+            'phone_number.regex' => 'Số điện thoại phải là chuỗi 10 chữ số hợp lệ.',
+
+            'address.required' => 'Địa chỉ là bắt buộc.',
+            'address.string' => 'Địa chỉ phải là chuỗi văn bản.',
+            'address.max' => 'Địa chỉ không được vượt quá :max ký tự.',
+
+            'payment_type.required' => 'Phương thức thanh toán là bắt buộc.',
+            'payment_type.in' => 'Phương thức thanh toán phải là "cod" hoặc "online".',
+
+            'note.string' => 'Ghi chú phải là chuỗi văn bản.',
+            'note.max' => 'Ghi chú không được vượt quá :max ký tự.',
         ]);
 
         DB::beginTransaction();
@@ -110,7 +128,8 @@ class CheckoutController extends Controller
             $finalPrice = max(0, $total_price - $discountAmount);
 
             // Tạo mã hóa đơn
-            $code = 'BILL-' . strtoupper(uniqid());
+            // $code = 'BILL-' . strtoupper(uniqid());
+            $code = 'B-' . strtoupper(bin2hex(random_bytes(2))) . '-' . strtoupper(substr(uniqid(), -4));
 
             // Tạo hóa đơn
             $bill = Bill::create([
@@ -119,6 +138,7 @@ class CheckoutController extends Controller
                 'full_name' => $validateData['full_name'],
                 'phone_number' => $validateData['phone_number'],
                 'address' => $validateData['address'],
+                'note' => $validateData['note'],
                 'payment_type' => 'cod',
                 // 'total_price' => $total_price,
                 'total_price' => $finalPrice, //7/11/2024
@@ -157,7 +177,7 @@ class CheckoutController extends Controller
             $userEmail = Auth::user()->email;
             Mail::to($userEmail)->send(new OrderConfirmationMail($bill));
 
-            return redirect()->route('tt-thanh-cong')->with('success', 'Thanh toán thành công!');
+            return redirect()->route('tt-thanh-cong', ['bill' => $bill->id])->with('success', 'Đặt hàng thành công!');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Checkout error: ' . $e->getMessage());
@@ -175,21 +195,38 @@ class CheckoutController extends Controller
         }
 
         $validateData = $request->validate([
-            'full_name' => 'required|max:255',
+            'full_name' => 'required|string|max:255',
             'phone_number' => 'required|regex:/^[0-9]{10}$/',
-            'address' => 'required',
+            'address' => 'required|string|max:500',
             'payment_type' => 'required|in:cod,online',
             'points_to_use' => 'nullable|integer|min:0', // Số điểm người dùng muốn sử dụng (7/11/2024)
+            'note' => 'nullable|string|max:1000',
+        ], [
+            'full_name.required' => 'Họ và tên là bắt buộc.',
+            'full_name.string' => 'Họ và tên phải là chuỗi văn bản.',
+            'full_name.max' => 'Họ và tên không được vượt quá :max ký tự.',
+
+            'phone_number.required' => 'Số điện thoại là bắt buộc.',
+            'phone_number.regex' => 'Số điện thoại phải là chuỗi 10 chữ số hợp lệ.',
+
+            'address.required' => 'Địa chỉ là bắt buộc.',
+            'address.string' => 'Địa chỉ phải là chuỗi văn bản.',
+            'address.max' => 'Địa chỉ không được vượt quá :max ký tự.',
+
+            'payment_type.required' => 'Phương thức thanh toán là bắt buộc.',
+            'payment_type.in' => 'Phương thức thanh toán phải là "cod" hoặc "online".',
+
+            'note.string' => 'Ghi chú phải là chuỗi văn bản.',
+            'note.max' => 'Ghi chú không được vượt quá :max ký tự.',
         ]);
 
         // Lưu thông tin vào session
         session([
             'payment.full_name' => $validateData['full_name'],
             'payment.phone_number' => $validateData['phone_number'],
-            'payment.address' => $validateData['address']
+            'payment.address' => $validateData['address'],
+            'payment.note' => $validateData['note'],
         ]);
-
-
 
 
         // Kiểm tra hàng tồn kho
@@ -217,6 +254,7 @@ class CheckoutController extends Controller
             ]);
         }
 
+
         // Lấy số điểm người dùng muốn sử dụng (7/11/2024)
         $pointsToUse = $validateData['points_to_use'] ?? 0;
         $user = Auth::user();
@@ -238,7 +276,8 @@ class CheckoutController extends Controller
         $finalPrice = max(0, $totalPrice - $discountAmount); // Đảm bảo giá cuối không âm
 
         // Tạo mã đơn hàng duy nhất
-        $code = 'BILL-' . strtoupper(uniqid());
+        // $code = 'BILL-' . strtoupper(uniqid());
+        $code = 'B-' . strtoupper(bin2hex(random_bytes(2))) . '-' . strtoupper(substr(uniqid(), -4));
 
         $vnp_TxnRef = $code;
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
@@ -334,6 +373,7 @@ class CheckoutController extends Controller
                 $full_name = session('payment.full_name');
                 $phone_number = session('payment.phone_number');
                 $address = session('payment.address');
+                $note = session('payment.note');
 
                 // Tính tổng giá trị giỏ hàng
                 $totalPrice = $cartItems->sum(function ($item) {
@@ -347,6 +387,7 @@ class CheckoutController extends Controller
                     'full_name' => $full_name,
                     'phone_number' => $phone_number,
                     'address' => $address,
+                    'note' => $note,
                     'payment_type' => 'online',
                     // 'total_price' => $total_price,
                     'total_price' => $totalPrice - ($pointsToUse * 10000), // Giảm giá từ điểm 7/11/2024
@@ -375,7 +416,7 @@ class CheckoutController extends Controller
                 $userEmail = Auth::user()->email;
                 Mail::to($userEmail)->send(new OrderConfirmationMail($bill));
 
-                return redirect()->route('tt-thanh-cong')->with('success', 'Thanh toán thành công!');
+                return redirect()->route('tt-thanh-cong', ['bill' => $bill->id])->with('success', 'Đặt hàng thành công!');
             } catch (\Exception $e) {
                 DB::rollBack();
                 Log::error('Error saving bill after VNPAY success: ' . $e->getMessage());
@@ -406,13 +447,21 @@ class CheckoutController extends Controller
         $variantId = $request->input('variant_id');
         $quantity = $request->input('variant_quantity');
 
-        // Kiểm tra nếu variantId và quantity tồn tại
-        if (!$variantId || !$quantity) {
-            return redirect()->back()->withErrors('Không có thông tin sản phẩm.');
+        if (!is_numeric($quantity) || $quantity <= 0) {
+            return redirect()->back()->withErrors('Số lượng không hợp lệ.');
         }
 
+        $variant = Variant::find($variantId);
+        if (!$variant) {
+            return redirect()->back()->withErrors('Sản phẩm không tồn tại.');
+        }
+
+        // if ($quantity > $variant->stock) {
+        //     return redirect()->back()->withErrors('Số lượng yêu cầu vượt quá số lượng sản phẩm có sẵn. Sản phẩm còn lại trong kho: ' . $variant->stock);
+        // }
+
         // Tìm sản phẩm tương ứng
-        $variant = Variant::findOrFail($variantId);
+
         $product = $variant->product;
 
         // Tính tổng giá trị sản phẩm 7/11/2024
@@ -435,14 +484,37 @@ class CheckoutController extends Controller
     {
         // Xác thực dữ liệu từ form
         $validatedData = $request->validate([
-            'full_name' => 'required|max:255',
+            'full_name' => 'required|string|max:255',
             'phone_number' => 'required|regex:/^[0-9]{10}$/',
-            'email' => 'required|email',
-            'address' => 'required',
+            'address' => 'required|string|max:500',
             'payment_type' => 'required|in:cod,online',
+            'note' => 'nullable|string|max:1000',
             'variant_id' => 'required|exists:variants,id',
             'variant_quantity' => 'required|integer|min:1',
             'points_to_use' => 'nullable|integer|min:0', // Số điểm người dùng muốn sử dụng 7/11/2024
+        ], [
+            'full_name.required' => 'Họ và tên là bắt buộc.',
+            'full_name.string' => 'Họ và tên phải là chuỗi văn bản.',
+            'full_name.max' => 'Họ và tên không được vượt quá :max ký tự.',
+
+            'phone_number.required' => 'Số điện thoại là bắt buộc.',
+            'phone_number.regex' => 'Số điện thoại phải là chuỗi 10 chữ số hợp lệ.',
+
+            'address.required' => 'Địa chỉ là bắt buộc.',
+            'address.string' => 'Địa chỉ phải là chuỗi văn bản.',
+            'address.max' => 'Địa chỉ không được vượt quá :max ký tự.',
+
+            'payment_type.required' => 'Phương thức thanh toán là bắt buộc.',
+            'payment_type.in' => 'Phương thức thanh toán phải là "cod" hoặc "online".',
+
+            'note.string' => 'Ghi chú phải là chuỗi văn bản.',
+            'note.max' => 'Ghi chú không được vượt quá :max ký tự.',
+            
+            'variant_id.required' => 'ID biến thể là bắt buộc.',
+            'variant_id.exists' => 'ID biến thể không tồn tại.',
+            'variant_quantity.required' => 'Số lượng biến thể là bắt buộc.',
+            'variant_quantity.integer' => 'Số lượng biến thể phải là một số nguyên.',
+            'variant_quantity.min' => 'Số lượng biến thể phải lớn hơn hoặc bằng 1.',
         ]);
 
         DB::beginTransaction(); //7/11/2024
@@ -472,6 +544,10 @@ class CheckoutController extends Controller
             $finalPrice = max(0, $totalPrice - $discountAmount); // Không cho phép giá trị âm
 
 
+        // Tạo mã đơn hàng
+        // $billCode = 'BILL-' . strtoupper(uniqid());
+        $billCode = 'B-' . strtoupper(bin2hex(random_bytes(2))) . '-' . strtoupper(substr(uniqid(), -4));
+
             // Tạo mã đơn hàng
             $billCode = 'BILL-' . strtoupper(uniqid());
 
@@ -493,6 +569,7 @@ class CheckoutController extends Controller
                 'full_name' => $validatedData['full_name'],
                 'phone_number' => $validatedData['phone_number'],
                 'address' => $validatedData['address'],
+                'note' => $validatedData['note'],
                 'points_used' => $pointsToUse, // Lưu số điểm đã sử dụng vào hóa đơn(7/11/2024)
             ]);
 
@@ -520,13 +597,15 @@ class CheckoutController extends Controller
 
             $userEmail = Auth::user()->email;
             Mail::to($userEmail)->send(new OrderConfirmationMail($bill));
-            return redirect()->route('tt-thanh-cong')->with('success', 'Đặt hàng thành công!');
+
+            return redirect()->route('tt-thanh-cong', ['bill' => $bill->id])->with('success', 'Đặt hàng thành công!');
         } catch (\Exception $e) {
             DB::rollBack();
 
             Log::error('BuyNow error: ' . $e->getMessage());
 
             return redirect()->back()->withErrors(['error' => 'Có lỗi xảy ra trong quá trình đặt hàng. Vui lòng thử lại sau.']);
+
         }
     }
 
@@ -644,6 +723,7 @@ class CheckoutController extends Controller
                     'full_name' => $validatedData['full_name'],
                     'phone_number' => $validatedData['phone_number'],
                     'address' => $validatedData['address'],
+                    'note' => $validatedData['note'],
                 ]);
 
                 // Lưu chi tiết hóa đơn
@@ -670,7 +750,7 @@ class CheckoutController extends Controller
                 Mail::to($userEmail)->send(new OrderConfirmationMail($bill));
 
                 session()->forget('pending_order');
-                return redirect()->route('tt-thanh-cong')->with('success', 'Thanh toán thành công!');
+                return redirect()->route('tt-thanh-cong', ['bill' => $bill->id])->with('success', 'Đặt hàng thành công!');
             } else {
                 return redirect()->route('tt-that-bai')->with('error', 'Thanh toán thất bại!');
             }

@@ -692,77 +692,88 @@
                             <div class="swiper-container product-slider-col4-container">
                                 <div class="swiper-wrapper">
                                     @foreach ($relatedProducts as $relatedProduct)
-                                        <div class="swiper-slide">
-                                            <!--== Start Product Item ==-->
-                                            <div class="product-item">
-                                                <div class="inner-content">
-                                                    <div class="product-thumb">
-                                                        <a
-                                                            href="{{ route('product-detail', ['id' => $relatedProduct->id]) }}">
-                                                            <img src="{{ Storage::url($relatedProduct->primary_image_url) }}"
-                                                                alt="{{ $relatedProduct->name }}"
-                                                                style="height: 271px; object-fit: cover">
-                                                        </a>
-                                                        <div class="product-flag">
-                                                            <ul>
-                                                                @if ($relatedProduct->variants->isNotEmpty() && $relatedProduct->variants->first()->sale_price)
-                                                                    <li class="discount">
-                                                                        -{{ round((($relatedProduct->variants->first()->listed_price - $relatedProduct->variants->first()->sale_price) / $relatedProduct->variants->first()->listed_price) * 100) }}%
-                                                                    </li>
-                                                                @endif
-                                                            </ul>
+                                        @php
+                                            // Kiểm tra nếu có ít nhất một biến thể có giá sale > 0
+                                            $hasVisibleVariant = $relatedProduct->variants->contains(function (
+                                                $variant,
+                                            ) {
+                                                return $variant->sale_price > 0;
+                                            });
+                                        @endphp
+                                        @if ($hasVisibleVariant)
+                                            <div class="swiper-slide">
+                                                <!--== Start Product Item ==-->
+                                                <div class="product-item">
+                                                    <div class="inner-content">
+                                                        <div class="product-thumb">
+                                                            <a
+                                                                href="{{ route('product-detail', ['id' => $relatedProduct->id]) }}">
+                                                                <img src="{{ Storage::url($relatedProduct->primary_image_url) }}"
+                                                                    alt="{{ $relatedProduct->name }}"
+                                                                    style="height: 271px; object-fit: cover">
+                                                            </a>
+                                                            <div class="product-flag">
+                                                                <ul>
+                                                                    @if ($relatedProduct->variants->isNotEmpty() && $relatedProduct->variants->first()->sale_price)
+                                                                        <li class="discount">
+                                                                            -{{ round((($relatedProduct->variants->first()->listed_price - $relatedProduct->variants->first()->sale_price) / $relatedProduct->variants->first()->listed_price) * 100) }}%
+                                                                        </li>
+                                                                    @endif
+                                                                </ul>
+                                                            </div>
+                                                            <div class="product-action">
+                                                                <a class="btn-product-wishlist" href=""><i
+                                                                        class="fa fa-heart"></i></a>
+                                                                <a class="btn-product-cart" href=""><i
+                                                                        class="fa fa-shopping-cart"></i></a>
+                                                                <button type="button"
+                                                                    class="btn-product-quick-view-open">
+                                                                    <i class="fa fa-arrows"></i>
+                                                                </button>
+                                                            </div>
+                                                            <a class="banner-link-overlay"
+                                                                href="{{ route('product-detail', ['id' => $relatedProduct->id]) }}"></a>
                                                         </div>
-                                                        <div class="product-action">
-                                                            <a class="btn-product-wishlist" href=""><i
-                                                                    class="fa fa-heart"></i></a>
-                                                            <a class="btn-product-cart" href=""><i
-                                                                    class="fa fa-shopping-cart"></i></a>
-                                                            <button type="button" class="btn-product-quick-view-open">
-                                                                <i class="fa fa-arrows"></i>
-                                                            </button>
-                                                        </div>
-                                                        <a class="banner-link-overlay"
-                                                            href="{{ route('product-detail', ['id' => $relatedProduct->id]) }}"></a>
-                                                    </div>
-                                                    <div class="product-info">
-                                                        <h4 class="title"><a
-                                                                href="{{ route('product-detail', ['id' => $relatedProduct->id]) }}">{{ $relatedProduct->name }}</a>
-                                                        </h4>
-                                                        <div class="prices">
-                                                            @if ($relatedProduct->variants->isNotEmpty())
-                                                                @php
-                                                                    // Tìm biến thể có giá sale thấp nhất
-                                                                    $lowestSaleVariant = $relatedProduct->variants
-                                                                        ->whereNotNull('sale_price')
-                                                                        ->sortBy('sale_price')
-                                                                        ->first();
-                                                                @endphp
-                                                                @if ($lowestSaleVariant)
-                                                                    <span class="price-old"
-                                                                        style="text-decoration: line-through;">
-                                                                        {{ number_format($lowestSaleVariant->listed_price) }}
-                                                                        đ</span>
-                                                                    <span class="sep">-</span>
-                                                                    <span class="price">
-                                                                        {{ number_format($lowestSaleVariant->sale_price) }}
-                                                                        đ
-                                                                    </span>
+                                                        <div class="product-info">
+                                                            <h4 class="title"><a
+                                                                    href="{{ route('product-detail', ['id' => $relatedProduct->id]) }}">{{ $relatedProduct->name }}</a>
+                                                            </h4>
+                                                            <div class="prices">
+                                                                @if ($relatedProduct->variants->isNotEmpty())
+                                                                    @php
+                                                                        // Tìm biến thể có giá sale thấp nhất
+                                                                        $lowestSaleVariant = $relatedProduct->variants
+                                                                            ->whereNotNull('sale_price')
+                                                                            ->sortBy('sale_price')
+                                                                            ->first();
+                                                                    @endphp
+                                                                    @if ($lowestSaleVariant)
+                                                                        <span class="price-old"
+                                                                            style="text-decoration: line-through;">
+                                                                            {{ number_format($lowestSaleVariant->listed_price) }}
+                                                                            đ</span>
+                                                                        <span class="sep">-</span>
+                                                                        <span class="price">
+                                                                            {{ number_format($lowestSaleVariant->sale_price) }}
+                                                                            đ
+                                                                        </span>
+                                                                    @else
+                                                                        <span
+                                                                            class="price">{{ number_format($relatedProduct->listed_price) }}
+                                                                            đ</span>
+                                                                    @endif
                                                                 @else
                                                                     <span
                                                                         class="price">{{ number_format($relatedProduct->listed_price) }}
                                                                         đ</span>
                                                                 @endif
-                                                            @else
-                                                                <span
-                                                                    class="price">{{ number_format($relatedProduct->listed_price) }}
-                                                                    đ</span>
-                                                            @endif
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <!--== End prPduct Item ==-->
                                             </div>
-                                            <!--== End prPduct Item ==-->
-                                        </div>
+                                        @endif
                                     @endforeach
 
                                 </div>

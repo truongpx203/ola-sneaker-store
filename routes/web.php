@@ -21,9 +21,8 @@ use App\Http\Controllers\ProductSizeController;
 use App\Http\Controllers\client\ProductReviewController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\WishlistController;
-use App\Http\Controllers\MessageController;
 
-
+use App\Models\Bill;
 
 
 /*
@@ -47,7 +46,7 @@ Route::get('/product-detail', function () {
 
 Route::get('page-not-found', function () {
     return view('client.page-not-found');
-});
+})->name('page-not-found');
 Route::get('contact', function () {
     return view('client.contact');
 })->name('contact');
@@ -216,8 +215,9 @@ Route::get('tt-that-bai', function () {
     return view('client.tt-that-bai');
 })->name('tt-that-bai');
 
-Route::get('tt-thanh-cong', function () {
-    return view('client.tt-thanh-cong');
+Route::get('tt-thanh-cong/{bill}', function ($billId) {
+    $bill = Bill::findOrFail($billId);
+    return view('client.tt-thanh-cong', compact('bill'));
 })->name('tt-thanh-cong');
 
 Route::get('/payment/return', [CheckoutController::class, 'returnFromVNPAY'])->name('checkout.vnpay.returnFrom');
@@ -245,6 +245,8 @@ Route::get('/', [ClientProductController::class, 'showNewProducts'])->name('/');
 Route::get('/product/{id}', [ClientProductController::class, 'show'])->name('product-detail');
 
 Route::get('/', [ClientProductController::class, 'showNewProducts'])->name('/');
+
+// Route::get('/', [clientProductController::class, 'showTopSellingProducts']);
 // chi tiết sp
 Route::get('/product/{id}', [ClientProductController::class, 'show'])->name('product-detail');
 // trang sản phẩm (có bộ lọc)

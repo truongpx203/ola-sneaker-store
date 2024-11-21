@@ -21,6 +21,7 @@ return new class extends Migration
             $table->text('detailed_description');
             $table->decimal('average_rating', 2, 1)->default(0);
             $table->string('primary_image_url');
+            $table->boolean('is_visible')->default(true);
             $table->timestamps();
         });
     }
