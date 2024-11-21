@@ -548,9 +548,6 @@ class CheckoutController extends Controller
         // $billCode = 'BILL-' . strtoupper(uniqid());
         $billCode = 'B-' . strtoupper(bin2hex(random_bytes(2))) . '-' . strtoupper(substr(uniqid(), -4));
 
-            // Tạo mã đơn hàng
-            $billCode = 'BILL-' . strtoupper(uniqid());
-
             // Xử lý thanh toán dựa trên phương thức đã chọn
             if ($validatedData['payment_type'] === 'online') {
                 return $this->paymentVNPAY($billCode, $totalPrice, $validatedData, $variant);

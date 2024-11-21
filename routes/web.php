@@ -244,7 +244,7 @@ Route::get('/', [ClientProductController::class, 'showNewProducts'])->name('/');
 
 Route::get('/product/{id}', [ClientProductController::class, 'show'])->name('product-detail');
 
-Route::get('/', [ClientProductController::class, 'showNewProducts'])->name('/');
+// Route::get('/', [ClientProductController::class, 'showNewProducts'])->name('/');
 
 // Route::get('/', [clientProductController::class, 'showTopSellingProducts']);
 // chi tiết sp

@@ -355,46 +355,77 @@
                         <div class="product-slider-wrap">
                             <div class="swiper-container product-slider-col4-container">
                                 <div class="swiper-wrapper">
-                                    {{-- @foreach ($productsTopSelling as $product) --}}
-                                        <div class="swiper-slide">
-                                            <!--== Start Product Item ==-->
-                                            <div class="product-item">
-                                                <div class="inner-content">
-                                                    <div class="product-thumb">
-                                                        <a href="single-product.html">
-                                                            <img src="assets/img/shop/1.webp" width="270"
-                                                                height="274" alt="Image-HasTech">
-                                                        </a>
-                                                        <div class="product-flag">
-                                                            <ul>
-                                                                <li class="discount">-10%</li>
-                                                            </ul>
+                                    @foreach ($topBanChayNhat as $product)
+                                        @php
+                                            // Lấy tất cả biến thể cho sản phẩm này
+                                            $variants = DB::table('variants')
+                                                ->where('product_id', $product->product_id)
+                                                ->where('is_show', 1)
+                                                ->get();
+
+                                            // Kiểm tra nếu có ít nhất một biến thể có giá sale > 0
+                                            $hasVisibleVariant = $variants->contains(function ($variant) {
+                                                return $variant->sale_price > 0;
+                                            });
+                                        @endphp
+                                        @if ($hasVisibleVariant)
+                                            <div class="swiper-slide">
+                                                <!--== Start Product Item ==-->
+                                                <div class="product-item">
+                                                    <div class="inner-content">
+                                                        <div class="product-thumb">
+                                                            <a
+                                                                href="{{ route('product-detail', ['id' => $product->product_id]) }}">
+                                                                <img src="{{ Storage::url($product->primary_image_url) }}"
+                                                                    width="270" height="274"
+                                                                    alt="{{ $product->product_name }}">
+                                                            </a>
+                                                            <div class="product-flag">
+                                                                <ul>
+                                                                    @if ($product->min_sale_price < $product->listed_price)
+                                                                        <li class="discount">
+                                                                            -{{ round((($product->listed_price - $product->min_sale_price) / $product->listed_price) * 100) }}%
+                                                                        </li>
+                                                                    @endif
+                                                                </ul>
+                                                            </div>
+                                                            <div class="product-action">
+                                                                <a class="btn-product-wishlist"
+                                                                    href="shop-wishlist.html"><i
+                                                                        class="fa fa-heart"></i></a>
+                                                                <a class="btn-product-cart" href="shop-cart.html"><i
+                                                                        class="fa fa-shopping-cart"></i></a>
+                                                                <button type="button"
+                                                                    class="btn-product-quick-view-open">
+                                                                    <i class="fa fa-arrows"></i>
+                                                                </button>
+                                                                <a class="btn-product-compare" href="shop-compare.html"><i
+                                                                        class="fa fa-random"></i></a>
+                                                            </div>
+                                                            <a class="banner-link-overlay" href="shop.html"></a>
                                                         </div>
-                                                        <div class="product-action">
-                                                            <a class="btn-product-wishlist" href="shop-wishlist.html"><i
-                                                                    class="fa fa-heart"></i></a>
-                                                            <a class="btn-product-cart" href="shop-cart.html"><i
-                                                                    class="fa fa-shopping-cart"></i></a>
-                                                            <button type="button" class="btn-product-quick-view-open">
-                                                                <i class="fa fa-arrows"></i>
-                                                            </button>
-                                                        </div>
-                                                        <a class="banner-link-overlay" href="shop.html"></a>
-                                                    </div>
-                                                    <div class="product-info">
-                                                        <h4 class="title"><a href="single-product.html">Modern Smart
-                                                                Shoes</a></h4>
-                                                        <div class="prices">
-                                                            <span class="price-old">$200</span>
-                                                            <span class="sep">-</span>
-                                                            <span class="price">$240.00</span>
+                                                        <div class="product-info">
+                                                            <h4 class="title"><a
+                                                                    href="{{ route('product-detail', ['id' => $product->product_id]) }}">{{ $product->product_name }}</a>
+                                                            </h4>
+                                                            <div class="prices">
+                                                                <span
+                                                                    class="price-old">{{ number_format($product->listed_price) }} đ</span>
+                                                                <span class="sep">-</span>
+                                                                <span
+                                                                    class="price">{{ number_format($product->min_sale_price) }} đ</span>
+                                                            </div>
+                                                            {{-- <div class="total-sold">
+                                                                <span>Tổng số lượng đã bán:
+                                                                    {{ $product->total_quantity }}</span>
+                                                            </div> --}}
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <!--== End Product Item ==-->
                                             </div>
-                                            <!--== End prPduct Item ==-->
-                                        </div>
-                                    {{-- @endforeach --}}
+                                        @endif
+                                    @endforeach
                                 </div>
                             </div>
                             <!--== Add Swiper Arrows ==-->

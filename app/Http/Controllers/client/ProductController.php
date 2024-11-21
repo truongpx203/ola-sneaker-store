@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\client;
 
 use App\Http\Controllers\Controller;
+use App\Models\BillItem;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Variant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -18,28 +20,30 @@ class ProductController extends Controller
                 ->orderBy('sale_price', 'asc');
         }])->where('is_visible', 1)->orderBy('id', 'desc')->take(8)->get();
 
-        return view('client.home', compact('products'));
+        // Lấy sản phẩm bán chạy nhất
+        $topBanChayNhat = DB::table('products')
+            ->join('variants', 'products.id', '=', 'variants.product_id') // Join với bảng variants
+            ->join('bill_items', 'variants.id', '=', 'bill_items.variant_id') // Join với bảng bill_items
+            ->join('bills', 'bill_items.bill_id', '=', 'bills.id') // Join với bảng bills
+            ->select(
+                'products.id as product_id',
+                'products.name as product_name',
+                'products.primary_image_url',
+                DB::raw('SUM(bill_items.variant_quantity) as total_quantity'), // Tổng số lượng sản phẩm đã bán
+                DB::raw('(SELECT MIN(v.sale_price) FROM variants v WHERE v.product_id = products.id AND v.is_show = 1 AND v.sale_price IS NOT NULL) as min_sale_price'), // Giá sale thấp nhất
+                DB::raw('(SELECT listed_price FROM variants v WHERE v.product_id = products.id AND v.sale_price = (SELECT MIN(v2.sale_price) FROM variants v2 WHERE v2.product_id = products.id AND v2.is_show = 1 AND v2.sale_price IS NOT NULL) LIMIT 1) as listed_price') // Giá niêm yết của biến thể có giá sale thấp nhất
+            )
+            ->whereIn('bills.bill_status', ['delivered', 'completed']) // Lấy đơn hàng đã giao và hoàn thành
+            ->where('products.is_visible', 1) 
+            ->whereNotNull('variants.sale_price') // Chỉ lấy biến thể có giá sale
+            ->groupBy('products.id', 'products.name', 'products.primary_image_url') // Nhóm theo sản phẩm
+            ->orderBy('total_quantity', 'desc') // Sắp xếp theo tổng số lượng bán
+            ->take(8) // Giới hạn số lượng sản phẩm
+            ->get();
+
+
+        return view('client.home', compact('products', 'topBanChayNhat'));
     }
-
-    // show sản phẩm bán chạy nhất
-
-    // public function showTopSellingProducts(){
-    //     $productsTopSelling = Product::with(['variants' => function ($query) {
-    //         $query->where('is_show', 1) // Only variants that are visible
-    //               ->whereNotNull('sale_price') // Only variants with a sale price
-    //               ->orderBy('sale_price', 'asc');
-    //     }])
-    //     ->where('is_visible', 1) // Only products that are visible
-    //     ->join('variants', 'products.id', '=', 'variants.product_id') // Join products with variants
-    //     ->join('bill_items', 'variants.id', '=', 'bill_items.variant_id') // Join with bill items to count sales
-    //     ->selectRaw('products.*, SUM(bill_items.variant_quantity) as total_quantity_sold') // Calculate total quantity sold
-    //     ->groupBy('products.id') // Group by product ID
-    //     ->orderByDesc('total_quantity_sold') // Order by total sales
-    //     ->take(8) // Limit to 8 products
-    //     ->get();
-    
-    //     return view('client.home', compact('productsTopSelling'));
-    // }
 
     public function show($id)
     {
