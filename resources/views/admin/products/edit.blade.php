@@ -167,7 +167,7 @@
                                             @endforeach
                                         </tbody>
                                     </table>
-                                    
+
                                     <button type="button" class="btn btn-primary" id="addVariant">Thêm biến thể</button>
 
 
@@ -244,10 +244,10 @@
     <script>
         let variantCount = {{ count($product->variants) }}; // Đếm số biến thể đã thêm
         let selectedSizes = []; // Mảng để lưu kích thước đã chọn
-    
+
         document.getElementById('addVariant').addEventListener('click', function() {
             const variantRows = document.getElementById('variantRows');
-            
+
             const newRow = `
                 <tr class="text-center">
                     <td style="vertical-align: middle;">
@@ -284,10 +284,10 @@
             variantRows.insertAdjacentHTML('beforeend', newRow);
             variantCount++; // Tăng biến đếm
         });
-    
+
         function checkDuplicateSize(select) {
             const currentSize = select.value;
-    
+
             // Kiểm tra kích thước đã chọn
             if (currentSize) {
                 if (selectedSizes.includes(currentSize)) {
@@ -298,7 +298,7 @@
                     selectedSizes.push(currentSize);
                 }
             }
-    
+
             // Cập nhật lại mảng kích thước đã chọn khi xóa
             const options = document.querySelectorAll('select[name*="[size_id]"]');
             selectedSizes = [];
@@ -308,28 +308,28 @@
                 }
             });
         }
-    
+
         function checkPrice(input) {
             const row = input.closest('tr');
             const listedPriceInput = row.querySelector('input[name*="[listed_price]"]');
             const salePriceInput = row.querySelector('input[name*="[sale_price]"]');
-    
+
             const listedPrice = parseFloat(listedPriceInput.value) || 0;
             const salePrice = parseFloat(salePriceInput.value) || 0;
-    
+
             if (salePrice >= listedPrice && listedPrice > 0) {
                 alert('Giá khuyến mãi phải nhỏ hơn giá niêm yết.');
                 salePriceInput.value = ''; // Đặt lại giá khuyến mãi
             }
         }
-    
+
         function removeVariant(button) {
             button.closest('tr').remove();
             checkDuplicateSize({ value: '' }); // Cập nhật lại mảng khi xóa
         }
-        
+
     </script>
-    
+
 @endsection
 
 @section('script-libs')
@@ -367,4 +367,35 @@
             }
         }
     </script>
+@endsection
+@section('scriptsToastr')
+
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success', // Hoặc 'warning', 'error', v.v.
+                title: 'Thành công',
+                text: '{{ session('success') }}',
+                confirmButtonText: 'OK',
+                timer: 5000, // Thời gian hiển thị thông báo (5000ms = 5 giây)
+                timerProgressBar: true,
+            });
+        </script>
+    @endif
+
+@endsection
+@section('scriptsToastr')
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error', // Hoặc 'warning', 'error', v.v.
+                // title: 'Thành công',
+                text: '{{ session('error') }}',
+                confirmButtonText: 'OK',
+                timer: 5000, // Thời gian hiển thị thông báo (5000ms = 5 giây)
+                timerProgressBar: true,
+            });
+        </script>
+    @endif
+
 @endsection

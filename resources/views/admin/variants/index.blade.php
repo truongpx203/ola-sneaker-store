@@ -33,7 +33,7 @@
                             </div>
                         </div>
 
-                        @if (session('success'))
+                        {{-- @if (session('success'))
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 {{ session('success') }}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert"
@@ -47,7 +47,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="alert"
                                     aria-label="Close"></button>
                             </div>
-                        @endif
+                        @endif --}}
 
                         <div class="table-responsive table-card mt-3 mb-1">
                             <table class="table align-middle table-nowrap" id="customerTable">
@@ -167,3 +167,37 @@
         });
     </script>
 @endsection
+
+@section('scriptsToastr')
+
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success', // Hoặc 'warning', 'error', v.v.
+                title: 'Thành công',
+                text: '{{ session('success') }}',
+                confirmButtonText: 'OK',
+                timer: 5000,
+                timerProgressBar: true,
+
+            });
+        </script>
+    @endif
+
+@endsection
+@section('scriptsToastr')
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error', // Hoặc 'warning', 'error', v.v.
+                // title: 'Thành công',
+                text: '{{ session('error') }}',
+                confirmButtonText: 'OK',
+                timer: 5000,
+                timerProgressBar: true,
+            });
+        </script>
+    @endif
+
+@endsection
+

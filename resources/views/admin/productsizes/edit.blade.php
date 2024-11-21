@@ -76,3 +76,33 @@
         </div>
     </form>
 @endsection
+@section('scriptsToastr')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success', // Hoặc 'warning', 'error', v.v.
+                title: 'Thành công',
+                text: '{{ session('success') }}',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    @endif
+
+@endsection
+@section('scriptsToastr')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'error', // Hoặc 'warning', 'error', v.v.
+                title: 'Thành công',
+                text: '{{ session('error') }}',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    @endif
+
+@endsection

@@ -30,7 +30,7 @@ class VoucherController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage. 
+     * Store a newly created resource in storage.
      */
     public function store(VoucherRequest $request)
     {
@@ -38,7 +38,7 @@ class VoucherController extends Controller
             'for_user_ids' => json_encode($request->for_user_ids)
         ]);
         $voucher = Voucher::create($request->all());
-        return redirect()->route('voucher.index');
+        return redirect()->route('voucher.index')->with('success', 'Đã tạo voucher thành công ');
     }
 
     /**
@@ -78,7 +78,7 @@ class VoucherController extends Controller
             "for_user_ids" => json_encode($request->for_user_ids)
         ];
         $voucher->update($data);
-        return redirect()->route('voucher.index');
+        return redirect()->route('voucher.index')->with('success', 'Cập nhật voucher thành công.');;
     }
 
     /**
@@ -89,10 +89,10 @@ class VoucherController extends Controller
         $voucher = Voucher::find($id);
         $voucerHistory = VoucerHistory::query()->where('voucher_id', $id)->first();
         if ($voucerHistory) {
-            return redirect()->route('voucher.index')->withErrors(['error_voucher' => 'Voucher này đang có ràng buộc không thể xóa']);
+            return redirect()->route('voucher.index')->withErrors(['error' => 'Voucher này đang có ràng buộc không thể xóa']);
         } else {
             $voucher->delete();
-            return redirect()->route('voucher.index');
+            return redirect()->route('voucher.index')->with('success', 'Đã xóa voucher thành công.');
         }
     }
 }

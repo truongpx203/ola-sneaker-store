@@ -15,6 +15,7 @@ class ProductSizeController extends Controller
     public function index()
     {
         $productSizes = ProductSize::query()->get();
+
         return view('admin.productsizes.index', compact('productSizes'));
     }
 
@@ -32,6 +33,7 @@ class ProductSizeController extends Controller
     public function store(ProductSizeRequest $request)
     {
         $productSizes = ProductSize::create($request->all());
+        session()->flash('success', 'Thành công! Dữ liệu đã được lưu.');
         return redirect()->route('productsize.index');
     }
 
@@ -53,7 +55,7 @@ class ProductSizeController extends Controller
         $productSize->update([
             'name' => $request->name
         ]);
-        return redirect()->route('productsize.index');
+        return redirect()->route('productsize.index') ->with('success', 'Thành công! Dữ liệu đã được thêm.');
     }
 
     /**
@@ -63,11 +65,16 @@ class ProductSizeController extends Controller
     {
         $productSizes = ProductSize::find($id);
         $variants = Variant::query()->where('product_size_id', $id)->first();
+
         if ($variants) {
-            return redirect()->route('productsize.index')->withErrors(['size_error' => 'Kích thước "' . $productSizes->name . '" đang được sử dụng không thể xóa']);
-        } else {
-            $productSizes->delete();
-            return redirect()->route('productsize.index');
+            return redirect()->route('productsize.index')
+                ->with(['success' => 'Kích thước "' . $productSizes->name . '" đang được sử dụng không thể xóa']);
         }
+
+        $productSizes->delete();
+        //    dd(session()->all());
+        return redirect()->route('productsize.index')
+            ->with('success', 'Thành công! Dữ liệu đã được xóa.');
+
     }
 }

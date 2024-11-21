@@ -171,3 +171,35 @@
         });
     </script>
 @endsection
+@section('scriptsToastr')
+
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success', // Hoặc 'warning', 'error', v.v.
+                title: 'Thành công',
+                text: '{{ session('success') }}',
+                confirmButtonText: 'OK',
+                timer: 5000, // Thời gian hiển thị thông báo (5000ms = 5 giây)
+                timerProgressBar: true,
+            });
+        </script>
+    @endif
+
+@endsection
+@section('scriptsToastr')
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error', // Hoặc 'warning', 'error', v.v.
+                // title: 'Thành công',
+                text: '{{ session('error') }}',
+                confirmButtonText: 'OK',
+                timer: 5000, // Thời gian hiển thị thông báo (5000ms = 5 giây)
+                timerProgressBar: true,
+            });
+        </script>
+    @endif
+
+@endsection
+

@@ -34,7 +34,7 @@ class UserController extends Controller
 
     public function updateUser(Request $request, $id)
     {
-       
+
         $validatedData = $request->validate([
             'full_name' => 'required|max:100',
             // 'email' => 'required|email|unique:users,email,' . $id,
@@ -44,23 +44,24 @@ class UserController extends Controller
             'role' => 'required|in:admin,user',
             'status' => 'required|in:pending,active,inactive',
         ]);
-    
+
         $user = User::findOrFail($id);
         $user->full_name = $validatedData['full_name'];
         // $user->email = $validatedData['email'];
-    
+
         // Cập nhật mật khẩu nếu có
         if (!empty($validatedData['password'])) {
             $user->password = bcrypt($validatedData['password']);
         }
-    
+
         $user->phone_number = $validatedData['phone_number'];
         $user->address = $validatedData['address'];
         $user->role = $validatedData['role'];
         $user->status = $validatedData['status'];
-    
+
         $user->save();
 
         return redirect()->back()->with('success', 'Cập nhật Tài khoản thành công.');
+
     }
 }
