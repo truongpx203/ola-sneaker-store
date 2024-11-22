@@ -265,7 +265,7 @@
                                                     <td>
                                                         <div class="d-flex align-items-center">
                                                             <div class="avatar-sm bg-light rounded p-1 me-2">
-                                                                <img src="{{ Storage::url($item->product_image_url) }}"
+                                                                <img src="{{ Storage::url($item->primary_image_url) }}"
                                                                     alt="{{ $item->product_name }}"
                                                                     class="img-fluid d-block">
                                                             </div>
@@ -302,7 +302,7 @@
                                                     <td>
                                                         <div class="d-flex align-items-center">
                                                             <div class="avatar-sm bg-light rounded p-1 me-2">
-                                                                <img src="{{ Storage::url($item->product_image_url) }}"
+                                                                <img src="{{ Storage::url($item->primary_image_url) }}"
                                                                     alt="{{ $item->product_name }}"
                                                                     class="img-fluid d-block">
                                                             </div>
@@ -341,7 +341,7 @@
                                                     <td>
                                                         <div class="d-flex align-items-center">
                                                             <div class="avatar-sm bg-light rounded p-1 me-2">
-                                                                <img src="{{ Storage::url($item->product_image_url) }}"
+                                                                <img src="{{ Storage::url($item->primary_image_url) }}"
                                                                     alt="{{ $item->product_name }}"
                                                                     class="img-fluid d-block">
                                                             </div>

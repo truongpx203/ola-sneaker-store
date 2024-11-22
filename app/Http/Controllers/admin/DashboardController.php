@@ -25,28 +25,38 @@ class DashboardController extends Controller
         $daHuy              = Bill::where('bill_status', 'canceled')->count();
         $hoanThanh          = Bill::where('bill_status', 'completed')->count();
         // Lấy top 5 sản phẩm bán chạy nhất
-        $topBanChayNhat = DB::table('bill_items')
-            ->join('bills', 'bill_items.bill_id', '=', 'bills.id') // Join với bảng bills
-            ->select('bill_items.product_name', 'bill_items.product_image_url', DB::raw('SUM(bill_items.variant_quantity) as total_revenue'), DB::raw('COUNT(bill_items.product_name) as appearances'))
+
+        $topBanChayNhat = DB::table('products')
+        ->join('variants', 'products.id', '=', 'variants.product_id') // Join với bảng variants
+            ->join('bill_items', 'variants.id', '=', 'bill_items.variant_id') // Join với bảng bill_items
+            ->join('bills', 'bill_items.bill_id', '=', 'bills.id') // Joiin với bảng bills
+            ->select( 
+            'products.id as product_id',
+            'products.name as product_name',                           
+            'products.primary_image_url',
+             DB::raw('SUM(bill_items.variant_quantity) as total_revenue'),
+             DB::raw('COUNT(products.id) as appearances'))
             ->whereIn('bills.bill_status', ['delivered', 'completed']) // Lấy cả đơn hàng hoàn thành và thành công
-            ->groupBy('bill_items.product_name', 'bill_items.product_image_url')
+            ->groupBy('products.id', 'products.name', 'products.primary_image_url')
             ->orderBy('appearances', 'desc')
             ->take(5)
             ->get();
 
         // dd( $topBanChayNhat );
         // Lấy top 5 sản phẩm có doanh thu cao nhất
-        $topDoanhThuCaoNhat = DB::table('bill_items')
-            ->join('bills', 'bill_items.bill_id', '=', 'bills.id') // Join với bảng bills
+        $topDoanhThuCaoNhat = DB::table('products')
+        ->join('variants', 'products.id', '=', 'variants.product_id') // Join với bảng variants
+        ->join('bill_items', 'variants.id', '=', 'bill_items.variant_id') // Join với bảng bill_items
+        ->join('bills', 'bill_items.bill_id', '=', 'bills.id') // JoiJoin với bảng bills
             ->select(
-                'bill_items.product_name',
-                'bill_items.product_image_url',
+               'products.id as product_id',
+            'products.name as product_name',                           
+            'products.primary_image_url',
                 DB::raw('SUM(bill_items.variant_quantity * bill_items.sale_price) as total_revenue') // Tính tổng doanh thu
             )
             ->whereIn('bills.bill_status', ['delivered', 'completed']) // Điều kiện chỉ tính các đơn hàng có trạng thái hoàn thành
             ->groupBy(
-                'bill_items.product_name',
-                'bill_items.product_image_url'
+                'products.id', 'products.name', 'products.primary_image_url'
             )
             ->orderBy('total_revenue', 'desc') // Sắp xếp theo tổng doanh thu giảm dần
             ->take(5)
@@ -54,15 +64,19 @@ class DashboardController extends Controller
 
 
         // Lấy top 5 sản phẩm có lợi nhuận cao nhất
-        $topLoiNhuanCaoNhat = DB::table('bill_items')
-            ->join('bills', 'bill_items.bill_id', '=', 'bills.id') // Join với bảng bills
+        $topLoiNhuanCaoNhat = DB::table('products')
+        ->join('variants', 'products.id', '=', 'variants.product_id') 
+            ->join('bill_items', 'variants.id', '=', 'bill_items.variant_id') 
+            ->join('bills', 'bill_items.bill_id', '=', 'bills.id') 
             ->select(
-                'bill_items.product_name',
-                'bill_items.product_image_url',
+                'products.id as product_id',
+            'products.name as product_name',                           
+            'products.primary_image_url',
                 DB::raw('SUM((bill_items.sale_price - bill_items.import_price) * bill_items.variant_quantity) as total_profit') // Tính tổng lợi nhuận
             )
             ->whereIn('bills.bill_status', ['delivered', 'completed'])  // Điều kiện chỉ tính các đơn hàng có trạng thái hoàn thành
-            ->groupBy('bill_items.product_name', 'bill_items.product_image_url') // Nhóm theo sản phẩm
+            ->groupBy(  'products.id', 'products.name', 'products.primary_image_url'
+            ) // Nhóm theo sản phẩm
             ->orderBy('total_profit', 'desc') // Sắp xếp theo tổng lợi nhuận giảm dần
             ->take(5) // Lấy top 5 sản phẩm có lợi nhuận cao nhất
             ->get();
