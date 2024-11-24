@@ -81,7 +81,7 @@
                                                 <td class="product-quantity">
                                                     <div class="pro-qty">
                                                         <div class="dec qty-btn">-</div>
-                                                        <input type="number" class="quantity-input" name="variant_quantity[]" value="{{ $cart->variant_quantity }}" min="1" max="{{ $cart->variant->stock }}" data-price="{{ $cart->variant->sale_price }}" required>
+                                                        <input type="number" class="quantity-input" name="variant_quantity[]" value="{{ $cart->variant_quantity }}" min="1" data-price="{{ $cart->variant->sale_price }}" required>
                                                         <div class="inc qty-btn">+</div>
                                                     </div>
                                                 </td>

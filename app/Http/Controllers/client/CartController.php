@@ -18,29 +18,50 @@ use League\CommonMark\Extension\CommonMark\Node\Inline\Strong;
 class CartController extends Controller
 {
 
-    public function updateAll(Request $request){
+    public function updateAll(Request $request)
+    {
         $body = $request->all();
         $listId = $body['id']; 
         $listQuantity = $body['variant_quantity'];
         $listVariantId = $body['variant_id'];
+    
+        $errors = [];
+        for ($i = 0; $i < count($listId); $i++) {
+            $variant = Variant::find($listVariantId[$i]);
+    
+            if (!$variant) {
+                $errors[] = "Sản phẩm với ID {$listVariantId[$i]} không tồn tại.";
+                continue;
+            }
+            $productName = $variant->product->name;
+    
+            if ($variant->stock < $listQuantity[$i]) {
+                $errors[] = "Sản phẩm '{$productName}' không đủ số lượng trong kho (còn lại {$variant->stock}).";
+            }
+        }
+        if (!empty($errors)) {
+            return redirect()->back()->with('error', implode('<br>', $errors));
+        }
         Cart::where('user_id', Auth::id())->delete();
-
-        for ($i=0; $i < count($listId); $i++) { 
+        for ($i = 0; $i < count($listId); $i++) {
             Cart::create([
                 'user_id' => Auth::id(),
                 'variant_id' => $listVariantId[$i],
                 'variant_quantity' => $listQuantity[$i],
             ]);
         }
-        return redirect()->back()->with('success', 'Giỏ hàng được cập nhật thành công');
+    
+        return redirect()->back()->with('success', 'Giỏ hàng được cập nhật thành công.');
     }
 
     public function showCart()
 {
     $productSizes = ProductSize::all();
     $carts = Cart::where('user_id', Auth::id())->with('variant.product')->get();
-
-    // Tính tổng tiền giỏ hàng
+    // Loại bỏ sản phẩm hết hàng khỏi giỏ hàng
+    $carts = $carts->filter(function ($cart) {
+        return $cart->variant->stock >= $cart->variant_quantity;
+    });
     $provisional = $carts->sum(function ($cart) {
         return $cart->variant->sale_price * $cart->variant_quantity;
     });
@@ -51,19 +72,18 @@ class CartController extends Controller
     if (session()->has('coupon')) {
         $voucher = session('coupon');
         $discount = $voucher->value;
-        $discountAmount = $provisional * ($discount / 100); // Tính số tiền giảm giá
+        $discountAmount = $provisional * ($discount / 100);
 
-        // Nếu có giới hạn số tiền giảm tối đa
+        //giới hạn số tiền giảm tối đa
         if ($discountAmount > $voucher->max_price) {
             $discountAmount = $voucher->max_price;
         }
-
-        // Cập nhật tổng tiền sau khi trừ giảm giá
         $cartTotal = $provisional - $discountAmount;
     }
 
     return view('client.shop-cart', compact('carts', 'discount', 'provisional', 'cartTotal'));
 }
+
 public function addToCart(Request $request)
 {
     // Kiểm tra nếu người dùng chưa đăng nhập

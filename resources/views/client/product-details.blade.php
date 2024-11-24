@@ -153,6 +153,11 @@
                                             </div>
 
                                             <div id="stock-info" class="stock-info mb-2"></div>
+                                            @if(session('error'))
+                                                    <div style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-top: 20px; border: 1px solid #f5c6cb;">
+                                                        {{ session('error') }}
+                                                    </div>
+                                                @endif
 
                                             <div class="product-quick-action">
                                                 <div class="qty-wrap">
