@@ -46,7 +46,7 @@
     <script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-    @vite(['resources/js/app.js'])
+    {{-- @vite(['resources/js/app.js']) --}}
 
 
 </head>
@@ -120,11 +120,6 @@
                   <div class="shopping-wishlist">
                     <a class="shopping-wishlist-btn" href="{{ route('wishlist.index') }}">
                       <i class="pe-7s-like icon"></i>
-                    </a>
-                  </div>
-                  <div class="shopping-order">
-                    <a class="shopping-cart-btn" type="button" href="{{ route('bills.index') }}">
-                      <i class="pe-7s-cart icon"></i>
                     </a>
                   </div>
                   <div class="shopping-cart">

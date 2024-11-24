@@ -88,7 +88,7 @@
                             <td>{{ $item->product_name }}</td>
                             <td>{{ $item->variant->size->name }}</td>
                             <td>{{ $item->variant_quantity }}</td>
-                            <td>{{ number_format($item->sale_price, 0, ',', '.') }} VNĐ</td>
+                            <td>{{ number_format($item->sale_price * $item->variant_quantity) }} VNĐ</td>
                         </tr>
                     @endforeach
                 </tbody>

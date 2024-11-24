@@ -87,7 +87,7 @@
                                                 <td class="product-thumb">
                                                     <a href="single-product.html">
                                                         <img src="{{ Storage::url($item->product->primary_image_url) }}"
-                                                            width="90" height="110" alt="{{ $item->product->name }}">
+                                                           alt="{{ $item->product->name }}"  style="width: 100px; height: 100px; object-fit: cover">
                                                     </a>
                                                 </td>
                                                 <td class="product-name">
