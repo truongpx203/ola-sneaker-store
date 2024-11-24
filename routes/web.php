@@ -227,6 +227,10 @@ Route::post('/checkout/vnpay', [CheckoutController::class, 'processVNPAY'])->nam
 Route::post('/checkouts', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
 Route::get('/checkouts', [CheckoutController::class, 'checkout'])->name('checkouts');
 
+// momo
+Route::post('/payment/momo', [CheckoutController::class, 'paymentMOMO'])->name('checkout.momo');
+Route::get('/checkout/momo/return', [CheckoutController::class, 'returnFromMOMO'])->name('checkout.momo.returnFrom');
+
 // Liên hệ
 Route::get('/contact', [ContactController::class, 'showForm'])->name('contact.form');
 Route::post('/contact', [ContactController::class, 'submitForm'])->name('contact.submit');

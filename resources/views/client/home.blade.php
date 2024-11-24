@@ -377,7 +377,7 @@
                                                             <a
                                                                 href="{{ route('product-detail', ['id' => $product->product_id]) }}">
                                                                 <img src="{{ Storage::url($product->primary_image_url) }}"
-                                                                    width="270" height="274"
+                                                                    style="height: 271px; object-fit: cover"
                                                                     alt="{{ $product->product_name }}">
                                                             </a>
                                                             <div class="product-flag">

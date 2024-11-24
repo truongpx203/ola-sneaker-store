@@ -216,7 +216,7 @@
                                                     </td>
                                                     <td class="product-total">
                                                         {{ number_format($item->variants->sale_price * $item->variant_quantity) }}
-                                                        VNĐ</td>
+                                                        đ</td>
                                                 </tr>
                                             @endforeach
 
@@ -230,7 +230,7 @@
                                             <tr class="order-total">
                                                 <th>Tổng cộng</th>
                                                 {{-- 7/11/2024 --}}
-                                                <td id="finalTotal">{{ number_format($total_price) }} VND</td> 
+                                                <td id="finalTotal">{{ number_format($total_price) }} đ</td> 
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -259,9 +259,14 @@
 
                                             <div>
                                                 <input type="radio" id="payment_vnpay" name="payment_type"
-                                                    value="online">
+                                                    value="vnpay">
                                                 <label for="payment_vnpay" aria-labelledby="check_payments4"
-                                                    data-bs-parent="#PaymentMethodAccordion">Thanh toán với VNPAY</label>
+                                                    data-bs-parent="#PaymentMethodAccordion">Thanh toán VNPAY</label>
+                                            </div>
+                                            <div>
+                                                <input type="radio" id="payment_momo" name="payment_type"
+                                                    value="momo">
+                                                <label for="payment_momo">Thanh toán MOMO</label>
                                             </div>
 
                                         </div>
@@ -290,7 +295,7 @@
                         const finalTotal = Math.max(0, originalTotal - discountAmount);
 
                         // Cập nhật giao diện
-                        document.getElementById('finalTotal').innerText = new Intl.NumberFormat().format(finalTotal) + ' VND';
+                        document.getElementById('finalTotal').innerText = new Intl.NumberFormat().format(finalTotal) + ' đ';
                     }
                 </script>
 
@@ -299,8 +304,10 @@
                         const paymentType = document.querySelector('input[name="payment_type"]:checked').value;
 
                         // Đặt lại action của form dựa trên phương thức thanh toán được chọn
-                        if (paymentType === 'online') {
+                        if (paymentType === 'vnpay') {
                             this.action = "{{ route('checkout.vnpay') }}"; // Route thanh toán VNPAY
+                        } else if (paymentType === 'momo') {
+                            this.action = "{{ route('checkout.momo') }}";
                         } else {
                             this.action = "{{ route('checkout.process') }}"; // Route thanh toán COD
                         }
@@ -312,8 +319,10 @@
                             const paymentType = document.querySelector('input[name="payment_type"]:checked').value;
 
                             // Cập nhật action của form
-                            if (paymentType === 'online') {
+                            if (paymentType === 'vnpay') {
                                 document.getElementById('checkout-form').action = "{{ route('checkout.vnpay') }}";
+                            } else if (paymentType === 'momo') {
+                                document.getElementById('checkout-form').action = "{{ route('checkout.momo')}}";
                             } else {
                                 document.getElementById('checkout-form').action = "{{ route('checkout.process') }}";
                             }

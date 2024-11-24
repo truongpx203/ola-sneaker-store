@@ -25,7 +25,7 @@ return new class extends Migration
                 'canceled',                // Đã hủy
                 'completed'                // Hoàn thành
             ]);
-            $table->enum('payment_type', ['cod', 'online']); // Loại thanh toán
+            $table->enum('payment_type', ['cod', 'vnpay', 'momo']); // Loại thanh toán
             $table->enum('payment_status', ['pending', 'completed']); // Trạng thái thanh toán
             $table->decimal('total_price', 15, 2);
             $table->string('full_name');

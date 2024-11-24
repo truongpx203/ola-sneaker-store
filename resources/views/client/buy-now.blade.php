@@ -215,7 +215,7 @@
                                                 </td>
                                                 <td class="product-total">
                                                     {{ number_format($variant->sale_price * $quantity) }}
-                                                    VNĐ</td>
+                                                    đ</td>
                                             </tr>
                                             {{-- @endforeach --}}
 
@@ -233,7 +233,7 @@
                                                 <th>Tổng cộng</th>
 
                                                 {{-- 7/11/2024 --}}
-                                                <td id="finalTotal"> {{ number_format($variant->sale_price * $quantity) }} VND</td> 
+                                                <td id="finalTotal"> {{ number_format($variant->sale_price * $quantity) }} đ</td> 
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -261,11 +261,15 @@
 
                                             <div>
                                                 <input type="radio" id="payment_vnpay" name="payment_type"
-                                                    value="online">
+                                                    value="vnpay">
                                                 <label for="payment_vnpay" aria-labelledby="check_payments4"
                                                     data-bs-parent="#PaymentMethodAccordion">Thanh toán với VNPAY</label>
                                             </div>
-
+                                            <div>
+                                                <input type="radio" id="payment_momo" name="payment_type"
+                                                    value="momo">
+                                                <label for="payment_momo">Thanh toán với MOMO</label>
+                                            </div>
                                         </div>
                                         @error('payment_type')
                                             <span class="text-danger">{{ $message }}</span>
@@ -296,7 +300,7 @@
                         const finalTotal = Math.max(0, originalTotal - discountAmount);
                 
                         // Cập nhật giao diện tổng tiền
-                        document.getElementById('finalTotal').innerText = new Intl.NumberFormat().format(finalTotal) + ' VND';
+                        document.getElementById('finalTotal').innerText = new Intl.NumberFormat().format(finalTotal) + ' đ';
                     }
                 </script>
                 {{-- <script>
