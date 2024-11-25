@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    {{-- @if ($errors->any())
+    @if ($errors->any())
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -37,7 +37,7 @@
                 </div>
             </div>
         </div>
-    @endif --}}
+    @endif
 
     <form action="{{ route('voucher.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
