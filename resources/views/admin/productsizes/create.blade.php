@@ -38,11 +38,11 @@
             </div>
         </div>
     @endif
-    @if (session('success'))
+    {{-- @if (session('success'))
         <script>
             toastr.success('{{ session('success') }}');
         </script>
-    @endif
+    @endif --}}
 
     <form action="{{ route('productsize.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
@@ -82,15 +82,4 @@
     </form>
 @endsection
 
-@section('scriptsToastr')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
-    <script>
-        toastr.options = {
-            "closeButton": true,
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "timeOut": "3000"
-        };
-    </script>
-@endsection
+

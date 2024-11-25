@@ -4,6 +4,7 @@
     Danh Sách size
 @endsection
 
+
 @section('content')
     <!-- start page title -->
     <div class="row">
@@ -24,6 +25,7 @@
             {{ $errors->first('size_error') }}
         </div>
     @endif --}}
+
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
@@ -46,14 +48,19 @@
                                 <tr>
                                     <td>{{ $item->id }}</td>
                                     <td>{{ $item->name }}</td>
-                                    <td>
+                                    <td class="text-center">
                                         <a href="{{ route('productsize.edit', $item->id) }}" type="submit"
-                                            class="btn btn-warning">Sửa</a>
-                                        <form action="{{ route('productsize.destroy', $item->id) }}" method="post">
+                                            class="btn btn-success">
+                                            Sửa
+                                        </a>
+                                        <form action="{{ route('productsize.destroy', $item->id) }}" method="post"
+                                            style="display:inline;">
                                             @csrf
                                             @method('DELETE')
                                             <button onclick="return confirm('Chắc chắn không?')" type="submit"
-                                                class="btn btn-danger">Xoá</button>
+                                                class="btn btn-danger">
+                                                Xoá
+                                            </button>
                                         </form>
                                     </td>
                                 </tr>
@@ -100,33 +107,23 @@
     </script>
 @endsection
 @section('scriptsToastr')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        console.log("Success message:", "{{ session('success') }}");
+        toastr.options = {
 
-    @if (session('success'))
-        <script>
-            Swal.fire({
-                icon: 'success', // Hoặc 'warning', 'error', v.v.
-                title: 'Thành công',
-                text: '{{ session('success') }}',
-                confirmButtonText: 'OK',
-                timer: 5000,
-                timerProgressBar: true,
-            });
-        </script>
-    @endif
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "5000",
+        };
+        @if (session('success'))
+            toastr.success("{{ session('success') }}");
+        @endif
 
-@endsection
-@section('scriptsToastr')
-    @if (session('error'))
-        <script>
-            Swal.fire({
-                icon: 'error', // Hoặc 'warning', 'error', v.v.
-                // title: 'Thành công',
-                text: '{{ session('error') }}',
-                confirmButtonText: 'OK',
-                timer: 5000,
-                timerProgressBar: true,
-            });
-        </script>
-    @endif
-
+        @if (session('error'))
+            toastr.error("{{ session('error') }}");
+        @endif
+    </script>
 @endsection
