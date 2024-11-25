@@ -13,7 +13,7 @@
                     <h4 class="card-title mb-0">Danh Sách Sản phẩm</h4>
                     <a href="{{ route('products.create') }}">
                         <button type="button" class="btn btn-success add-btn">
-                            <i class="ri-add-line align-bottom me-1"></i> Add
+                            <i class="ri-add-line align-bottom me-1"></i> Thêm
                         </button>
                     </a>
                 </div><!-- end card header -->
@@ -45,7 +45,7 @@
                             <button class="btn btn-sm btn-primary mt-2">Tìm kiếm</button>
                         </form>
 
-                        @if (session('success'))
+                        {{-- @if (session('success'))
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 {{ session('success') }}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert"
@@ -59,7 +59,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="alert"
                                     aria-label="Close"></button>
                             </div>
-                        @endif
+                        @endif --}}
 
                         <div class="table-responsive table-card mt-3 mb-1">
                             <table class="table align-middle table-nowrap" id="customerTable">
@@ -172,34 +172,22 @@
     </script>
 @endsection
 @section('scriptsToastr')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        console.log("Success message:", "{{ session('success') }}");
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "5000",
+        };
+        @if (session('success'))
+            toastr.success("{{ session('success') }}");
+        @endif
 
-    @if (session('success'))
-        <script>
-            Swal.fire({
-                icon: 'success', // Hoặc 'warning', 'error', v.v.
-                title: 'Thành công',
-                text: '{{ session('success') }}',
-                confirmButtonText: 'OK',
-                timer: 5000, // Thời gian hiển thị thông báo (5000ms = 5 giây)
-                timerProgressBar: true,
-            });
-        </script>
-    @endif
-
+        @if (session('error'))
+            toastr.error("{{ session('error') }}");
+        @endif
+    </script>
 @endsection
-@section('scriptsToastr')
-    @if (session('error'))
-        <script>
-            Swal.fire({
-                icon: 'error', // Hoặc 'warning', 'error', v.v.
-                // title: 'Thành công',
-                text: '{{ session('error') }}',
-                confirmButtonText: 'OK',
-                timer: 5000, // Thời gian hiển thị thông báo (5000ms = 5 giây)
-                timerProgressBar: true,
-            });
-        </script>
-    @endif
-
-@endsection
-

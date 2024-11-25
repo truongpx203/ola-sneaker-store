@@ -53,17 +53,17 @@
                                     </div>
                                     <div class="mt-3">
                                         <label for="is_visible" class="form-label">Hiển thị</label>
-                                        
+
                                         <!-- Checkbox for "Hiển thị" (Visible) -->
-                                        <input type="checkbox" name="is_visible" id="is_visible" class="form-check-input" 
+                                        <input type="checkbox" name="is_visible" id="is_visible" class="form-check-input"
                                                value="1" {{ old('is_visible', 1) == 1 ? 'checked' : '' }}>
                                         <label class="form-check-label" for="is_visible">Có</label>
-                                    
+
                                         @error('is_visible')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                     </div>
-                                    
+
                                     <div class="mt-3">
                                         <label for="primary_image_url" class="form-label">Hình ảnh</label>
                                         <input type="file"
@@ -80,7 +80,8 @@
                                         <div class="mt-3">
                                             <label for="summary" class="form-label">Mô tả ngắn</label>
                                             <textarea class="form-control @error('summary') is-invalid @enderror" name="summary" id="summary" rows="2"
-                                                value="{{ old('summary') }}"></textarea>
+                                                {{-- value="{{ old('summary') }}" --}}
+                                                >{{ old('summary') }}</textarea>
                                             @error('summary')
                                                 <p class="text-danger">{{ $message }}</p>
                                             @enderror
@@ -88,7 +89,7 @@
                                         <div class="mt-3">
                                             <label for="detailed_description" class="form-label">Mô tả chi tiết</label>
                                             <textarea class="form-control @error('detailed_description') is-invalid @enderror" name="detailed_description"
-                                                id="detailed_description"></textarea>
+                                                id="detailed_description" >{{ old('detailed_description') }}</textarea>
                                             @error('detailed_description')
                                                 <p class="text-danger">{{ $message }}</p>
                                             @enderror
@@ -127,7 +128,7 @@
                                                 <th>Hành động</th>
                                             </tr>
                                         </thead>
-                                       
+
                                         <tbody id="variantRows">
                                             <tr class="text-center">
                                                 <td style="vertical-align: middle;">
@@ -180,7 +181,7 @@
                                         </tbody>
                                     </table>
                                     <button type="button" class="btn btn-primary" id="addVariant">Thêm biến thể</button>
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -231,10 +232,10 @@
     <script>
         let variantCount = 1; // Đếm số biến thể đã thêm
         let selectedSizes = []; // Mảng để lưu kích thước đã chọn
-    
+
         document.getElementById('addVariant').addEventListener('click', function() {
             const variantRows = document.getElementById('variantRows');
-            
+
             const newRow = `
                 <tr class="text-center">
                     <td style="vertical-align: middle;">
@@ -271,10 +272,10 @@
             variantRows.insertAdjacentHTML('beforeend', newRow);
             variantCount++; // Tăng biến đếm
         });
-    
+
         function checkDuplicateSize(select) {
             const currentSize = select.value;
-    
+
             // Kiểm tra kích thước đã chọn
             if (currentSize) {
                 if (selectedSizes.includes(currentSize)) {
@@ -285,7 +286,7 @@
                     selectedSizes.push(currentSize);
                 }
             }
-    
+
             // Cập nhật lại mảng kích thước đã chọn khi xóa
             const options = document.querySelectorAll('select[name*="[size_id]"]');
             selectedSizes = [];
@@ -295,28 +296,28 @@
                 }
             });
         }
-    
+
         function checkPrice(input) {
             const row = input.closest('tr');
             const listedPriceInput = row.querySelector('input[name*="[listed_price]"]');
             const salePriceInput = row.querySelector('input[name*="[sale_price]"]');
-    
+
             const listedPrice = parseFloat(listedPriceInput.value) || 0;
             const salePrice = parseFloat(salePriceInput.value) || 0;
-    
+
             if (salePrice >= listedPrice && listedPrice > 0) {
                 alert('Giá khuyến mãi phải nhỏ hơn giá niêm yết.');
                 salePriceInput.value = ''; // Đặt lại giá khuyến mãi
             }
         }
-    
+
         function removeVariant(button) {
             button.closest('tr').remove();
             checkDuplicateSize({ value: '' }); // Cập nhật lại mảng khi xóa
         }
     </script>
 
-    
+
 @endsection
 
 @section('script-libs')

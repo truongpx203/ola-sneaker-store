@@ -257,6 +257,7 @@
                                                     event.preventDefault();
                                                     Swal.fire({
                                                         icon: 'error', // Hoặc 'warning', 'error', v.v.
+
                                                         text: 'Size bạn chọn đã hết hàng.',
                                                         confirmButtonText: 'OK'
                                                     });
@@ -320,6 +321,7 @@
                                                     event.preventDefault();
                                                     Swal.fire({
                                                         icon: 'error', // Hoặc 'warning', 'error', v.v.
+
                                                         text: 'Size bạn chọn đã hết hàng ',
                                                         confirmButtonText: 'OK'
                                                     });
@@ -355,7 +357,9 @@
                                                 if (!quantity || quantity <= 0) {
                                                     // alert('Vui lòng nhập số lượng hợp lệ.');
                                                     Swal.fire({
+
                                                         icon: 'warning', // Hoặc 'warning', 'error', v.v.     
+
                                                         text: 'Vui lòng nhập số lượng hợp lệ.',
                                                         confirmButtonText: 'OK'
                                                     });
@@ -367,6 +371,7 @@
                                                     //  alert(`Số lượng bạn chọn vượt quá số lượng tồn kho! Vui lòng chọn số lượng từ 1 đến ${selectedStock}.`);
                                                     Swal.fire({
                                                         icon: 'warning', // Hoặc 'warning', 'error', v.v.
+
                                                         text: `Số lượng bạn chọn vượt quá số lượng tồn kho! Vui lòng chọn số lượng từ 1 đến ${selectedStock}.`,
                                                         confirmButtonText: 'OK'
                                                     });

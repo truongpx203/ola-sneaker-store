@@ -9,11 +9,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesbrand" name="author" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    @yield('style-libs')
 
-    @yield('scriptsToastr')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css">
+    {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"> --}}
+    {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" /> --}}
+    {{-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> --}}
+
+
+
+
+
 
     <!--Swiper slider css-->
     <link href="{{ asset('theme/admins/velzon/assets/libs/swiper/swiper-bundle.min.css') }}" rel="stylesheet"
@@ -111,12 +116,13 @@
     @yield('script-libs');
     <!-- App js -->
     <script src="{{ asset('theme/admins/velzon/assets/js/app.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script> --}}
 
     @yield('scripts')
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script> --}}
 
-
-
+    @yield('scriptsToastr')
+    @yield('style-libs')
 </body>
 
 </html>

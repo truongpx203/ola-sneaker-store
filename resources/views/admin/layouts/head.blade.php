@@ -151,7 +151,7 @@
                     </div>
                 </div>
 
-                <div class="dropdown ms-1 topbar-head-dropdown header-item">
+                {{-- <div class="dropdown ms-1 topbar-head-dropdown header-item">
                     <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle"
                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <img id="header-lang-img" src="{{ asset('theme/admins/velzon/assets/images/flags/us.svg') }}" alt="Header Language"
@@ -222,7 +222,7 @@
                             <span class="align-middle">Arabic</span>
                         </a>
                     </div>
-                </div>
+                </div> --}}
 
                 <div class="dropdown topbar-head-dropdown ms-1 header-item">
                     <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle"
@@ -323,7 +323,7 @@
                                     <a href="apps-ecommerce-products.html"
                                         class="btn btn-success w-md mb-3">Shop Now</a>
                                 </div>
-                                <div class="d-block dropdown-item dropdown-item-cart text-wrap px-3 py-2">
+                                {{-- <div class="d-block dropdown-item dropdown-item-cart text-wrap px-3 py-2">
                                     <div class="d-flex align-items-center">
                                         <img src="{{ asset('theme/admins/velzon/assets/images/products/img-1.png') }}"
                                             class="me-3 rounded-circle avatar-sm p-2 bg-light" alt="user-pic">
@@ -347,7 +347,7 @@
                                                     class="ri-close-fill fs-16"></i></button>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
 
                                 <div class="d-block dropdown-item dropdown-item-cart text-wrap px-3 py-2">
                                     <div class="d-flex align-items-center">

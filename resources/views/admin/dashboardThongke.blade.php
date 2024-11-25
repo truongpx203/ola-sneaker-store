@@ -37,31 +37,34 @@
                         </div><!-- end col --> --}}
                         <div class="row mb-4">
                             <div class="col-md-4">
-                                <div class="flex-grow-1 overflow-hidden ms-3">
-                                    <p class="text-uppercase fw-medium text-warning text-truncate mb-3">Chờ xác nhận
-                                    </p>
-                                    <div class="d-flex align-items-center mb-3">
-                                        <h4 class="fs-4 flex-grow-1 mb-0">{{ $choXacNhan }}</h4>
-                                    </div>
-                                </div>
-                            </div>
-
-
-
-                            <div class="col-md-4">
-                                <div class="flex-grow-1 overflow-hidden ms-3">
-                                    <p class="text-uppercase fw-medium text-info mb-3">Đã xác nhận</p>
-                                    <div class="d-flex align-items-center mb-3">
-                                        <h4 class="fs-4 flex-grow-1 mb-0">{{ $daXacNhan }}</h4>
+                                <div class="outer-box">
+                                    <div class="flex-grow-1 overflow-hidden ms-3">
+                                        <p class="text-uppercase fw-medium text-warning text-truncate mb-3">Chờ xác nhận</p>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <h4 class="fs-4 flex-grow-1 mb-0">{{ $choXacNhan }}</h4>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
-                                <div class="flex-grow-1 overflow-hidden ms-3">
-                                    <p class="text-uppercase fw-medium text-info text-truncate mb-3">Đang giao</p>
-                                    <div class="d-flex align-items-center mb-3">
-                                        <h4 class="fs-4 flex-grow-1 mb-0">{{ $dangGiao }}</h4>
+                                <div class="outer-box">
+                                    <div class="flex-grow-1 overflow-hidden ms-3">
+                                        <p class="text-uppercase fw-medium text-info mb-3">Đã xác nhận</p>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <h4 class="fs-4 flex-grow-1 mb-0">{{ $daXacNhan }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="outer-box">
+                                    <div class="flex-grow-1 overflow-hidden ms-3">
+                                        <p class="text-uppercase fw-medium text-info text-truncate mb-3">Đang giao</p>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <h4 class="fs-4 flex-grow-1 mb-0">{{ $dangGiao }}</h4>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -69,41 +72,49 @@
                         <div class="row">
 
                             <div class="col-md-3">
-                                <div class="flex-grow-1 overflow-hidden ms-3">
-                                    <p class="text-uppercase fw-medium text-success text-truncate mb-3">Giao hàng
-                                        thành công</p>
-                                    <div class="d-flex align-items-center mb-3">
-                                        <h4 class="fs-4 flex-grow-1 mb-0">{{ $giaoThanhCong }}</h4>
+                                <div class="outer-box">
+                                    <div class="flex-grow-1 overflow-hidden ms-3">
+                                        <p class="text-uppercase fw-medium text-success text-truncate mb-3">
+                                            thành công</p>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <h4 class="fs-4 flex-grow-1 mb-0">{{ $giaoThanhCong }}</h4>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-md-3">
-                                <div class="flex-grow-1 overflow-hidden ms-3">
-                                    <p class="text-uppercase fw-medium text-danger text-truncate mb-3">Giao hàng
-                                        thất bại</p>
-                                    <div class="d-flex align-items-center mb-3">
-                                        <h4 class="fs-4 flex-grow-1 mb-0">{{ $giaoThatBai }}</h4>
+                                <div class="outer-box">
+                                    <div class="flex-grow-1 overflow-hidden ms-3">
+                                        <p class="text-uppercase fw-medium text-danger text-truncate mb-3">
+                                            thất bại</p>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <h4 class="fs-4 flex-grow-1 mb-0">{{ $giaoThatBai }}</h4>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-md-3">
-                                <div class="flex-grow-1 overflow-hidden ms-3">
-                                    <p class="text-uppercase fw-medium text-success text-truncate mb-3">Đơn hàng
-                                        hoàn thành</p>
-                                    <div class="d-flex align-items-center mb-3">
-                                        <h4 class="fs-4 flex-grow-1 mb-0">{{ $hoanThanh }}</h4>
+                                <div class="outer-box">
+                                    <div class="flex-grow-1 overflow-hidden ms-3">
+                                        <p class="text-uppercase fw-medium text-success text-truncate mb-3">
+                                            hoàn thành</p>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <h4 class="fs-4 flex-grow-1 mb-0">{{ $hoanThanh }}</h4>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-md-3">
-                                <div class="flex-grow-1 overflow-hidden ms-3">
-                                    <p class="text-uppercase fw-medium text-danger  text-truncate mb-3">Đã hủy
-                                    </p>
-                                    <div class="d-flex align-items-center mb-3">
-                                        <h4 class="fs-4 flex-grow-1 mb-0">{{ $daHuy }}</h4>
+                                <div class="outer-box">
+                                    <div class="flex-grow-1 overflow-hidden ms-3">
+                                        <p class="text-uppercase fw-medium text-danger  text-truncate mb-3">Đã hủy
+                                        </p>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <h4 class="fs-4 flex-grow-1 mb-0">{{ $daHuy }}</h4>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -163,7 +174,7 @@
                                                 <input type="date" id="date" name="date"
                                                     value="{{ now()->toDateString() }}" class="form-control me-2"
                                                     style="max-width: 200px;">
-                                                <button type="submit" class="btn btn-primary">Thống kê</button>
+                                                {{-- <button type="submit" class="btn btn-primary">Thống kê</button> --}}
                                             </form>
                                         </div>
 
@@ -369,6 +380,14 @@
             </div>
 
             <style>
+                .outer-box {
+                    padding: 15px;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    background-color: #f8f9fa;
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                }
+
                 h5 {
                     word-wrap: break-word;
                     /* Cho phép xuống dòng khi nội dung quá dài */
@@ -467,9 +486,9 @@
     {{-- Thống kê ngày --}}
     @section('scripts')
         <script>
-            document.getElementById('form-statistics').addEventListener('submit', function(event) {
-                event.preventDefault();
-                const date = document.getElementById('date').value;
+
+            document.getElementById('date').addEventListener('change', function() {
+                const date = this.value;
 
                 fetch('{{ route('statistics') }}', {
                         method: 'POST',
@@ -497,14 +516,14 @@
                     }, (_, i) => `${i}:00`),
                     datasets: [{
                             label: 'Doanh thu (VNĐ)',
-                            data: Array(24).fill(0), // Dữ liệu mặc định cho doanh thu
+                            data: Array(24).fill(0),
                             backgroundColor: 'rgba(54, 162, 235, 0.6)',
                             borderColor: 'rgba(54, 162, 235, 1)',
                             borderWidth: 1
                         },
                         {
                             label: 'Lợi nhuận (VNĐ)',
-                            data: Array(24).fill(0), // Dữ liệu mặc định cho lợi nhuận
+                            data: Array(24).fill(0),
                             backgroundColor: 'rgba(255, 99, 132, 0.6)',
                             borderColor: 'rgba(255, 99, 132, 1)',
                             borderWidth: 1
@@ -515,15 +534,29 @@
                     scales: {
                         y: {
                             beginAtZero: true,
-                            position: 'left', // Gộp cả hai cột về trục bên trái
+                            position: 'left',
                             title: {
                                 display: true,
-                                text: 'Doanh thu và Lợi nhuận (VNĐ)' // Tiêu đề chung cho trục
+                                text: 'Doanh thu và Lợi nhuận (VNĐ)'
                             }
                         }
                     }
                 }
             });
+
+            // Hàm cập nhật biểu đồ
+            function updateChart(data) {
+                hourlyChart.data.datasets[0].data = data.revenue; // Dữ liệu doanh thu
+                hourlyChart.data.datasets[1].data = data.profit; // Dữ liệu lợi nhuận
+                hourlyChart.update();
+            }
+
+            // Hàm cập nhật tổng số liệu (tùy chỉnh theo nhu cầu)
+            function updateTotal(data) {
+                console.log("Cập nhật số liệu tổng:", data.total);
+            }
+
+
             // Thống kê theo năm
             document.addEventListener('DOMContentLoaded', function() {
                 const year = document.getElementById('year').value;
