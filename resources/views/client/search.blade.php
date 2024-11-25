@@ -27,29 +27,32 @@
         <!-- resources/views/search.blade.php -->
         <br>
         <!-- Thêm vào trong phần <head> của layout -->
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-        <h2 style="font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 24px; color: #333; margin-bottom: 20px;">
-            Kết quả tìm kiếm cho: "{{ $query }}"
-        </h2>
-        <div class="row">
-            @if($products->isEmpty())
-            <p style="font-size: 20px; color: #666; font-weight: bold; text-align: center; margin-top: 20px;">
-                Không tìm thấy sản phẩm nào.
-            </p>
-        @else
-        
-                @foreach ($products as $product)
-                    <div class="col-6 col-md-4 col-lg-2"> <!-- Giảm kích thước cột -->
-                        <div class="product-item" style="padding: 10px; margin-bottom: 15px;"> <!-- Giảm padding và margin -->
+            <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+                <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+                <h2 style="font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 24px; color: #333; margin-bottom: 20px;">
+                    Kết quả tìm kiếm cho: "{{ $query }}"
+                </h2>
+                <div class="row">
+                    @if($products->isEmpty())
+                    <p style="font-size: 20px; color: #666; font-weight: bold; text-align: center; margin-top: 20px;">
+                        Không tìm thấy sản phẩm nào.
+                    </p>
+                    @else
+                    @foreach ($products as $product)
+                    <div class="col-6 col-md-4 col-lg-3"> 
+                        <div class="product-item" style="padding: 15px; margin-bottom: 20px;">
                             <div class="inner-content">
-                                <div class="product-thumb">
+                                <div class="product-thumb" 
+                                     style="position: relative; width: 100%; aspect-ratio: 1 / 1; overflow: hidden; background-color: #f9f9f9; border-radius: 10px;">
                                     <a href="{{ route('product-detail', ['id' => $product->id]) }}">
-                                        <img src="{{ Storage::url($product->primary_image_url) }}" alt="{{ $product->name }}" style="height: 200px; object-fit: cover;"> <!-- Giảm chiều cao ảnh -->
+                                        <img src="{{ Storage::url($product->primary_image_url) }}" 
+                                             alt="{{ $product->name }}" 
+                                             style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
                                     </a>
                                     <div class="product-flag">
                                         <ul>
                                             @if ($product->variants->isNotEmpty() && $product->variants->first()->sale_price)
-                                                <li class="discount" style="font-size: 12px;">-{{ round((($product->variants->first()->listed_price - $product->variants->first()->sale_price) / $product->variants->first()->listed_price) * 100) }}%</li>
+                                            <li class="discount" style="font-size: 14px;">-{{ round((($product->variants->first()->listed_price - $product->variants->first()->sale_price) / $product->variants->first()->listed_price) * 100) }}%</li>
                                             @endif
                                         </ul>
                                     </div>
@@ -57,40 +60,41 @@
                                         <form action="{{ route('wishlist.store') }}" method="POST">
                                             @csrf
                                             <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                            <button type="submit" class="btn-product-wishlist" style="font-size: 14px;"><i class="fa fa-heart"></i></button>
+                                            <button type="submit" class="btn-product-wishlist" style="font-size: 16px;"><i class="fa fa-heart"></i></button>
                                         </form>
-                                        <a class="btn-product-cart" href="" style="font-size: 14px;"><i class="fa fa-shopping-cart"></i></a>
-                                        <button type="button" class="btn-product-quick-view-open" style="font-size: 14px;">
+                                        <a class="btn-product-cart" href="" style="font-size: 16px;"><i class="fa fa-shopping-cart"></i></a>
+                                        <button type="button" class="btn-product-quick-view-open" style="font-size: 16px;">
                                             <i class="fa fa-arrows"></i>
                                         </button>
                                     </div>
                                     <a class="banner-link-overlay" href="{{ route('product-detail', ['id' => $product->id]) }}"></a>
                                 </div>
-                                <div class="product-info" style="padding: 5px;"> <!-- Giảm padding -->
-                                    <h4 class="title" style="font-size: 14px; margin-bottom: 5px;">
+                                <div class="product-info" style="padding: 10px;">
+                                    <h4 class="title" style="font-size: 16px; margin-bottom: 8px;">
                                         <a href="{{ route('product-detail', ['id' => $product->id]) }}">{{ $product->name }}</a>
                                     </h4>
-                                    <div class="prices" style="font-size: 14px;">
+                                    <div class="prices" style="font-size: 16px;">
                                         @if ($product->variants->isNotEmpty())
-                                            @php $variant = $product->variants->first(); @endphp
-                                            @if ($variant->sale_price)
-                                                <span class="price-old">{{ number_format($variant->listed_price) }} đ</span>
-                                                <span class="sep">-</span>
-                                                <span class="price">{{ number_format($variant->sale_price) }} đ</span>
-                                            @else
-                                                <span class="price">{{ number_format($variant->listed_price) }} đ</span>
-                                            @endif
+                                        @php $variant = $product->variants->first(); @endphp
+                                        @if ($variant->sale_price)
+                                        <span class="price-old">{{ number_format($variant->listed_price) }} đ</span>
+                                        <span class="sep">-</span>
+                                        <span class="price">{{ number_format($variant->sale_price) }} đ</span>
                                         @else
-                                            <span class="price">{{ number_format($product->listed_price) }} đ</span>
+                                        <span class="price">{{ number_format($variant->listed_price) }} đ</span>
+                                        @endif
+                                        @else
+                                        <span class="price">{{ number_format($product->listed_price) }} đ</span>
                                         @endif
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                @endforeach
-            @endif
-        </div>
+                    @endforeach
+                    @endif
+                </div>
+            </div>
         
 
         <!--== Start Cart Area Wrapper ==-->

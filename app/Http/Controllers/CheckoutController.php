@@ -59,7 +59,7 @@ class CheckoutController extends Controller
             'full_name' => 'required|string|max:255',
             'phone_number' => 'required|regex:/^[0-9]{10}$/',
             'address' => 'required|string|max:500',
-            'payment_type' => 'required|in:cod,online',
+            'payment_type' => 'required|in:cod,vnpay,momo',
             'points_to_use' => 'nullable|integer|min:0', // Validate số điểm(7/11/2024)
             'note' => 'nullable|string|max:1000',
         ], [
@@ -75,7 +75,7 @@ class CheckoutController extends Controller
             'address.max' => 'Địa chỉ không được vượt quá :max ký tự.',
 
             'payment_type.required' => 'Phương thức thanh toán là bắt buộc.',
-            'payment_type.in' => 'Phương thức thanh toán phải là "cod" hoặc "online".',
+            'payment_type.in' => 'Phương thức thanh toán phải là "cod", "vnpay", "momo".',
 
             'note.string' => 'Ghi chú phải là chuỗi văn bản.',
             'note.max' => 'Ghi chú không được vượt quá :max ký tự.',
@@ -167,7 +167,7 @@ class CheckoutController extends Controller
 
             // Trừ điểm đã sử dụng và xóa giỏ hàng (7/11/2024)
             $user->points -= $pointsToUse;
-            $user->save();      
+            $user->save();
 
             Cart::where('user_id', $user_id)->delete();
 
@@ -198,7 +198,7 @@ class CheckoutController extends Controller
             'full_name' => 'required|string|max:255',
             'phone_number' => 'required|regex:/^[0-9]{10}$/',
             'address' => 'required|string|max:500',
-            'payment_type' => 'required|in:cod,online',
+            'payment_type' => 'required|in:cod,vnpay,momo',
             'points_to_use' => 'nullable|integer|min:0', // Số điểm người dùng muốn sử dụng (7/11/2024)
             'note' => 'nullable|string|max:1000',
         ], [
@@ -214,7 +214,7 @@ class CheckoutController extends Controller
             'address.max' => 'Địa chỉ không được vượt quá :max ký tự.',
 
             'payment_type.required' => 'Phương thức thanh toán là bắt buộc.',
-            'payment_type.in' => 'Phương thức thanh toán phải là "cod" hoặc "online".',
+            'payment_type.in' => 'Phương thức thanh toán phải là "cod", "vnpay", "momo".',
 
             'note.string' => 'Ghi chú phải là chuỗi văn bản.',
             'note.max' => 'Ghi chú không được vượt quá :max ký tự.',
@@ -388,7 +388,7 @@ class CheckoutController extends Controller
                     'phone_number' => $phone_number,
                     'address' => $address,
                     'note' => $note,
-                    'payment_type' => 'online',
+                    'payment_type' => 'vnpay',
                     // 'total_price' => $total_price,
                     'total_price' => $totalPrice - ($pointsToUse * 10000), // Giảm giá từ điểm 7/11/2024
                     'bill_status' => 'pending',
@@ -422,6 +422,187 @@ class CheckoutController extends Controller
                 Log::error('Error saving bill after VNPAY success: ' . $e->getMessage());
                 return redirect()->route('tt-that-bai')->withErrors(['error' => 'Không thể lưu hóa đơn. Vui lòng thử lại sau.']);
             }
+        } else {
+            return redirect()->route('tt-that-bai')->withErrors(['error' => 'Thanh toán không thành công.']);
+        }
+    }
+
+    // momo
+    public function execPostRequest($url, $data)
+    {
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($data)
+            )
+        );
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        //execute post
+        $result = curl_exec($ch);
+        //close connection
+        curl_close($ch);
+        return $result;
+    }
+    public function paymentMOMO(Request $request)
+    {
+        // Kiểm tra nếu giỏ hàng trống
+        $cartItems = Cart::where('user_id', Auth::id())->get();
+        if ($cartItems->isEmpty()) {
+            return redirect()->back()->withErrors(['error' => 'Giỏ hàng của bạn đang trống. Vui lòng thêm sản phẩm trước khi thanh toán.']);
+        }
+        // Kiểm tra hàng tồn kho
+        $outOfStockItems = [];
+        foreach ($cartItems as $item) {
+            if ($item->variant_quantity > $item->variants->stock) {
+                $outOfStockItems[] = [
+                    'product_name' => $item->variants->product->name,
+                    'size' => $item->variants->size->name,
+                    'available_stock' => $item->variants->stock,
+                    'requested_quantity' => $item->variant_quantity,
+                ];
+            }
+        }
+
+        if (!empty($outOfStockItems)) {
+            // Tạo chuỗi thông báo lỗi chi tiết bao gồm tên sản phẩm và kích thước
+            $errorMessages = [];
+            foreach ($outOfStockItems as $outOfStock) {
+                $errorMessages[] = "{$outOfStock['product_name']} (Size: {$outOfStock['size']})";
+            }
+
+            return redirect()->route('tt-that-bai')->withErrors([
+                'error' => 'Một số sản phẩm không còn hàng: ' . implode(', ', $errorMessages)
+            ]);
+        }
+        // Tính tổng giá trị giỏ hàng
+        $total_price = $cartItems->sum(function ($item) {
+            return $item->variants->sale_price * $item->variant_quantity;
+        });
+
+        // Tạo mã đơn hàng duy nhất
+        $orderId = 'B-' . strtoupper(bin2hex(random_bytes(2))) . '-' . strtoupper(substr(uniqid(), -4));
+
+        // Lưu hóa đơn vào database
+        DB::beginTransaction();
+        try {
+            $userId = Auth::id();
+            $bill = Bill::create([
+                'user_id' => $userId,
+                'code' => $orderId,
+                'full_name' => $request->full_name,
+                'phone_number' => $request->phone_number,
+                'address' => $request->address,
+                'note' => $request->note,
+                'payment_type' => 'momo',
+                'total_price' => $total_price,
+                'bill_status' => 'pending',
+                'payment_status' => 'completed', // Trạng thái chưa xác nhận
+            ]);
+
+            foreach ($cartItems as $item) {
+                BillItem::create([
+                    'variant_id' => $item->variant_id,
+                    'bill_id' => $bill->id,
+                    'sale_price' => $item->variants->sale_price,
+                    'listed_price' => $item->variants->listed_price,
+                    'import_price' => $item->variants->import_price,
+                    'variant_quantity' => $item->variant_quantity,
+                    'product_name' => $item->variants->product->name,
+                    'product_image_url' => $item->variants->product->primary_image_url,
+                ]);
+                $item->variants->decrement('stock', $item->variant_quantity);
+            }
+
+            // Xóa giỏ hàng sau khi lưu hóa đơn
+            Cart::where('user_id', $userId)->delete();
+
+            // Gửi email xác nhận
+            $userEmail = Auth::user()->email;
+            Mail::to($userEmail)->send(new OrderConfirmationMail($bill));
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error saving bill or sending email: ' . $e->getMessage());
+            return redirect()->route('tt-that-bai')->withErrors(['error' => 'Không thể tạo hóa đơn. Vui lòng thử lại sau.']);
+        }
+
+        // Tiếp tục với việc xử lý thanh toán MoMo
+        $partnerCode = 'MOMOBKUN20180529';
+        $accessKey = 'klm05TvNBzhg7h7j';
+        $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
+        $orderInfo = "Thanh toán qua MoMo - Mã đơn hàng: " . $orderId;
+        $redirectUrl = route('tt-thanh-cong', ['bill' => $bill->id]);
+        $ipnUrl = route('tt-thanh-cong', ['bill' => $bill->id]);
+        $extraData = "";
+
+        $requestId = time() . "";
+        $requestType = "payWithATM";
+
+        // Tạo chữ ký HMAC SHA256
+        $rawHash = "accessKey=$accessKey&amount=$total_price&extraData=$extraData&ipnUrl=$ipnUrl&orderId=$orderId&orderInfo=$orderInfo&partnerCode=$partnerCode&redirectUrl=$redirectUrl&requestId=$requestId&requestType=$requestType";
+        $signature = hash_hmac("sha256", $rawHash, $secretKey);
+
+        $data = [
+            'partnerCode' => $partnerCode,
+            'partnerName' => "Test",
+            'storeId' => "MomoTestStore",
+            'requestId' => $requestId,
+            'amount' => $total_price,
+            'orderId' => $orderId,
+            'orderInfo' => $orderInfo,
+            'redirectUrl' => $redirectUrl,
+            'ipnUrl' => $ipnUrl,
+            'lang' => 'vi',
+            'extraData' => $extraData,
+            'requestType' => $requestType,
+            'signature' => $signature,
+        ];
+
+        $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
+        $result = $this->execPostRequest($endpoint, json_encode($data));
+        $jsonResult = json_decode($result, true);
+
+        if (isset($jsonResult['payUrl'])) {
+            return redirect()->to($jsonResult['payUrl']);
+        } else {
+            return redirect()->route('tt-that-bai')->withErrors(['error' => 'Lỗi khi tạo yêu cầu thanh toán MoMo: ' . ($jsonResult['message'] ?? 'Không xác định')]);
+        }
+    }
+
+
+    public function returnFromMOMO(Request $request)
+    {
+        Log::info('MoMo return response:', $request->all());
+
+        $responseCode = $request->input('resultCode');
+        $orderId = $request->input('orderId');
+        $amount = $request->input('amount');
+        $signature = $request->input('signature');
+
+        // Kiểm tra chữ ký và mã trạng thái
+        $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
+        $dataToSign = "accessKey=klm05TvNBzhg7h7j&amount=$amount&orderId=$orderId&partnerCode=MOMOBKUN20180529&requestId=" . $request->input('requestId') . "&requestType=payWithATM";
+        $expectedSignature = hash_hmac("sha256", $dataToSign, $secretKey);
+
+        if ($responseCode == '0' && $signature == $expectedSignature) {
+            // Cập nhật trạng thái thanh toán thành công
+            $bill = Bill::where('code', $orderId)->first();
+            if ($bill) {
+                $bill->update([
+                    'payment_status' => 'completed',
+                    'bill_status' => 'pending',
+                ]);
+            }
+
+            return redirect()->route('tt-thanh-cong', ['bill' => $bill->id])->with('success', 'Thanh toán thành công!');
         } else {
             return redirect()->route('tt-that-bai')->withErrors(['error' => 'Thanh toán không thành công.']);
         }
@@ -487,7 +668,7 @@ class CheckoutController extends Controller
             'full_name' => 'required|string|max:255',
             'phone_number' => 'required|regex:/^[0-9]{10}$/',
             'address' => 'required|string|max:500',
-            'payment_type' => 'required|in:cod,online',
+            'payment_type' => 'required|in:cod,vnpay,momo',
             'note' => 'nullable|string|max:1000',
             'variant_id' => 'required|exists:variants,id',
             'variant_quantity' => 'required|integer|min:1',
@@ -505,11 +686,11 @@ class CheckoutController extends Controller
             'address.max' => 'Địa chỉ không được vượt quá :max ký tự.',
 
             'payment_type.required' => 'Phương thức thanh toán là bắt buộc.',
-            'payment_type.in' => 'Phương thức thanh toán phải là "cod" hoặc "online".',
+           'payment_type.in' => 'Phương thức thanh toán phải là "cod", "vnpay", "momo".',
 
             'note.string' => 'Ghi chú phải là chuỗi văn bản.',
             'note.max' => 'Ghi chú không được vượt quá :max ký tự.',
-            
+
             'variant_id.required' => 'ID biến thể là bắt buộc.',
             'variant_id.exists' => 'ID biến thể không tồn tại.',
             'variant_quantity.required' => 'Số lượng biến thể là bắt buộc.',
@@ -544,12 +725,12 @@ class CheckoutController extends Controller
             $finalPrice = max(0, $totalPrice - $discountAmount); // Không cho phép giá trị âm
 
 
-        // Tạo mã đơn hàng
-        // $billCode = 'BILL-' . strtoupper(uniqid());
-        $billCode = 'B-' . strtoupper(bin2hex(random_bytes(2))) . '-' . strtoupper(substr(uniqid(), -4));
+            // Tạo mã đơn hàng
+            // $billCode = 'BILL-' . strtoupper(uniqid());
+            $billCode = 'B-' . strtoupper(bin2hex(random_bytes(2))) . '-' . strtoupper(substr(uniqid(), -4));
 
             // Xử lý thanh toán dựa trên phương thức đã chọn
-            if ($validatedData['payment_type'] === 'online') {
+            if ($validatedData['payment_type'] === 'vnpay') {
                 return $this->paymentVNPAY($billCode, $totalPrice, $validatedData, $variant);
             }
 
@@ -602,7 +783,6 @@ class CheckoutController extends Controller
             Log::error('BuyNow error: ' . $e->getMessage());
 
             return redirect()->back()->withErrors(['error' => 'Có lỗi xảy ra trong quá trình đặt hàng. Vui lòng thử lại sau.']);
-
         }
     }
 
@@ -712,7 +892,7 @@ class CheckoutController extends Controller
                     'user_id' => Auth::id(),
                     'code' => $vnp_TxnRef,
                     'bill_status' => 'pending',
-                    'payment_type' => 'online',
+                    'payment_type' => 'vnpay',
                     'payment_status' => 'completed',
                     'total_price' => $totalPrice,
                     'discount_amount' => $discountAmount, // Số tiền giảm giá 7/11/2024

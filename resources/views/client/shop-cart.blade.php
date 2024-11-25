@@ -62,7 +62,7 @@
                                                 </td>                                                                                               
                                                 <td class="product-thumb">
                                                     <a href="{{ route('cart.show', $cart->variant->product_id) }}"> 
-                                                        <img src="{{ Storage::url($cart->variant->product->primary_image_url) }}" width="90" height="110" alt="{{ $cart->variant->product->name }}">
+                                                        <img src="{{ Storage::url($cart->variant->product->primary_image_url) }}" alt="{{ $cart->variant->product->name }}" style="width: 100px; height: 100px; object-fit: cover">
                                                     </a>
                                                 </td>
                                                 <td class="product-name">
@@ -76,17 +76,17 @@
                                                     <span>{{ $cart->variant->productSize->name }}</span>
                                                 </td>
                                                 <td class="product-price">
-                                                    <span>{{ number_format($cart->variant->sale_price) }} VNĐ</span>
+                                                    <span>{{ number_format($cart->variant->sale_price) }} đ</span>
                                                 </td>
                                                 <td class="product-quantity">
                                                     <div class="pro-qty">
                                                         <div class="dec qty-btn">-</div>
-                                                        <input type="number" class="quantity-input" name="variant_quantity[]" value="{{ $cart->variant_quantity }}" min="1" max="{{ $cart->variant->stock }}" data-price="{{ $cart->variant->sale_price }}" required>
+                                                        <input type="number" class="quantity-input" name="variant_quantity[]" value="{{ $cart->variant_quantity }}" min="1" data-price="{{ $cart->variant->sale_price }}" required>
                                                         <div class="inc qty-btn">+</div>
                                                     </div>
                                                 </td>
                                                 <td class="product-subtotal">
-                                                    <span class="subtotal">{{ number_format($cart->variant->sale_price * $cart->variant_quantity) }} VNĐ</span>
+                                                    <span class="subtotal">{{ number_format($cart->variant->sale_price * $cart->variant_quantity) }} đ</span>
                                                 </td>                                                                                                                                               
                                             </tr>
                                         @endforeach
@@ -176,7 +176,7 @@
                                                     <p class="value">Tạm tính</p>
                                                 </td>
                                                 <td>
-                                                    <p class="price">{{ number_format($provisional) }} VNĐ</p>
+                                                    <p class="price">{{ number_format($provisional) }} đ</p>
                                                 </td>
                                             </tr>
                                             <tr class="cart-subtotal">
@@ -193,7 +193,7 @@
                                                     <p class="value">Tổng tiền</p>
                                                 </td>
                                                 <td>
-                                                    <p class="price">{{ number_format($cartTotal) }} VNĐ</p>
+                                                    <p class="price">{{ number_format($cartTotal) }} đ</p>
                                                     
                                                 </td>
                                             </tr>

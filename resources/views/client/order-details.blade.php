@@ -49,7 +49,8 @@
                             <h3>Thông tin vận chuyển</h3>
                             @php
                                 $paymentTypeMapping = [
-                                    'online' => 'Thanh toán online',
+                                    'momo' => 'Thanh toán momo',
+                                    'vnpay' => 'Thanh toán vnpay',
                                     'cod' => 'Thanh toán cod',
                                 ];
                                 $paymentStatusMapping = [

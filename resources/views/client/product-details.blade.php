@@ -153,6 +153,11 @@
                                             </div>
 
                                             <div id="stock-info" class="stock-info mb-2"></div>
+                                            @if(session('error'))
+                                                    <div style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-top: 20px; border: 1px solid #f5c6cb;">
+                                                        {{ session('error') }}
+                                                    </div>
+                                                @endif
 
                                             <div class="product-quick-action">
                                                 <div class="qty-wrap">
@@ -252,7 +257,7 @@
                                                     event.preventDefault();
                                                     Swal.fire({
                                                         icon: 'error', // Hoặc 'warning', 'error', v.v.
-                                                        // title: 'Thành công',
+
                                                         text: 'Size bạn chọn đã hết hàng.',
                                                         confirmButtonText: 'OK'
                                                     });
@@ -316,7 +321,7 @@
                                                     event.preventDefault();
                                                     Swal.fire({
                                                         icon: 'error', // Hoặc 'warning', 'error', v.v.
-                                                        // title: 'Thành công',
+
                                                         text: 'Size bạn chọn đã hết hàng ',
                                                         confirmButtonText: 'OK'
                                                     });
@@ -352,8 +357,9 @@
                                                 if (!quantity || quantity <= 0) {
                                                     // alert('Vui lòng nhập số lượng hợp lệ.');
                                                     Swal.fire({
-                                                        icon: 'warning', // Hoặc 'warning', 'error', v.v.
-                                                        // title: 'Thành công',
+
+                                                        icon: 'warning', // Hoặc 'warning', 'error', v.v.     
+
                                                         text: 'Vui lòng nhập số lượng hợp lệ.',
                                                         confirmButtonText: 'OK'
                                                     });
@@ -365,7 +371,7 @@
                                                     //  alert(`Số lượng bạn chọn vượt quá số lượng tồn kho! Vui lòng chọn số lượng từ 1 đến ${selectedStock}.`);
                                                     Swal.fire({
                                                         icon: 'warning', // Hoặc 'warning', 'error', v.v.
-                                                        // title: 'Thành công',
+
                                                         text: `Số lượng bạn chọn vượt quá số lượng tồn kho! Vui lòng chọn số lượng từ 1 đến ${selectedStock}.`,
                                                         confirmButtonText: 'OK'
                                                     });
