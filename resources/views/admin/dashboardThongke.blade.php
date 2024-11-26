@@ -170,7 +170,7 @@
 
                                         <div class="date-filter mb-4">
                                             <form id="form-statistics" class="d-flex align-items-center">
-                                                <label for="date" class="me-2">Chọn ngày:</label>
+                                                <label for="date" class="me-2">Ngày:</label>
                                                 <input type="date" id="date" name="date"
                                                     value="{{ now()->toDateString() }}" class="form-control me-2"
                                                     style="max-width: 200px;">
@@ -191,7 +191,7 @@
                                         <div class="month-filter mb-4">
                                             <div class="d-flex justify-content-end">
                                                 <form id="form-statistics-month" class="d-flex align-items-center">
-                                                    <label for="month" class="me-2">Chọn tháng:</label>
+                                                    <label for="month" class="me-2">Tháng:</label>
                                                     <input type="month" id="month" name="month"
                                                         class="form-control me-2" value="{{ now()->format('Y-m') }}"
                                                         required>
@@ -204,22 +204,21 @@
                                             <canvas id="monthlyChart" class="w-100" style="max-height: 300px;"></canvas>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade" id="dasboard-tg" role="tabpanel"
-                                        aria-labelledby="dasboard-tg-all" tabindex="0">
+                                    <div class="tab-pane fade" id="dasboard-tg" role="tabpanel" aria-labelledby="dasboard-tg-all" tabindex="0">
                                         <div class="section-header mb-3">
                                             <h5 class="text-uppercase">Thống kê theo Khoảng thời gian</h5>
                                         </div>
                                         <div class="month-filter mb-4">
-                                            <div class="d-flex justify-content-end">
+                                            <div class="d-flex justify-content-end align-items-center">
                                                 <form id="form-statistics-time" class="d-flex align-items-center">
-                                                    <label for="start_date" class="me-2">Ngày bắt đầu:</label>
-                                                    <input type="date" id="start_date" name="start_date"
-                                                        class="form-control me-2" required>
-
-                                                    <label for="end_date" class="me-2">Ngày kết thúc:</label>
-                                                    <input type="date" id="end_date" name="end_date"
-                                                        class="form-control me-2" required>
-
+                                                    <div class="d-flex align-items-center me-3">
+                                                        <label for="start_date" class="mb-0 me-2" style="white-space: nowrap;">Ngày bắt đầu:</label>
+                                                        <input type="date" id="start_date" name="start_date" class="form-control me-2" required>
+                                                    </div>
+                                                    <div class="d-flex align-items-center me-3">
+                                                        <label for="end_date" class="mb-0 me-2" style="white-space: nowrap;">Ngày kết thúc:</label>
+                                                        <input type="date" id="end_date" name="end_date" class="form-control me-2" required>
+                                                    </div>
                                                     <button type="submit" class="btn btn-primary">Thống kê</button>
                                                 </form>
                                             </div>
@@ -243,7 +242,7 @@
                                                 <input type="number" id="year" name="year"
                                                     value="{{ now()->format('Y') }}" class="form-control me-2"
                                                     style="max-width: 200px;">
-                                                <button type="submit" class="btn btn-primary">Xem thống kê</button>
+                                                <button type="submit" class="btn btn-primary">Thống kê</button>
                                             </form>
 
                                         </div>
@@ -487,74 +486,83 @@
     @section('scripts')
         <script>
 
+            // Hàm gửi yêu cầu và cập nhật biểu đồ khi thay đổi ngày
+        function fetchDataAndUpdateChart(date) {
+            fetch('{{ route('statistics') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ date: date })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    updateChart(data);  // Cập nhật biểu đồ
+                    updateTotal(data);  // Cập nhật tổng số liệu
+                });
+        }
+
+        // Tự động lấy dữ liệu cho ngày hiện tại khi tải trang
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentDate = new Date().toISOString().split('T')[0]; // Lấy ngày hiện tại (yyyy-mm-dd)
+            document.getElementById('date').value = currentDate;  // Gán giá trị ngày hiện tại vào input date
+            fetchDataAndUpdateChart(currentDate);  // Gửi yêu cầu lấy dữ liệu cho ngày hiện tại
+
+            // Lắng nghe sự kiện thay đổi ngày và gửi yêu cầu cập nhật dữ liệu
             document.getElementById('date').addEventListener('change', function() {
                 const date = this.value;
-
-                fetch('{{ route('statistics') }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({
-                            date: date
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        updateChart(data);
-                        updateTotal(data);
-                    });
+                fetchDataAndUpdateChart(date);
             });
+        });
 
-            const hourlyctx = document.getElementById('hourlyChart').getContext('2d');
-            const hourlyChart = new Chart(hourlyctx, {
-                type: 'bar',
-                data: {
-                    labels: Array.from({
-                        length: 24
-                    }, (_, i) => `${i}:00`),
-                    datasets: [{
-                            label: 'Doanh thu (VNĐ)',
-                            data: Array(24).fill(0),
-                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Lợi nhuận (VNĐ)',
-                            data: Array(24).fill(0),
-                            backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            position: 'left',
-                            title: {
-                                display: true,
-                                text: 'Doanh thu và Lợi nhuận (VNĐ)'
-                            }
+        const hourlyctx = document.getElementById('hourlyChart').getContext('2d');
+        const hourlyChart = new Chart(hourlyctx, {
+            type: 'bar',
+            data: {
+                labels: Array.from({ length: 24 }, (_, i) => `${i}:00`),
+                datasets: [
+                    {
+                        label: 'Doanh thu (VNĐ)',
+                        data: Array(24).fill(0),
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Lợi nhuận (VNĐ)',
+                        data: Array(24).fill(0),
+                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Doanh thu và Lợi nhuận (VNĐ)'
                         }
                     }
                 }
-            });
-
-            // Hàm cập nhật biểu đồ
-            function updateChart(data) {
-                hourlyChart.data.datasets[0].data = data.revenue; // Dữ liệu doanh thu
-                hourlyChart.data.datasets[1].data = data.profit; // Dữ liệu lợi nhuận
-                hourlyChart.update();
             }
+        });
 
-            // Hàm cập nhật tổng số liệu (tùy chỉnh theo nhu cầu)
-            function updateTotal(data) {
-                console.log("Cập nhật số liệu tổng:", data.total);
-            }
+        // Hàm cập nhật biểu đồ
+        function updateChart(data) {
+            hourlyChart.data.datasets[0].data = data.revenue; // Dữ liệu doanh thu
+            hourlyChart.data.datasets[1].data = data.profit;  // Dữ liệu lợi nhuận
+            hourlyChart.update();
+        }
+
+        // Hàm cập nhật tổng số liệu
+        function updateTotal(data) {
+            console.log("Cập nhật số liệu tổng:", data.total);
+        }
 
 
             // Thống kê theo năm
