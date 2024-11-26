@@ -153,32 +153,24 @@
                                             </div>
 
                                             <div id="stock-info" class="stock-info mb-2"></div>
-                                            @if(session('error'))
-                                                    <div style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-top: 20px; border: 1px solid #f5c6cb;">
-                                                        {{ session('error') }}
-                                                    </div>
-                                                @endif
 
                                             <div class="product-quick-action">
                                                 <div class="qty-wrap">
                                                     <!-- Cập nhật `variant_id` đã chọn vào đây -->
-                                                    <input type="hidden" name="variant_id" id="selected-variant-id"
-                                                        value="">
+                                                    <input type="hidden" name="variant_id" id="selected-variant-id" value="">
+        
                                                     <div class="pro-qty">
-                                                        <input type="number" title="Quantity" name="variant_quantity"
-                                                            value="1" min="1">
+                                                        <input type="number" title="Quantity" name="variant_quantity" value="1" onchange="validateQuantity(event)"
+                                                        >
                                                     </div>
                                                 </div>
-
-                                                <button type="submit" id="add-to-cart-btn" onclick="addToCart(event)"
-                                                    class="btn-theme">
-                                                    Thêm vào giỏ hàng
-                                                </button>
-
-                                                <button type="button" id="buy-now-btn" class="btn-theme"
-                                                    onclick="buyNow()">
-                                                    Mua ngay
-                                                </button>
+                                                <button type="submit" id="add-to-cart-btn" onclick="addToCart(event)" class="btn-theme">Thêm vào giỏ hàng</button>
+        
+                                                            
+                                                        <button type="button" id="buy-now-btn" class="btn-theme"
+                                                            onclick="buyNow()">
+                                                            Mua ngay
+                                                        </button>
 
                                             </div>
                                         </form>
@@ -262,6 +254,32 @@
                                                     });
                                                     // alert('Size bạn chọn đã hết hàng !');
                                                 };
+                                            }
+                                            function validateQuantity(event) {
+                                                const quantityInput = event.target; // Lấy input đang thay đổi
+                                                const quantity = parseInt(quantityInput.value);
+
+                                                // Kiểm tra nếu số lượng vượt quá số lượng tồn kho
+                                                if (quantity > selectedStock) {
+                                                    Swal.fire({
+                                                        icon: 'warning', // Loại thông báo, có thể là 'warning', 'error', v.v.
+                                                        text: `Số lượng bạn chọn vượt quá số lượng tồn kho! Vui lòng chọn số lượng từ 1 đến ${selectedStock}.`,
+                                                        confirmButtonText: 'OK'
+                                                    });
+                                                    quantityInput.value = Math.min(quantity, selectedStock); // Đặt lại số lượng về giá trị hợp lệ
+                                                    return;
+                                                }
+
+                                                // Kiểm tra nếu số lượng nhỏ hơn tối thiểu
+                                                if (quantity < 1) {
+                                                    Swal.fire({
+                                                        icon: 'warning', // Loại thông báo, có thể là 'warning', 'error', v.v.
+                                                        text: 'Số lượng phải lớn hơn hoặc bằng 1.',
+                                                        confirmButtonText: 'OK'
+                                                    });
+                                                    quantityInput.value = 1; // Đặt lại số lượng tối thiểu là 1
+                                                    return;
+                                                }
                                             }
 
                                             function enableAddToCart() {
@@ -382,6 +400,17 @@
                                                 document.getElementById('buy-now-form').submit();
                                             }
                                         </script>
+                                        @if (session('swal'))
+                                        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                                        <script>
+                                            Swal.fire({
+                                                icon: '{{ session('swal.icon') }}', // Loại thông báo: success, warning, error
+                                                text: '{{ session('swal.text') }}',
+                                                confirmButtonText: '{{ session('swal.confirmButtonText') }}'
+                                            });
+                                        </script>
+                                        @endif
+                                        
                                         <style>
                                             .btn-theme.disabled {
                                                 background-color: #fff;

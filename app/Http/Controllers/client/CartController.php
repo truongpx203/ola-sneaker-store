@@ -58,10 +58,6 @@ class CartController extends Controller
 {
     $productSizes = ProductSize::all();
     $carts = Cart::where('user_id', Auth::id())->with('variant.product')->get();
-    // Loại bỏ sản phẩm hết hàng khỏi giỏ hàng
-    $carts = $carts->filter(function ($cart) {
-        return $cart->variant->stock >= $cart->variant_quantity;
-    });
     $provisional = $carts->sum(function ($cart) {
         return $cart->variant->sale_price * $cart->variant_quantity;
     });
@@ -102,8 +98,14 @@ public function addToCart(Request $request)
 
     // Kiểm tra số lượng tồn kho
     if ($variant->stock < $request->variant_quantity) {
-        return redirect()->back()->with('error', 'Số lượng sản phẩm trong kho không đủ.');
+        session()->flash('swal', [
+            'icon' => 'warning',
+            'text' => 'Số lượng sản phẩm trong kho không đủ.',
+            'confirmButtonText' => 'OK',
+        ]);
+        return redirect()->back();
     }
+
     // Tìm sản phẩm đã có trong giỏ hàng của user
     $cart = Cart::where('user_id', Auth::id())
                 ->where('variant_id', $request->variant_id)
@@ -113,7 +115,12 @@ public function addToCart(Request $request)
     if ($cart) {
         // Kiểm tra nếu tổng số lượng không vượt quá tồn kho
         if (($cart->variant_quantity + $request->variant_quantity) > $variant->stock) {
-            return redirect()->back()->with('error', 'Số lượng sản phẩm trong kho không đủ.');
+            session()->flash('swal', [
+                'icon' => 'warning',
+                'text' => 'Sản phẩm này trong giỏ hàng của bạn đã có tối đa sản phẩm trong kho.',
+                'confirmButtonText' => 'OK',
+            ]);
+            return redirect()->back();
         }
         $cart->variant_quantity += $request->variant_quantity;
         $cart->save();
@@ -126,7 +133,12 @@ public function addToCart(Request $request)
         ]);
     }
 
-    // Chuyển hướng sang trang giỏ hàng và thông báo thành công
+    session()->flash('swal', [
+        'icon' => 'success',
+        'text' => 'Sản phẩm đã được thêm vào giỏ hàng.',
+        'confirmButtonText' => 'OK',
+    ]);
+
     return redirect()->route('cart.show')->with('success', 'Sản phẩm đã được thêm vào giỏ hàng.');
 }
 

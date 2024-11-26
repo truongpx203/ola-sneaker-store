@@ -53,7 +53,7 @@
                                     <tbody>
 
                                         @foreach ($carts as $cart)
-                                            <tr class="cart-product-item">
+                                        <tr class="cart-product-item" data-stock="{{ $cart->variant->stock }}" data-id="{{ $cart->id }}">
                                                 <input type="hidden" name="id[]" value="{{ $cart->id }}" />
                                                 <input type="hidden" name="variant_id[]" value="{{ $cart->variant_id }}" />
                                                 
@@ -62,7 +62,7 @@
                                                 </td>                                                                                               
                                                 <td class="product-thumb">
                                                     <a href="{{ route('cart.show', $cart->variant->product_id) }}"> 
-                                                        <img src="{{ Storage::url($cart->variant->product->primary_image_url) }}" alt="{{ $cart->variant->product->name }}" style="width: 100px; height: 100px; object-fit: cover">
+                                                        <img src="{{ Storage::url($cart->variant->product->primary_image_url) }}" width="90" height="110" alt="{{ $cart->variant->product->name }}">
                                                     </a>
                                                 </td>
                                                 <td class="product-name">
@@ -76,17 +76,21 @@
                                                     <span>{{ $cart->variant->productSize->name }}</span>
                                                 </td>
                                                 <td class="product-price">
-                                                    <span>{{ number_format($cart->variant->sale_price) }} đ</span>
+                                                    <span>{{ number_format($cart->variant->sale_price) }} VNĐ</span>
                                                 </td>
                                                 <td class="product-quantity">
-                                                    <div class="pro-qty">
-                                                        <div class="dec qty-btn">-</div>
-                                                        <input type="number" class="quantity-input" name="variant_quantity[]" value="{{ $cart->variant_quantity }}" min="1" data-price="{{ $cart->variant->sale_price }}" required>
-                                                        <div class="inc qty-btn">+</div>
-                                                    </div>
+                                                @if ($cart->variant->stock == 0)
+                    <span class="text-danger">Sản phẩm trong kho đã hết</span>
+                @else
+                    <div class="pro-qty">
+                        <div class="dec qty-btn">-</div>
+                        <input type="number" class="quantity-input" name="variant_quantity[]" value="{{ $cart->variant_quantity }}" min="1" data-price="{{ $cart->variant->sale_price }}" required>
+                        <div class="inc qty-btn">+</div>
+                    </div>
+                @endif
                                                 </td>
                                                 <td class="product-subtotal">
-                                                    <span class="subtotal">{{ number_format($cart->variant->sale_price * $cart->variant_quantity) }} đ</span>
+                                                    <span class="subtotal">{{ number_format($cart->variant->sale_price * $cart->variant_quantity) }} VNĐ</span>
                                                 </td>                                                                                                                                               
                                             </tr>
                                         @endforeach
@@ -125,7 +129,7 @@
                                                     <div class="alert alert-danger">
                                                         {{ session('error') }}
                                                     </div>
-                                                @endif
+                                                    @endif
                                     </tbody>
                                 </table>
                            
@@ -176,7 +180,7 @@
                                                     <p class="value">Tạm tính</p>
                                                 </td>
                                                 <td>
-                                                    <p class="price">{{ number_format($provisional) }} đ</p>
+                                                    <p class="price">{{ number_format($provisional) }} VNĐ</p>
                                                 </td>
                                             </tr>
                                             <tr class="cart-subtotal">
@@ -193,7 +197,7 @@
                                                     <p class="value">Tổng tiền</p>
                                                 </td>
                                                 <td>
-                                                    <p class="price">{{ number_format($cartTotal) }} đ</p>
+                                                    <p class="price">{{ number_format($cartTotal) }} VNĐ</p>
                                                     
                                                 </td>
                                             </tr>
@@ -217,7 +221,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
 $(document).ready(function() {
-    // Khi nhấn nút xóa
+    // Khi nhấn nút xóa sản phẩm
     $('.product-remove a').click(function(event) {
         event.preventDefault(); // Ngăn chặn hành động mặc định của liên kết
         
@@ -271,5 +275,36 @@ $(document).ready(function() {
     $('.quantity-input').on('input', function() {
         updateSubtotal($(this));
     });
+
+    $('.btn-theme.btn-flat').click(function(event) {
+    event.preventDefault(); // Ngừng hành động mặc định của nút thanh toán
+
+    let outOfStockProducts = [];
+    $('.cart-product-item').each(function() {
+        let stock = parseInt($(this).data('stock'), 10); // Kiểm tra tồn kho của sản phẩm
+        let productName = $(this).find('.product-name a').text().trim();
+
+        // Nếu sản phẩm hết hàng, thêm vào danh sách
+        if (stock === 0) {
+            outOfStockProducts.push(productName);
+        }
+    });
+
+    if (outOfStockProducts.length > 0) {
+        // Hiển thị thông báo nếu có sản phẩm hết hàng
+        Swal.fire({
+            icon: 'warning', // Loại thông báo: cảnh báo
+            title: 'Sản phẩm hết hàng!',
+            html: `Các sản phẩm sau đã hết hàng. Vui lòng xóa khỏi giỏ hàng trước khi tiến hành thanh toán:<br><br>` +
+                `<ul style="text-align: left;">` +
+                outOfStockProducts.map(product => `<li>${product}</li>`).join('') +
+                `</ul>`,
+            confirmButtonText: 'OK'
+        });
+    } else {
+        // Nếu không có sản phẩm hết hàng, chuyển đến trang thanh toán
+        window.location.href = $(this).attr('href');
+    }
+});
 });
 </script>
