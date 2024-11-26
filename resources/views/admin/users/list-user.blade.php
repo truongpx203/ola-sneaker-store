@@ -18,11 +18,11 @@
         }
     </style>
     <table class="table">
-        @if (Session('success'))
+        {{-- @if (Session('success'))
             <div class="alert alert-success" role="alert">
                 {{ Session('success') }}
             </div>
-        @endif
+        @endif --}}
         <thead>
             <tr>
                 <th scope="col">#</th>
@@ -53,18 +53,22 @@
                         <td>{{ $user->email }}</td>
                         <td>{{ $user->phone_number }}</td>
                         <td>{{ $role[$user->role] }}</td>
+                        {{-- <td>
+                            <a style="margin-right: 2px" href="{{ route('user.updateStatus', $user->id) }}"
+                                class="btn btn-{{ $user->status === 'active' ? 'success' : 'danger' }}">
+                                {{ $user->status === 'active' ? 'Hoạt động' : 'Không hoạt động' }}
+                            </a>
+                        </td> --}}
                         <td>
                             <a style="margin-right: 2px" href="{{ route('user.updateStatus', $user->id) }}"
                                 class="btn btn-{{ $user->status === 'active' ? 'success' : 'danger' }}">
                                 {{ $user->status === 'active' ? 'Hoạt động' : 'Không hoạt động' }}
                             </a>
-                        </td>
-                        <td>
                             <button type="button" class="btn btn-info" data-toggle="modal"
                                 data-target="#userModal{{ $user->id }}">
-                                Xem Chi Tiết
+                                Xem chi tiết
                             </button>
-                            <a href="{{ route('user.update', $user->id) }}"><button type="button" class="btn btn-warning"
+                            <a href="{{ route('user.update', $user->id) }}"><button type="button" class="btn btn-success"
                                     style="margin-right: 2px">Sửa</button></a>
                         </td>
                     </tr>
@@ -115,6 +119,26 @@
     </div>
 @endsection
 
+@section('scriptsToastr')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        console.log("Success message:", "{{ session('success') }}");
+        toastr.options = {
+            
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "5000",
+        };
+        @if (session('success'))
+            toastr.success("{{ session('success') }}");
+        @endif
 
+        @if (session('error'))
+            toastr.error("{{ session('error') }}");
+        @endif
+    </script>
+@endsection
 
 

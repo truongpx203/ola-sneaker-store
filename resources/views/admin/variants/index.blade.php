@@ -169,35 +169,22 @@
 @endsection
 
 @section('scriptsToastr')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        console.log("Success message:", "{{ session('success') }}");
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "5000",
+        };
+        @if (session('success'))
+            toastr.success("{{ session('success') }}");
+        @endif
 
-    @if (session('success'))
-        <script>
-            Swal.fire({
-                icon: 'success', // Hoặc 'warning', 'error', v.v.
-                title: 'Thành công',
-                text: '{{ session('success') }}',
-                confirmButtonText: 'OK',
-                timer: 5000,
-                timerProgressBar: true,
-
-            });
-        </script>
-    @endif
-
+        @if (session('error'))
+            toastr.error("{{ session('error') }}");
+        @endif
+    </script>
 @endsection
-@section('scriptsToastr')
-    @if (session('error'))
-        <script>
-            Swal.fire({
-                icon: 'error', // Hoặc 'warning', 'error', v.v.
-                // title: 'Thành công',
-                text: '{{ session('error') }}',
-                confirmButtonText: 'OK',
-                timer: 5000,
-                timerProgressBar: true,
-            });
-        </script>
-    @endif
-
-@endsection
-

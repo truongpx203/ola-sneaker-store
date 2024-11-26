@@ -24,7 +24,7 @@
 
     <div class="row">
         <div class="col-lg-12">
-            @if (Session('message'))
+            {{-- @if (Session('message'))
                 <div class="alert alert-success" role="alert">
                     {{ Session('message') }}
                 </div>
@@ -33,7 +33,7 @@
                 <div class="alert alert-danger" role="alert">
                     {{ Session('error') }}
                 </div>
-            @endif
+            @endif --}}
             <div class="card">
                 <div class="card-header d-flex justify-content-between ">
                     <h5 class="card-title mb-0 "> Danh Sách</h5>
@@ -110,3 +110,24 @@
         });
     </script>
 @endsection
+@section('scriptsToastr')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        console.log("Success message:", "{{ session('success') }}");
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "5000",
+        };
+        @if (session('success'))
+            toastr.success("{{ session('success') }}");
+        @endif
+
+        @if (session('error'))
+            toastr.error("{{ session('error') }}");
+        @endif
+    </script>
+@endsection
+
