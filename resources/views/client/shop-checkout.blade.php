@@ -170,8 +170,7 @@
                                                         title="required">*</abbr></label>
                                                 <input id="street-address" type="text" name="address"
                                                     class="form-control" placeholder="Nhập địa chỉ người nhận"
-                                                    value="{{ old('name', $user->address) }}"
-                                                    >
+                                                    value="{{ old('name', $user->address) }}">
                                                 @error('address')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
@@ -231,9 +230,7 @@
                                             <tr class="order-total">
                                                 <th>Tổng cộng</th>
                                                 {{-- 7/11/2024 --}}
-
                                                 <td id="finalTotal">{{ number_format($total_price) }} đ</td> 
-
                                             </tr>
                                         </tfoot>
                                     </table>

@@ -80,7 +80,7 @@
                                             <td>{{ $loop->index + 1 }}</td>
                                             <td>
                                                 <img src="{{ Storage::url($item->primary_image_url) }}"
-                                                    alt="{{ $item->name }}" class="img-thumbnail" width="100px" />
+                                                    alt="{{ $item->name }}" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover">
 
                                             </td>
                                             <td>{{ $item->code }}</td>
