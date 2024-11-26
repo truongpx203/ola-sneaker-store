@@ -13,11 +13,30 @@ use Illuminate\Support\Facades\Mail;
 
 class BillController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $bills = Bill::with('items')->orderBy('id', 'desc')->paginate(10);
+        $query = Bill::with('items')->orderBy('id', 'desc');
+
+        if ($status = $request->get('bill_status')) {
+            if ($status !== 'all') {
+                $query->where('bill_status', $status);
+            }
+        }
+
+        if ($request->filled('bill_code')) {
+            $query->where('code', 'like', '%' . $request->bill_code . '%');
+        }
+
+        if ($request->filled('purchase_date')) {
+            $query->whereDate('created_at', $request->purchase_date);
+        }
+
+        $bills = $query->paginate(10);
+
         return view('admin.bills.show-bills', compact('bills'));
     }
+
+
 
     public function show($id)
     {
@@ -106,5 +125,4 @@ class BillController extends Controller
 
         return redirect()->route('bills.show', $id)->with('success', 'Trạng thái đơn hàng đã được cập nhật.');
     }
-
 }

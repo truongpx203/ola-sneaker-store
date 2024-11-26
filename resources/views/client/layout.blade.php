@@ -14,7 +14,7 @@
     {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script> --}}
-
+    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>@yield('title')</title>
 
@@ -106,9 +106,9 @@
               </div>
               <div class="header-middle-align-center">
                 <div class="header-search-area">
-                    <form class="header-searchbox" id="searchForm" method="GET" action="{{ route('search') }}">
+                    <form class="header-searchbox" method="GET" action="{{ route('search') }}">
                         <input type="search" name="name" class="form-control" placeholder="Tìm kiếm">
-                        <button class="btn-submit"  type="submit"><i class="pe-7s-search"></i></button>
+                        <button class="btn-submit" type="submit"><i class="pe-7s-search"></i></button>
                     </form>
                 </div>
             </div>
