@@ -46,7 +46,10 @@
                                                 <button class="nav-link" id="address-edit-tab" data-bs-toggle="tab"
                                                     data-bs-target="#address-edit" type="button" role="tab"
                                                     aria-controls="address-edit" aria-selected="false">Địa chỉ</button>
-                                                {{--7/11/2024  --}}
+                                                <button class="nav-link" id="voucher-list-tab" data-bs-toggle="tab"
+                                                    data-bs-target="#voucher-list" type="button" role="tab"
+                                                    aria-controls="voucher-list" aria-selected="false">Mã giảm giá của bạn</button>
+                                                {{-- 7/11/2024  --}}
                                                 <button class="nav-link" id="points-tab" data-bs-toggle="tab"
                                                     data-bs-target="#points" type="button" role="tab"
                                                     aria-controls="points" aria-selected="false">Tích điểm</button>
@@ -153,25 +156,30 @@
                                                             <div class="col-lg-6">
                                                                 <div class="single-input-item">
                                                                     <label for="first-name" class="required">Họ tên</label>
-                                                                    <input type="text" id="first-name" name="full_name" value="{{ Auth::user()->full_name }}">
+                                                                    <input type="text" id="first-name" name="full_name"
+                                                                        value="{{ Auth::user()->full_name }}">
                                                                 </div>
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="single-input-item">
-                                                                    <label for="last-name" class="required">Số điện thoại</label>
-                                                                    <input type="text" id="last-name" name="phone_number" value="{{ Auth::user()->phone_number }}">
+                                                                    <label for="last-name" class="required">Số điện
+                                                                        thoại</label>
+                                                                    <input type="text" id="last-name" name="phone_number"
+                                                                        value="{{ Auth::user()->phone_number }}">
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="single-input-item">
                                                             <label for="email" class="required">Email</label>
-                                                            <input type="email" id="email" name="email" value="{{ Auth::user()->email }}" disabled>
+                                                            <input type="email" id="email" name="email"
+                                                                value="{{ Auth::user()->email }}" disabled>
                                                         </div>
                                                         <div class="single-input-item">
                                                             <label for="display-name" class="required">Địa chỉ</label>
-                                                            <input type="text" id="display-name" name="address" value="{{ Auth::user()->address }}">
+                                                            <input type="text" id="display-name" name="address"
+                                                                value="{{ Auth::user()->address }}">
                                                         </div>
-                                                    
+
                                                         <fieldset>
                                                             <legend>Đổi mật khẩu</legend>
                                                             @if (Session('error'))
@@ -180,8 +188,10 @@
                                                                 </div>
                                                             @endif
                                                             <div class="single-input-item">
-                                                                <label for="current-pwd" class="required">Mật khẩu hiện tại</label>
-                                                                <input type="password" class="form-control" id="current_password" name="current_password">
+                                                                <label for="current-pwd" class="required">Mật khẩu hiện
+                                                                    tại</label>
+                                                                <input type="password" class="form-control"
+                                                                    id="current_password" name="current_password">
                                                                 @error('current_password')
                                                                     <span class="text-danger">{{ $message }}</span>
                                                                 @enderror
@@ -189,26 +199,34 @@
                                                             <div class="row">
                                                                 <div class="col-lg-6">
                                                                     <div class="single-input-item">
-                                                                        <label for="new-pwd" class="required">Mật khẩu mới</label>
-                                                                        <input type="password" class="form-control" id="new_password" name="new_password">
+                                                                        <label for="new-pwd" class="required">Mật khẩu
+                                                                            mới</label>
+                                                                        <input type="password" class="form-control"
+                                                                            id="new_password" name="new_password">
                                                                         @error('new_password')
-                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                            <span
+                                                                                class="text-danger">{{ $message }}</span>
                                                                         @enderror
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-lg-6">
                                                                     <div class="single-input-item">
-                                                                        <label for="confirm-pwd" class="required">Xác nhận mật khẩu mới</label>
-                                                                        <input type="password" class="form-control" id="new_password_confirmation" name="new_password_confirmation">
+                                                                        <label for="confirm-pwd" class="required">Xác nhận
+                                                                            mật khẩu mới</label>
+                                                                        <input type="password" class="form-control"
+                                                                            id="new_password_confirmation"
+                                                                            name="new_password_confirmation">
                                                                         @error('new_password_confirmation')
-                                                                            <span class="text-danger">{{ $message }}</span>
+                                                                            <span
+                                                                                class="text-danger">{{ $message }}</span>
                                                                         @enderror
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </fieldset>
                                                         <div class="single-input-item">
-                                                            <button type="submit" class="check-btn sqr-btn">Lưu thông tin</button>
+                                                            <button type="submit" class="check-btn sqr-btn">Lưu thông
+                                                                tin</button>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -279,6 +297,47 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="tab-pane fade" id="voucher-list" role="tabpanel"
+                                            aria-labelledby="voucher-list">
+                                            <div class="myaccount-content">
+                                                <h3>Mã giảm giá của {{ Auth::user()->full_name }}</h3>
+                                                <div class="myaccount-table table-responsive text-center">
+                                                    @if (count($listVouchers)<=0 )
+                                                        <div class="alert alert-info">Bạn chưa có mã giảm giá nào.</div>
+                                                    @else
+                                                        <table class="table table-bordered">
+                                                            <thead class="thead-light">
+                                                                <tr>
+                                                                    <th>Mã đơn hàng</th>
+                                                                    <th>Giảm(%)</th>
+                                                                    <th>Số tiền tối đa</th>
+                                                                    <th>Mô tả</th>
+                                                                    <th>Ngày bắt đầu</th>
+                                                                    <th>Ngày kết thúc</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach ($listVouchers as $listVoucher)
+                                                                    <tr>
+                                                                        <td>{{ $listVoucher->code }}</td>
+                                                                        <td>{{ $listVoucher->value }}</td>
+                                                                        <td>{{ number_format($listVoucher->max_price) }}</td>
+                                                                        <td>{{ $listVoucher->description }}</td>
+                                                                        <td>{{ $listVoucher->start_datetime }}</td>
+                                                                        <td>{{ $listVoucher->end_datetime }}</td>
+                                                                    </tr>
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table>
+                                                        <div class="d-flex justify-content-end">
+                                                            {{-- <div class="pagination-wrap hstack gap-2">
+                                                                {{ $listVouchers->appends(request()->input())->links('pagination::bootstrap-4') }}
+                                                            </div> --}}
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
                                         {{-- <div class="tab-pane fade" id="download" role="tabpanel" aria-labelledby="download-tab">
                   <div class="myaccount-content">
                     <h3>Tải xuống</h3>
@@ -333,7 +392,8 @@
 
                                         {{-- 7/11/2024 --}}
 
-                                        <div class="tab-pane fade" id="points" role="tabpanel" aria-labelledby="points-tab">
+                                        <div class="tab-pane fade" id="points" role="tabpanel"
+                                            aria-labelledby="points-tab">
                                             <div class="myaccount-content">
                                                 <p>Điểm tích lũy hiện tại của bạn: <strong>{{ $user->points }}</strong></p>
                                             </div>

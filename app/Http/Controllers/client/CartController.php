@@ -14,6 +14,7 @@ use App\Models\Voucher;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Strong;
+use Carbon\Carbon;
 
 class CartController extends Controller
 {
@@ -177,6 +178,17 @@ class CartController extends Controller
         if (!$checkVoucher) {
             session()->forget('coupon');
             return redirect()->back()->with('error', 'Mã giảm giá không hợp lệ');
+        }
+        // Kiểm tra ngày giờ hiện tại so với ngày bắt đầu và ngày kết thúc của voucher
+        $currentDateTime = now();
+        // Kiểm tra ngày bắt đầu
+        $startDateTime = Carbon::parse($voucher->start_datetime);  // Chuyển ngày bắt đầu của voucher sang đối tượng Carbon
+        $endDateTime = Carbon::parse($voucher->end_datetime);  // Chuyển ngày kết thúc của voucher sang đối tượng Carbon
+
+        // Nếu thời gian hiện tại trước ngày bắt đầu hoặc sau ngày kết thúc, không cho dùng voucher
+        if ($currentDateTime->lt($startDateTime) || $currentDateTime->gt($endDateTime)) {
+            session()->forget('coupon');
+            return redirect()->back()->with('error', 'Mã giảm giá không hợp lệ do thời gian không hợp lệ');
         }
         session(['coupon' => $voucher]);
 
