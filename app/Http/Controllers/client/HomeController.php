@@ -56,6 +56,11 @@ class HomeController extends Controller
         ]);
 
         $bill->bill_status = 'canceled';
+
+        // Nếu đơn hàng sử dụng điểm, hoàn lại số điểm cho người dùng (24/11/2024)
+        if ($bill->points_used > 0) {
+            $bill->returnPointsToUser();  // Gọi phương thức hoàn lại điểm
+        }
         $bill->save();
 
         $atDatetime = now();

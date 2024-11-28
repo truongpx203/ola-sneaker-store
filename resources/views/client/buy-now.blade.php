@@ -258,25 +258,41 @@
                                     </table>
 
                                     <div class="shop-payment-method">
-                                        <div id="PaymentMethodAccordion">
-
-                                            {{-- 7/11/2024 --}}
-                                            <!-- Hiển thị điểm tích lũy -->
-                                            <div>
-                                                <p>Bạn có <strong>{{ $userPoints }}</strong> điểm tích lũy</p>
-
-                                                <!-- Nhập số điểm muốn sử dụng -->
-                                                <label for="points_to_use">Số điểm muốn sử dụng:</label>
-                                                <input type="number" id="points_to_use" name="points_to_use"
-                                                    min="0" max="{{ $userPoints }}" value="0"
-                                                    oninput="calculateDiscount()">
+                                        <div id="PaymentMethodAccordion" class="accordion">
+                                            <!-- Dùng điểm tích lũy (7/11/2024) -->
+                                            <div class="mb-4">
+                                                <!-- Các trường nhập thông tin đơn hàng khác -->
+                                                <!-- Số điểm người dùng có -->
+                                                <p class="fw-bold">Bạn có <strong>{{ $userPoints }}</strong> điểm tích lũy</p>
+                                                <!-- Ô nhập số điểm muốn sử dụng -->
+                                                <label for="points_to_use" class="form-label">Số điểm muốn sử dụng:</label>
+                                                <input type="number" id="points_to_use" name="points_to_use" class="form-control"
+                                                    min="0" max="{{ $userPoints }}" value="0" oninput="calculateDiscount()">
+                                                <small class="form-text text-muted">1 điểm = 10,000 VNĐ giảm giá</small>
+                                    
+                                                {{-- <div class="mt-2">
+                                                    <p class="text-success">Tổng giảm giá: <span id="discountAmount">0</span> VNĐ</p>
+                                                </div> --}}
                                             </div>
-
-                                            <div>
-                                                <input type="radio" id="payment_cod" name="payment_type"
-                                                    value="cod">
-                                                <label for="payment_cod">Thanh toán khi nhận hàng (COD)</label>
+                                    
+                                            <!-- Chọn phương thức thanh toán -->
+                                            <div class="mb-4">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" id="payment_cod" name="payment_type" value="cod" checked>
+                                                    <label class="form-check-label" for="payment_cod">
+                                                        Thanh toán khi nhận hàng (COD)
+                                                    </label>
+                                                </div>
+                                    
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" id="payment_vnpay" name="payment_type" value="online">
+                                                    <label class="form-check-label" for="payment_vnpay" aria-labelledby="check_payments4"
+                                                    data-bs-parent="#PaymentMethodAccordion">
+                                                        Thanh toán với VNPAY
+                                                    </label>
+                                                </div>
                                             </div>
+<<<<<<< Updated upstream
 
                                             <div>
                                                 <input type="radio" id="payment_vnpay" name="payment_type"
@@ -289,11 +305,17 @@
                                                     value="momo">
                                                 <label for="payment_momo">Thanh toán với MOMO</label>
                                             </div>
+=======
+                                    
+                                            <!-- Hiển thị lỗi nếu có -->
+                                            @error('payment_type')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                    
+                                            <!-- Nút đặt hàng -->
+                                            <a href=""><button type="submit"class="btn-theme">Đặt hàng</button></a>
+>>>>>>> Stashed changes
                                         </div>
-                                        @error('payment_type')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                        <a href=""><button type="submit"class="btn-theme">Đặt hàng</button></a>
                                     </div>
                                 </div>
                             </div>
@@ -301,8 +323,10 @@
                         </div>
                     </div>
                 </form>
+                {{-- 24/11/2024 --}}
                 <script>
                     function calculateDiscount() {
+<<<<<<< Updated upstream
                         // Lấy giá trị nhập từ ô input
                         const pointsToUse = parseInt(document.getElementById('points_to_use').value) || 0;
 
@@ -320,6 +344,16 @@
 
                         // Cập nhật giao diện tổng tiền
                         document.getElementById('finalTotal').innerText = new Intl.NumberFormat().format(finalTotal) + ' đ';
+=======
+                        var points = document.getElementById('points_to_use').value;
+                        var totalPrice = {{ $total_price }};
+                        var discount = points * 10000; // Giả sử mỗi điểm = 10000 VNĐ
+                        if (discount > totalPrice) {
+                            discount = totalPrice; // Không thể giảm quá số tiền cần thanh toán
+                        }
+                        var finalPrice = totalPrice - discount;
+                        document.getElementById('finalTotal').textContent = new Intl.NumberFormat('vi-VN').format(finalPrice) + ' VND';
+>>>>>>> Stashed changes
                     }
                 </script>
                 {{-- <script>
