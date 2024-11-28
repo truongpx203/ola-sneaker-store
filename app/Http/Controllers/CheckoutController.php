@@ -31,6 +31,21 @@ class CheckoutController extends Controller
             return $item->variants->sale_price * $item->variant_quantity;
         });
 
+        // Kiểm tra nếu có voucher trong session
+        if (session()->has('coupon')) {
+            $voucher = session('coupon');
+            $discount = $voucher->value;  // Phần trăm giảm giá từ voucher
+            $discountAmount = $total_price * ($discount / 100);  // Tính giảm giá dựa trên tổng giỏ hàng
+
+            // Giới hạn số tiền giảm tối đa
+            if ($discountAmount > $voucher->max_price) {
+                $discountAmount = $voucher->max_price;
+            }
+
+            // Áp dụng giảm giá vào tổng giỏ hàng
+            $total_price -= $discountAmount;
+        }
+
         // Lấy số điểm của người dùng (7/11/2024)
         $userPoints = $user->points;
 
@@ -118,6 +133,20 @@ class CheckoutController extends Controller
                 return $item->variants->sale_price * $item->variant_quantity;
             });
 
+            // Kiểm tra nếu có voucher trong session
+            if (session()->has('coupon')) {
+                $voucher = session('coupon');
+                $discount = $voucher->value;  // Phần trăm giảm giá từ voucher
+                $discountAmount = $total_price * ($discount / 100);  // Tính giảm giá dựa trên tổng giỏ hàng
+
+                // Giới hạn số tiền giảm tối đa
+                if ($discountAmount > $voucher->max_price) {
+                    $discountAmount = $voucher->max_price;
+                }
+
+                // Áp dụng giảm giá vào tổng giỏ hàng
+                $total_price -= $discountAmount;
+            }
             // 7/11/2024
             /// Xác định điểm sử dụng và tính giảm giá
             $pointsToUse = $request->input('points_to_use', 0);
@@ -269,6 +298,19 @@ class CheckoutController extends Controller
         $totalPrice = $cartItems->sum(function ($item) {
             return $item->variants->sale_price * $item->variant_quantity;
         });
+        if (session()->has('coupon')) {
+            $voucher = session('coupon');
+            $discount = $voucher->value;  // Phần trăm giảm giá từ voucher
+            $discountAmount = $totalPrice * ($discount / 100);  // Tính giảm giá dựa trên tổng giỏ hàng
+
+            // Giới hạn số tiền giảm tối đa
+            if ($discountAmount > $voucher->max_price) {
+                $discountAmount = $voucher->max_price;
+            }
+
+            // Áp dụng giảm giá vào tổng giỏ hàng
+            $totalPrice -= $discountAmount;
+        }
 
         // Tính số tiền giảm giá từ điểm
         $pointValue = 10000; // Giá trị mỗi điểm là 10,000 VND
@@ -379,7 +421,19 @@ class CheckoutController extends Controller
                 $totalPrice = $cartItems->sum(function ($item) {
                     return $item->variants->sale_price * $item->variant_quantity;
                 });
+                if (session()->has('coupon')) {
+                    $voucher = session('coupon');
+                    $discount = $voucher->value;  // Phần trăm giảm giá từ voucher
+                    $discountAmount = $totalPrice * ($discount / 100);  // Tính giảm giá dựa trên tổng giỏ hàng
 
+                    // Giới hạn số tiền giảm tối đa
+                    if ($discountAmount > $voucher->max_price) {
+                        $discountAmount = $voucher->max_price;
+                    }
+
+                    // Áp dụng giảm giá vào tổng giỏ hàng
+                    $totalPrice -= $discountAmount;
+                }
                 // Tạo hóa đơn
                 $bill = Bill::create([
                     'user_id' => $user_id,
@@ -485,7 +539,19 @@ class CheckoutController extends Controller
         $total_price = $cartItems->sum(function ($item) {
             return $item->variants->sale_price * $item->variant_quantity;
         });
+        if (session()->has('coupon')) {
+            $voucher = session('coupon');
+            $discount = $voucher->value;  // Phần trăm giảm giá từ voucher
+            $discountAmount = $total_price * ($discount / 100);  // Tính giảm giá dựa trên tổng giỏ hàng
 
+            // Giới hạn số tiền giảm tối đa
+            if ($discountAmount > $voucher->max_price) {
+                $discountAmount = $voucher->max_price;
+            }
+
+            // Áp dụng giảm giá vào tổng giỏ hàng
+            $total_price -= $discountAmount;
+        }
         // Tạo mã đơn hàng duy nhất
         $orderId = 'B-' . strtoupper(bin2hex(random_bytes(2))) . '-' . strtoupper(substr(uniqid(), -4));
 
@@ -647,13 +713,26 @@ class CheckoutController extends Controller
 
         // Tính tổng giá trị sản phẩm 7/11/2024
         $totalPrice = $variant->sale_price * $quantity;
+        if (session()->has('coupon')) {
+            $voucher = session('coupon');
+            $discount = $voucher->value;  // Phần trăm giảm giá từ voucher
+            $discountAmount = $totalPrice * ($discount / 100);  // Tính giảm giá dựa trên tổng giỏ hàng
 
+            // Giới hạn số tiền giảm tối đa
+            if ($discountAmount > $voucher->max_price) {
+                $discountAmount = $voucher->max_price;
+            }
+
+            // Áp dụng giảm giá vào tổng giỏ hàng
+            $totalPrice -= $discountAmount;
+        }
         return view('client.buy-now', [
             'user' => $user,
             'product' => $product,
             'variant' => $variant,
             'quantity' => $quantity,
             'total_price' => $totalPrice,
+            'discount' => $discount,
             'userPoints' => $user->points, // Điểm tích lũy của người dùng 7/11/2024
         ]);
     }
@@ -686,7 +765,7 @@ class CheckoutController extends Controller
             'address.max' => 'Địa chỉ không được vượt quá :max ký tự.',
 
             'payment_type.required' => 'Phương thức thanh toán là bắt buộc.',
-           'payment_type.in' => 'Phương thức thanh toán phải là "cod", "vnpay", "momo".',
+            'payment_type.in' => 'Phương thức thanh toán phải là "cod", "vnpay", "momo".',
 
             'note.string' => 'Ghi chú phải là chuỗi văn bản.',
             'note.max' => 'Ghi chú không được vượt quá :max ký tự.',
@@ -714,6 +793,20 @@ class CheckoutController extends Controller
 
             // Tính tổng giá trị sản phẩm
             $totalPrice = $variant->sale_price * $validatedData['variant_quantity'];
+
+            if (session()->has('coupon')) {
+                $voucher = session('coupon');
+                $discount = $voucher->value;  // Phần trăm giảm giá từ voucher
+                $discountAmount = $totalPrice * ($discount / 100);  // Tính giảm giá dựa trên tổng giỏ hàng
+
+                // Giới hạn số tiền giảm tối đa
+                if ($discountAmount > $voucher->max_price) {
+                    $discountAmount = $voucher->max_price;
+                }
+
+                // Áp dụng giảm giá vào tổng giỏ hàng
+                $totalPrice -= $discountAmount;
+            }
 
             // Xử lý số điểm giảm giá(7/11/2024)
             $pointsToUse = $validatedData['points_to_use'] ?? 0;
@@ -886,7 +979,19 @@ class CheckoutController extends Controller
                 }
 
                 $totalPrice = $variant->sale_price * $validatedData['variant_quantity'];
+                if (session()->has('coupon')) {
+                    $voucher = session('coupon');
+                    $discount = $voucher->value;  // Phần trăm giảm giá từ voucher
+                    $discountAmount = $totalPrice * ($discount / 100);  // Tính giảm giá dựa trên tổng giỏ hàng
 
+                    // Giới hạn số tiền giảm tối đa
+                    if ($discountAmount > $voucher->max_price) {
+                        $discountAmount = $voucher->max_price;
+                    }
+
+                    // Áp dụng giảm giá vào tổng giỏ hàng
+                    $totalPrice -= $discountAmount;
+                }
                 // Tạo hóa đơn
                 $bill = Bill::create([
                     'user_id' => Auth::id(),

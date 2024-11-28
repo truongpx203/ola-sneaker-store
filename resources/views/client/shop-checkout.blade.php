@@ -82,8 +82,8 @@
                 @endif
                 <div class="row">
                     <div class="col-12">
-                      <div class="checkout-page-coupon-wrap">
-                        <!--== Start Checkout Coupon Accordion ==-->
+                        <div class="checkout-page-coupon-wrap">
+                            {{-- <!--== Start Checkout Coupon Accordion ==-->
                         <div class="coupon-accordion" id="CouponAccordion">
                           <div class="card">
                             <h3>
@@ -112,10 +112,10 @@
                             </div>
                           </div>
                         </div>
-                        <!--== End Checkout Coupon Accordion ==-->
-                      </div>
+                        <!--== End Checkout Coupon Accordion ==--> --}}
+                        </div>
                     </div>
-                  </div>
+                </div>
                 <form id="checkout-form" action="{{ route('checkout.process') }}" method="post">
                     @csrf
                     <input type="hidden" name="user_id" value="{{ Auth::id() }}">
@@ -230,7 +230,7 @@
                                             <tr class="order-total">
                                                 <th>Tổng cộng</th>
                                                 {{-- 7/11/2024 --}}
-                                                <td id="finalTotal">{{ number_format($total_price) }} đ</td> 
+                                                <td id="finalTotal">{{ number_format($total_price) }} đ</td>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -322,7 +322,7 @@
                             if (paymentType === 'vnpay') {
                                 document.getElementById('checkout-form').action = "{{ route('checkout.vnpay') }}";
                             } else if (paymentType === 'momo') {
-                                document.getElementById('checkout-form').action = "{{ route('checkout.momo')}}";
+                                document.getElementById('checkout-form').action = "{{ route('checkout.momo') }}";
                             } else {
                                 document.getElementById('checkout-form').action = "{{ route('checkout.process') }}";
                             }
@@ -337,47 +337,46 @@
 @endsection
 
 @section('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const checkoutButton = document.getElementById('checkoutButton');
-        const paymentVnpay = document.getElementById('payment_vnpay');
-        const bankSelectionModal = document.getElementById('bankSelectionModal');
-        const confirmBankButton = document.getElementById('confirmBankButton');
-        const bankCodeSelect = document.getElementById('bankCode');
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkoutButton = document.getElementById('checkoutButton');
+            const paymentVnpay = document.getElementById('payment_vnpay');
+            const bankSelectionModal = document.getElementById('bankSelectionModal');
+            const confirmBankButton = document.getElementById('confirmBankButton');
+            const bankCodeSelect = document.getElementById('bankCode');
 
-        checkoutButton.addEventListener('click', function() {
-            if (paymentVnpay.checked) {
-                // Show the bank selection modal if VNPAY is selected
-                bankSelectionModal.style.display = 'block';
-            } else {
-                // If COD is selected, submit the form directly
-                document.querySelector('form').submit();
+            checkoutButton.addEventListener('click', function() {
+                if (paymentVnpay.checked) {
+                    // Show the bank selection modal if VNPAY is selected
+                    bankSelectionModal.style.display = 'block';
+                } else {
+                    // If COD is selected, submit the form directly
+                    document.querySelector('form').submit();
+                }
+            });
+
+            confirmBankButton.addEventListener('click', function() {
+                const selectedBank = bankCodeSelect.value;
+
+                if (selectedBank) {
+                    // Attach selected bank code to form and submit
+                    const form = document.querySelector('form');
+                    const bankInput = document.createElement('input');
+                    bankInput.type = 'hidden';
+                    bankInput.name = 'bank_code';
+                    bankInput.value = selectedBank;
+                    form.appendChild(bankInput);
+                    form.submit();
+                }
+            });
+
+            // Close modal when clicked outside of it (optional)
+            window.onclick = function(event) {
+                if (event.target == bankSelectionModal) {
+                    bankSelectionModal.style.display = "none";
+                }
             }
         });
-
-        confirmBankButton.addEventListener('click', function() {
-            const selectedBank = bankCodeSelect.value;
-
-            if (selectedBank) {
-                // Attach selected bank code to form and submit
-                const form = document.querySelector('form');
-                const bankInput = document.createElement('input');
-                bankInput.type = 'hidden';
-                bankInput.name = 'bank_code';
-                bankInput.value = selectedBank;
-                form.appendChild(bankInput);
-                form.submit();
-            }
-        });
-
-        // Close modal when clicked outside of it (optional)
-        window.onclick = function(event) {
-            if (event.target == bankSelectionModal) {
-                bankSelectionModal.style.display = "none";
-            }
-        }
-    });
-</script>
+    </script>
 
 @endsection
-
