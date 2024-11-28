@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\RegisterRequest;
 use App\Jobs\DeleteOldPasswordResetTokens;
+use App\Models\Voucher;
 
 class AccountController extends Controller
 {
@@ -32,7 +33,17 @@ class AccountController extends Controller
     {
         $user = Auth::user();
         $bills = $user->bills()->orderBy('id', 'desc')->paginate(10);
-        return view('client.account', compact('user', 'bills'));
+        $vouchers = Voucher::get();
+        $listVouchers=[];
+        foreach ($vouchers as $voucher) {
+            $forUserIds = json_decode($voucher->for_user_ids, true);
+            foreach ($forUserIds as $forId) {
+                if ($forId == Auth::user()->id) {
+                    array_push($listVouchers, $voucher);
+                }
+            }
+        }
+        return view('client.account', compact('user', 'bills','listVouchers'));
     }
 
     // Đăng ký
@@ -103,7 +114,6 @@ class AccountController extends Controller
             } else {
                 return redirect()->route('account');
             }
-            
         } else {
             return redirect()->back()->with('error', 'Tên đăng nhập hoặc mật khẩu không đúng.');
         }
