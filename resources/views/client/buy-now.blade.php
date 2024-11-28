@@ -80,42 +80,57 @@
                         @endforeach
                     </div>
                 @endif
+                @if (session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
                 <div class="row">
                     <div class="col-12">
-                      <div class="checkout-page-coupon-wrap">
-                        <!--== Start Checkout Coupon Accordion ==-->
-                        <div class="coupon-accordion" id="CouponAccordion">
-                          <div class="card">
-                            <h3>
-                              <i class="fa fa-info-circle"></i>
-                              Có phiếu giảm giá?
-                              <a href="#/" data-bs-toggle="collapse" data-bs-target="#couponaccordion">Nhấp vào đây để nhập mã của bạn</a>
-                            </h3>
-                            <div id="couponaccordion" class="collapse" data-bs-parent="#CouponAccordion">
-                              <div class="card-body">
-                                <div class="apply-coupon-wrap mb-60">
-                                  <p>Nếu bạn có mã giảm giá, vui lòng áp dụng bên dưới.</p>
-                                  <form action="#" method="post">
-                                    <div class="row">
-                                      <div class="col-md-6">
-                                        <div class="form-group">
-                                          <input class="form-control" type="text" placeholder="Mã gỉảm giá">
+                        <div class="checkout-page-coupon-wrap">
+                            <!--== Start Checkout Coupon Accordion ==-->
+                            <div class="coupon-accordion" id="CouponAccordion">
+                                <div class="card">
+                                    <h3>
+                                        <i class="fa fa-info-circle"></i>
+                                        Có phiếu giảm giá?
+                                        <a href="#/" data-bs-toggle="collapse" data-bs-target="#couponaccordion">Nhấp
+                                            vào đây để nhập mã của bạn</a>
+                                    </h3>
+                                    <div id="couponaccordion" class="collapse" data-bs-parent="#CouponAccordion">
+                                        <div class="card-body">
+                                            <div class="apply-coupon-wrap mb-60">
+                                                <p>Nếu bạn có mã giảm giá, vui lòng áp dụng bên dưới.</p>
+                                                <form action="{{ route('cart.voucher') }}" method="POST">
+                                                    @csrf
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <input type="text" id="couponCode" name="couponCode"
+                                                                    class="form-control"
+                                                                    placeholder="Nhập mã phiếu giảm giá của bạn" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <button class="btn-coupon" type="submit">Áp dụng</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
                                         </div>
-                                      </div>
-                                      <div class="col-md-6">
-                                        <button class="btn-coupon">Áp dụng</button>
-                                      </div>
                                     </div>
-                                  </form>
                                 </div>
-                              </div>
                             </div>
-                          </div>
+                            <!--== End Checkout Coupon Accordion ==-->
                         </div>
-                        <!--== End Checkout Coupon Accordion ==-->
-                      </div>
                     </div>
-                  </div>
+                </div>
                 <form id="checkout-form" action="{{ route('buy.now.process') }}" method="post">
                     @csrf
                     <input type="hidden" name="variant_id" value="{{ $variant->id }}">
@@ -229,11 +244,15 @@
                                                 <th>Phí vận chuyển</th>
                                                 <td>Miễn phí</td>
                                             </tr>
+                                            <tr class="cart-subtotal">
+                                                <th>Giảm giá</th>
+                                                <td>{{ isset($discount) ? $discount . '%' : '0%' }}</td>
+                                            </tr>
                                             <tr class="order-total">
                                                 <th>Tổng cộng</th>
 
                                                 {{-- 7/11/2024 --}}
-                                                <td id="finalTotal"> {{ number_format($variant->sale_price * $quantity) }} đ</td> 
+                                                <td id="finalTotal"> {{ number_format($total_price) }} đ</td>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -286,19 +305,19 @@
                     function calculateDiscount() {
                         // Lấy giá trị nhập từ ô input
                         const pointsToUse = parseInt(document.getElementById('points_to_use').value) || 0;
-                
+
                         // Giá trị mỗi điểm (10,000 VND mỗi điểm)
                         const pointValue = 10000;
-                
+
                         // Tổng tiền ban đầu
                         const originalTotal = {{ $variant->sale_price * $quantity }};
-                
+
                         // Tính số tiền giảm giá
                         const discountAmount = pointsToUse * pointValue;
-                
+
                         // Tính tổng tiền sau giảm giá (không cho phép âm)
                         const finalTotal = Math.max(0, originalTotal - discountAmount);
-                
+
                         // Cập nhật giao diện tổng tiền
                         document.getElementById('finalTotal').innerText = new Intl.NumberFormat().format(finalTotal) + ' đ';
                     }
@@ -320,56 +339,56 @@
 @endsection
 
 @section('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const checkoutButton = document.getElementById('checkoutButton');
-        const paymentVnpay = document.getElementById('payment_vnpay');
-        const bankSelectionModal = document.getElementById('bankSelectionModal');
-        const confirmBankButton = document.getElementById('confirmBankButton');
-        const bankCodeSelect = document.getElementById('bankCode');
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkoutButton = document.getElementById('checkoutButton');
+            const paymentVnpay = document.getElementById('payment_vnpay');
+            const bankSelectionModal = document.getElementById('bankSelectionModal');
+            const confirmBankButton = document.getElementById('confirmBankButton');
+            const bankCodeSelect = document.getElementById('bankCode');
 
-        checkoutButton.addEventListener('click', function() {
-            if (paymentVnpay.checked) {
-                // Show the bank selection modal if VNPAY is selected
-                bankSelectionModal.style.display = 'block';
-            } else {
-                // If COD is selected, submit the form directly
-                document.querySelector('form').submit();
+            checkoutButton.addEventListener('click', function() {
+                if (paymentVnpay.checked) {
+                    // Show the bank selection modal if VNPAY is selected
+                    bankSelectionModal.style.display = 'block';
+                } else {
+                    // If COD is selected, submit the form directly
+                    document.querySelector('form').submit();
+                }
+            });
+
+            confirmBankButton.addEventListener('click', function() {
+                const selectedBank = bankCodeSelect.value;
+
+                if (selectedBank) {
+                    // Attach selected bank code to form and submit
+                    const form = document.querySelector('form');
+                    const bankInput = document.createElement('input');
+                    bankInput.type = 'hidden';
+                    bankInput.name = 'bank_code';
+                    bankInput.value = selectedBank;
+                    form.appendChild(bankInput);
+                    form.submit();
+                }
+            });
+
+            // Close modal when clicked outside of it (optional)
+            window.onclick = function(event) {
+                if (event.target == bankSelectionModal) {
+                    bankSelectionModal.style.display = "none";
+                }
             }
         });
+    </script>
 
-        confirmBankButton.addEventListener('click', function() {
-            const selectedBank = bankCodeSelect.value;
-
-            if (selectedBank) {
-                // Attach selected bank code to form and submit
-                const form = document.querySelector('form');
-                const bankInput = document.createElement('input');
-                bankInput.type = 'hidden';
-                bankInput.name = 'bank_code';
-                bankInput.value = selectedBank;
-                form.appendChild(bankInput);
-                form.submit();
+    <script>
+        document.getElementById('use_points').addEventListener('change', function() {
+            const pointsField = document.getElementById('points_field');
+            pointsField.style.display = this.checked ? 'block' : 'none';
+            if (!this.checked) {
+                document.getElementById('points').value = '';
             }
         });
-
-        // Close modal when clicked outside of it (optional)
-        window.onclick = function(event) {
-            if (event.target == bankSelectionModal) {
-                bankSelectionModal.style.display = "none";
-            }
-        }
-    });
-</script>
-
-<script>
-    document.getElementById('use_points').addEventListener('change', function() {
-        const pointsField = document.getElementById('points_field');
-        pointsField.style.display = this.checked ? 'block' : 'none';
-        if (!this.checked) {
-            document.getElementById('points').value = '';
-        }
-    });
-</script>
+    </script>
 
 @endsection
