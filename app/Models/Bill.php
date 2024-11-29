@@ -19,7 +19,10 @@ class Bill extends Model
         'full_name',
         'phone_number',
         'address',
-        'note'
+        'note',
+        'points_used',
+        'discount_amount'
+
     ];
 
     public function items()
@@ -49,17 +52,10 @@ class Bill extends Model
 
     public function returnPointsToUser()
     {
-        $user = $this->user;
-    
-        // Kiểm tra nếu có điểm đã sử dụng
         if ($this->points_used > 0) {
-            // Hoàn lại điểm cho người dùng
-            $user->points += $this->points_used;
-            $user->save();
-    
-            // Cập nhật lại số điểm đã sử dụng trong hóa đơn
-            $this->points_used = 0;
-            $this->save();
+            $user = $this->user; // Lấy thông tin người dùng
+            $user->points += $this->points_used;  // Cộng lại số điểm đã sử dụng
+            $user->save(); // Lưu thay đổi
         }
     }
 }

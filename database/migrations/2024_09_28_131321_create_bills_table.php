@@ -32,6 +32,10 @@ return new class extends Migration
             $table->string('phone_number');
             $table->text('address');
             $table->text('note')->nullable();
+
+            // Thêm các trường để lưu trữ điểm và giảm giá (24/11/2024)
+            $table->integer('points_used')->default(0);  // Điểm đã sử dụng
+            $table->decimal('discount_amount', 8, 2)->default(0); // Giá trị giảm giá
             $table->timestamps();
         });
     }

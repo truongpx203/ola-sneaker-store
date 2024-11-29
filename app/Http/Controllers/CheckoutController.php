@@ -254,6 +254,7 @@ class CheckoutController extends Controller
             'payment.full_name' => $validateData['full_name'],
             'payment.phone_number' => $validateData['phone_number'],
             'payment.address' => $validateData['address'],
+            'payment.points_to_use' => $validateData['points_to_use'] ?? 0,
             'payment.note' => $validateData['note'],
         ]);
 
@@ -284,15 +285,14 @@ class CheckoutController extends Controller
         }
 
 
-        // Lấy số điểm người dùng muốn sử dụng (7/11/2024)
+        // 24/11/2024
+        // Kiểm tra số điểm người dùng có
         $pointsToUse = $validateData['points_to_use'] ?? 0;
         $user = Auth::user();
-
-        // Kiểm tra số điểm người dùng có
+        // Kiểm tra nếu số điểm người dùng nhập vượt quá số điểm hiện có
         if ($pointsToUse > $user->points) {
             return redirect()->back()->withErrors(['error' => 'Số điểm bạn nhập vượt quá số điểm hiện có.']);
         }
-
 
         // Tính tổng giá trị giỏ hàng
         $totalPrice = $cartItems->sum(function ($item) {
@@ -312,6 +312,7 @@ class CheckoutController extends Controller
             $totalPrice -= $discountAmount;
         }
 
+        // 24/11/2024
         // Tính số tiền giảm giá từ điểm
         $pointValue = 10000; // Giá trị mỗi điểm là 10,000 VND
         $discountAmount = $pointsToUse * $pointValue;
@@ -403,13 +404,15 @@ class CheckoutController extends Controller
                     ]);
                 }
 
-                // Lấy số điểm người dùng đã sử dụng7/11/2024
+                // 24/11/2024
+                // Lấy số điểm đã sử dụng từ session
                 $pointsToUse = session('payment.points_to_use', 0);
                 $user = Auth::user();
 
-                // Trừ điểm người dùng đã sử dụng 7/11/2024
-                $user->points -= $pointsToUse;
-                $user->save();
+                if ($pointsToUse > $user->points) {
+                    DB::rollBack();
+                    return redirect()->route('tt-that-bai')->withErrors(['error' => 'Số điểm sử dụng vượt quá số điểm bạn có.']);
+                }
 
                 // Lấy lại thông tin từ session
                 $full_name = session('payment.full_name');
@@ -434,6 +437,17 @@ class CheckoutController extends Controller
                     // Áp dụng giảm giá vào tổng giỏ hàng
                     $totalPrice -= $discountAmount;
                 }
+
+                // 24/11/2024
+                // Tính số tiền giảm giá từ điểm
+                $pointValue = 10000; // Giá trị mỗi điểm là 10,000 VND
+                $discountAmount = $pointsToUse * $pointValue;
+                $finalPrice = max(0, $totalPrice - $discountAmount); // Đảm bảo giá cuối không âm
+
+                // Trừ điểm người dùng đã sử dụng
+                $user->points -= $pointsToUse;
+                $user->save();
+
                 // Tạo hóa đơn
                 $bill = Bill::create([
                     'user_id' => $user_id,
@@ -444,9 +458,11 @@ class CheckoutController extends Controller
                     'note' => $note,
                     'payment_type' => 'vnpay',
                     // 'total_price' => $total_price,
-                    'total_price' => $totalPrice - ($pointsToUse * 10000), // Giảm giá từ điểm 7/11/2024
+                    'total_price' => $finalPrice, //29/11/2024
                     'bill_status' => 'pending',
                     'payment_status' => 'completed',
+                    'discount_amount' => $discountAmount, //7/11/2024
+                    'points_used' => $pointsToUse, // Lưu số điểm đã sử dụng 7/11/2024
                 ]);
 
                 foreach ($cartItems as $item) {
@@ -480,6 +496,7 @@ class CheckoutController extends Controller
             return redirect()->route('tt-that-bai')->withErrors(['error' => 'Thanh toán không thành công.']);
         }
     }
+
 
     // momo
     public function execPostRequest($url, $data)
@@ -713,6 +730,9 @@ class CheckoutController extends Controller
 
         // Tính tổng giá trị sản phẩm 7/11/2024
         $totalPrice = $variant->sale_price * $quantity;
+        //29/11/2024
+        // $discount = 0; // Định nghĩa mặc định là 0
+        // $discountAmount = 0; // Định nghĩa mặc định là 0
         if (session()->has('coupon')) {
             $voucher = session('coupon');
             $discount = $voucher->value;  // Phần trăm giảm giá từ voucher
@@ -732,7 +752,8 @@ class CheckoutController extends Controller
             'variant' => $variant,
             'quantity' => $quantity,
             'total_price' => $totalPrice,
-            'discount' => $discount,
+            // 'discount' => $discount, //29/11/2024
+            // 'discount_amount' => $discountAmount, // Giá trị giảm giá cụ thể (tiền)
             'userPoints' => $user->points, // Điểm tích lũy của người dùng 7/11/2024
         ]);
     }
@@ -939,7 +960,7 @@ class CheckoutController extends Controller
         // Lưu thông tin tạm thời vào session
         session([
             'pending_order' => $validatedData,
-            'used_points' => $pointsToUse, //7/11/2024
+            'points_used' => $pointsToUse, //7/11/2024
             'discount_amount' => $discountAmount //7/11/2024
         ]);
 
@@ -966,7 +987,7 @@ class CheckoutController extends Controller
             if ($vnp_ResponseCode === '00') {
                 // Thanh toán thành công
                 $validatedData = session('pending_order');
-                $usedPoints = session('used_points'); //7/11/2024
+                $pointsToUse = session('points_used'); //7/11/2024
                 $discountAmount = session('discount_amount'); //7/11/2024
 
                 $variant = Variant::find($validatedData['variant_id']);
@@ -978,7 +999,18 @@ class CheckoutController extends Controller
                     ]);
                 }
 
+                // 29/11/2024
+                // Lấy số điểm đã sử dụng từ session
+                $pointsToUse = session('payment.points_to_use', 0);
+                $user = Auth::user();
+
+                if ($pointsToUse > $user->points) {
+                    DB::rollBack();
+                    return redirect()->route('tt-that-bai')->withErrors(['error' => 'Số điểm sử dụng vượt quá số điểm bạn có.']);
+                }
+
                 $totalPrice = $variant->sale_price * $validatedData['variant_quantity'];
+
                 if (session()->has('coupon')) {
                     $voucher = session('coupon');
                     $discount = $voucher->value;  // Phần trăm giảm giá từ voucher
@@ -992,6 +1024,20 @@ class CheckoutController extends Controller
                     // Áp dụng giảm giá vào tổng giỏ hàng
                     $totalPrice -= $discountAmount;
                 }
+
+                // 29/11/2024
+                // Tính số tiền giảm giá từ điểm
+                $pointValue = 10000; // Giá trị mỗi điểm là 10,000 VND
+                $discountAmount = $pointsToUse * $pointValue;
+                // Tính số tiền giảm giá từ điểm (24/11/2024)
+                $finalPrice = max(0, $totalPrice - $discountAmount); // Đảm bảo giá cuối không âm
+
+                // Trừ điểm của người dùng
+                $user = Auth::user();
+                // $user->decrement('points', $usedPoints);
+                $user->points -= $pointsToUse;
+                $user->save();
+
                 // Tạo hóa đơn
                 $bill = Bill::create([
                     'user_id' => Auth::id(),
@@ -999,13 +1045,14 @@ class CheckoutController extends Controller
                     'bill_status' => 'pending',
                     'payment_type' => 'vnpay',
                     'payment_status' => 'completed',
-                    'total_price' => $totalPrice,
-                    'discount_amount' => $discountAmount, // Số tiền giảm giá 7/11/2024
-                    'used_points' => $usedPoints, // Số điểm đã sử dụng 7/11/2024
+                    // 'total_price' => $totalPrice,
+                    'total_price' => $finalPrice, //29/11/2024
                     'full_name' => $validatedData['full_name'],
                     'phone_number' => $validatedData['phone_number'],
                     'address' => $validatedData['address'],
                     'note' => $validatedData['note'],
+                    'points_used' => $pointsToUse, // Số điểm đã sử dụng 7/11/2024
+                    'discount_amount' => $discountAmount, // Số tiền giảm giá 7/11/2024
                 ]);
 
                 // Lưu chi tiết hóa đơn
@@ -1022,10 +1069,6 @@ class CheckoutController extends Controller
 
                 // Giảm số lượng hàng tồn kho
                 $variant->decrement('stock', $validatedData['variant_quantity']);
-
-                // Trừ điểm của người dùng
-                $user = Auth::user();
-                $user->decrement('points', $usedPoints);
 
                 // Gửi email xác nhận
                 $userEmail = Auth::user()->email;

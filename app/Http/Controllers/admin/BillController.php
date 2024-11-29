@@ -89,6 +89,20 @@ class BillController extends Controller
             $bill->payment_status = 'completed'; // Cập nhật trạng thái thanh toán
         }
 
+        // 24/11/2024
+
+        // Hoàn lại điểm nếu đơn hàng bị hủy và người dùng đã sử dụng điểm để giảm giá
+        if ($bill->bill_status === 'canceled') {
+            if ($bill->points_used > 0) {
+                $bill->returnPointsToUser();  // Gọi phương thức hoàn lại điểm 
+            }
+        }
+
+        // Cộng điểm cho người dùng khi đơn hàng hoàn thành
+        if ($bill->bill_status === 'completed') {
+            $bill->awardPointsToUser(); // Cộng điểm cho người dùng
+        }
+
         $bill->save();
 
         // Tạo một mục lịch sử mới
@@ -103,24 +117,13 @@ class BillController extends Controller
         // Gửi email thông báo cho khách hàng
         $customerEmail = $bill->user->email;
 
+        // 24/11/2024
         if ($bill->bill_status === 'canceled') {
             Mail::to($customerEmail)->send(new OrderCanceledMail($bill, $request->input('note'), $history->at_datetime));
-            // Hoàn lại điểm nếu đơn hàng bị hủy và người dùng đã sử dụng điểm để giảm giá(7/11/2024)
-            if ($bill->points_used > 0) {
-                $bill->returnPointsToUser();
-            }
         } else if ($bill->bill_status === 'completed') {
             Mail::to($customerEmail)->send(new OrderCompletedMail($bill));
-            // Cộng điểm cho người dùng khi đơn hàng hoàn thành (7/11/2024)
-            $bill->awardPointsToUser(); // Cộng điểm cho người dùng
         } else {
             Mail::to($customerEmail)->send(new OrderStatusUpdatedMail($bill, $history->note, $history->at_datetime));
-        }
-
-
-        if ($bill->bill_status === 'delivered' && $oldStatus !== 'completed') {
-            UpdateOrderStatus::dispatch($bill->id)->delay(now()->addDays(3));
-            // UpdateOrderStatus::dispatch($bill->id)->delay(now()->addMinutes(1));
         }
 
         return redirect()->route('bills.show', $id)->with('success', 'Trạng thái đơn hàng đã được cập nhật.');
