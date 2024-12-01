@@ -752,7 +752,7 @@ class CheckoutController extends Controller
             'variant' => $variant,
             'quantity' => $quantity,
             'total_price' => $totalPrice,
-            // 'discount' => $discount, //29/11/2024
+            'discount' => $discount, //29/11/2024
             // 'discount_amount' => $discountAmount, // Giá trị giảm giá cụ thể (tiền)
             'userPoints' => $user->points, // Điểm tích lũy của người dùng 7/11/2024
         ]);
