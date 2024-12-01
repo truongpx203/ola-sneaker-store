@@ -244,10 +244,12 @@
                                                 <th>Phí vận chuyển</th>
                                                 <td>Miễn phí</td>
                                             </tr>
-                                            <tr class="cart-subtotal">
-                                                <th>Giảm giá</th>
-                                                <td>{{ isset($discount) ? $discount . '%' : '0%' }}</td>
-                                            </tr>
+                                            @if (isset($discount) && $discount != null)
+                                                <tr class="cart-subtotal">
+                                                    <th>Giảm giá</th>
+                                                    <td>{{ $discount . '%' }}</td>
+                                                </tr>
+                                            @endif
                                             <tr class="order-total">
                                                 <th>Tổng cộng</th>
 
@@ -264,13 +266,16 @@
                                             <div class="mb-4">
                                                 <!-- Các trường nhập thông tin đơn hàng khác -->
                                                 <!-- Số điểm người dùng có -->
-                                                <p class="fw-bold">Bạn có <strong>{{ $userPoints }}</strong> điểm tích lũy</p>
+                                                <p class="fw-bold">Bạn có <strong>{{ $userPoints }}</strong> điểm tích
+                                                    lũy</p>
                                                 <!-- Ô nhập số điểm muốn sử dụng -->
-                                                <label for="points_to_use" class="form-label">Số điểm muốn sử dụng:</label>
-                                                <input type="number" id="points_to_use" name="points_to_use" class="form-control"
-                                                    min="0" max="{{ $userPoints }}" value="0" oninput="calculateDiscount()">
+                                                <label for="points_to_use" class="form-label">Số điểm muốn sử
+                                                    dụng:</label>
+                                                <input type="number" id="points_to_use" name="points_to_use"
+                                                    class="form-control" min="0" max="{{ $userPoints }}"
+                                                    value="0" oninput="calculateDiscount()">
                                                 <small class="form-text text-muted">1 điểm = 10,000 VNĐ giảm giá</small>
-                                    
+
                                                 {{-- <div class="mt-2">
                                                     <p class="text-success">Tổng giảm giá: <span id="discountAmount">0</span> VNĐ</p>
                                                 </div> --}}
@@ -279,33 +284,38 @@
                                             <!-- Chọn phương thức thanh toán -->
                                             <div class="mb-4">
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="radio" id="payment_cod" name="payment_type" value="cod" checked>
+                                                    <input class="form-check-input" type="radio" id="payment_cod"
+                                                        name="payment_type" value="cod" checked>
                                                     <label class="form-check-label" for="payment_cod">
                                                         Thanh toán khi nhận hàng (COD)
                                                     </label>
                                                 </div>
-                                    
+
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="radio" id="payment_vnpay" name="payment_type" value="vnpay">
-                                                    <label class="form-check-label" for="payment_vnpay" aria-labelledby="check_payments4"
-                                                    data-bs-parent="#PaymentMethodAccordion">
+                                                    <input class="form-check-input" type="radio" id="payment_vnpay"
+                                                        name="payment_type" value="vnpay">
+                                                    <label class="form-check-label" for="payment_vnpay"
+                                                        aria-labelledby="check_payments4"
+                                                        data-bs-parent="#PaymentMethodAccordion">
                                                         Thanh toán với VNPAY
                                                     </label>
                                                 </div>
 
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="radio" id="payment_momo" name="payment_type"
-                                                        value="momo">
-                                                    <label class="form-check-label" for="payment_momo">Thanh toán với MOMO</label>
+                                                    <input class="form-check-input" type="radio" id="payment_momo"
+                                                        name="payment_type" value="momo">
+                                                    <label class="form-check-label" for="payment_momo">Thanh toán với
+                                                        MOMO</label>
                                                 </div>
                                             </div>
 
                                             @error('payment_type')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
-                                    
+
                                             <!-- Nút đặt hàng -->
-                                            <a href=""><button type="submit"class="btn-theme">Đặt hàng</button></a>
+                                            <a href=""><button type="submit"class="btn-theme">Đặt
+                                                    hàng</button></a>
                                         </div>
                                     </div>
                                 </div>

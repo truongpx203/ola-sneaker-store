@@ -227,6 +227,13 @@
                                                 <th>Phí vận chuyển</th>
                                                 <td>Miễn phí</td>
                                             </tr>
+                                            @if (isset($discount) && $discount != null)
+                                                <tr class="shipping">
+                                                    <th>Giảm giá</th>
+                                                    <td>{{ $discount . '%' }}</td>
+                                                </tr>
+                                            @endif
+
                                             <tr class="order-total">
                                                 <th>Tổng cộng</th>
                                                 {{-- 7/11/2024 --}}

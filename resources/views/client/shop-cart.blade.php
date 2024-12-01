@@ -194,15 +194,18 @@
                                                     <p class="price">{{ number_format($provisional) }} VNĐ</p>
                                                 </td>
                                             </tr>
-                                            <tr class="cart-subtotal">
-                                                <td>
-                                                    <p class="value">Giảm giá</p>
-                                                </td>
-                                                <td>
-                                                    <p class="price">{{ isset($discount) ? $discount . '%' : '0%' }}</p>
+                                            @if (isset($discount) && $discount != null)
+                                                <tr class="cart-subtotal">
+                                                    <td>
+                                                        <p class="value">Giảm giá</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="price">{{ $discount . '%' }}
+                                                        </p>
+                                                    </td>
+                                                </tr>
+                                            @endif
 
-                                                </td>
-                                            </tr>
                                             <tr class="order-total">
                                                 <td>
                                                     <p class="value">Tổng tiền</p>
@@ -281,7 +284,7 @@
             let price = parseFloat(input.data('price'));
             let subtotal = price * quantity;
             input.closest('tr').find('.subtotal').text(new Intl.NumberFormat('vi-VN').format(subtotal) +
-            ' VNĐ');
+                ' VNĐ');
         }
 
         $('.quantity-input').on('input', function() {
@@ -294,7 +297,7 @@
             let outOfStockProducts = [];
             $('.cart-product-item').each(function() {
                 let stock = parseInt($(this).data('stock'),
-                10); // Kiểm tra tồn kho của sản phẩm
+                    10); // Kiểm tra tồn kho của sản phẩm
                 let productName = $(this).find('.product-name a').text().trim();
 
                 // Nếu sản phẩm hết hàng, thêm vào danh sách
