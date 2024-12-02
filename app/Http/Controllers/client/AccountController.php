@@ -33,12 +33,12 @@ class AccountController extends Controller
     {
         $user = Auth::user();
         $bills = $user->bills()->orderBy('id', 'desc')->paginate(10);
-        $vouchers = Voucher::get();
+        $vouchers = Voucher::with('voucherHistorys')->get();
         $listVouchers=[];
         foreach ($vouchers as $voucher) {
             $forUserIds = json_decode($voucher->for_user_ids, true);
             foreach ($forUserIds as $forId) {
-                if ($forId == Auth::user()->id) {
+                if ($forId == Auth::user()->id && count($voucher->voucherHistorys) === 0) {
                     array_push($listVouchers, $voucher);
                 }
             }
