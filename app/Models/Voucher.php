@@ -48,4 +48,9 @@ class Voucher extends Model
         return $this->belongsTo(User::class, 'for_user_ids');
     }
 
+    public function voucherHistorys()
+    {
+        return $this->hasMany(VoucerHistory::class);
+    }
+
 }

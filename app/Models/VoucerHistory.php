@@ -18,4 +18,8 @@ class VoucerHistory extends Model
         'bill_id ',
         'at_datetime',
     ];
+    public function voucher()
+    {
+        return $this->belongsTo(Voucher::class);
+    }
 }
