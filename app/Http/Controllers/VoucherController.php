@@ -57,6 +57,10 @@ class VoucherController extends Controller
      */
     public function edit($id)
     {
+        $voucerHistory = VoucerHistory::query()->where('voucher_id', $id)->first();
+        if ($voucerHistory) {
+            return redirect()->route('voucher.index')->withErrors(['error_voucher' => 'Voucher này đã có người sử dụng nên không được sửa']);
+        }
         $allUsers = User::where('status', 'active')->get();
         $voucher = Voucher::find($id);
         return view('admin.vouchers.edit', compact('voucher', 'allUsers'));
@@ -89,7 +93,7 @@ class VoucherController extends Controller
         $voucher = Voucher::find($id);
         $voucerHistory = VoucerHistory::query()->where('voucher_id', $id)->first();
         if ($voucerHistory) {
-            return redirect()->route('voucher.index')->withErrors(['error' => 'Voucher này đang có ràng buộc không thể xóa']);
+            return redirect()->route('voucher.index')->withErrors(['error_voucher' => 'Voucher này đã có người sử dụng nên không được xóa']);
         } else {
             $voucher->delete();
             return redirect()->route('voucher.index')->with('success', 'Đã xóa voucher thành công.');

@@ -19,11 +19,11 @@
             </div>
         </div>
     </div>
-    {{-- @if ($errors->has('error_voucher'))
+    @if ($errors->has('error_voucher'))
         <div class="alert alert-danger">
             {{ $errors->first('error_voucher') }}
         </div>
-    @endif --}}
+    @endif
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
