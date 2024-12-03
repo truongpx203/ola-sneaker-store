@@ -752,7 +752,7 @@ class CheckoutController extends Controller
             'variant' => $variant,
             'quantity' => $quantity,
             'total_price' => $totalPrice,
-            'discount' => $discount, //29/11/2024
+            // 'discount' => $discount, //29/11/2024
             // 'discount_amount' => $discountAmount, // Giá trị giảm giá cụ thể (tiền)
             'userPoints' => $user->points, // Điểm tích lũy của người dùng 7/11/2024
         ]);
@@ -846,6 +846,90 @@ class CheckoutController extends Controller
             // Xử lý thanh toán dựa trên phương thức đã chọn
             if ($validatedData['payment_type'] === 'vnpay') {
                 return $this->paymentVNPAY($billCode, $totalPrice, $validatedData, $variant);
+            }
+
+            // Xử lý thanh toán MoMo
+            if ($validatedData['payment_type'] === 'momo') {
+                // Tạo hóa đơn với trạng thái "pending"
+                $bill = Bill::create([
+                    'user_id' => $user->id,
+                    'code' => $billCode,
+                    'bill_status' => 'pending',
+                    'payment_type' => 'momo',
+                    'payment_status' => 'completed',
+                    'total_price' => $finalPrice,
+                    'discount_amount' => $discountAmount,
+                    'full_name' => $validatedData['full_name'],
+                    'phone_number' => $validatedData['phone_number'],
+                    'address' => $validatedData['address'],
+                    'note' => $validatedData['note'],
+                    'points_used' => $pointsToUse,
+                ]);
+
+                // Lưu thông tin vào bill_items
+                BillItem::create([
+                    'variant_id' => $variant->id,
+                    'bill_id' => $bill->id,
+                    'sale_price' => $variant->sale_price,
+                    'listed_price' => $variant->listed_price,
+                    'import_price' => $variant->import_price,
+                    'variant_quantity' => $validatedData['variant_quantity'],
+                    'product_name' => $variant->product->name,
+                    'product_image_url' => $variant->product->primary_image_url,
+                ]);
+
+               
+                // Xử lý API MoMo
+                $partnerCode = 'MOMOBKUN20180529';
+                $accessKey = 'klm05TvNBzhg7h7j';
+                $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
+                $orderInfo = "Thanh toán MoMo - Mã đơn hàng: " . $billCode;
+                $redirectUrl = route('tt-thanh-cong', ['bill' => $bill->id]);
+                $ipnUrl = route('tt-thanh-cong', ['bill' => $bill->id]);
+                $extraData = "";
+                $requestId = time() . "";
+                $requestType = "payWithATM";
+
+                $rawHash = "accessKey=$accessKey&amount=$finalPrice&extraData=&ipnUrl=$ipnUrl&orderId=$billCode&orderInfo=$orderInfo&partnerCode=$partnerCode&redirectUrl=$redirectUrl&requestId=$requestId&requestType=$requestType";
+                $signature = hash_hmac("sha256", $rawHash, $secretKey);
+
+                $data = [
+                    'partnerCode' => $partnerCode,
+                    'partnerName' => "Test",
+                    'storeId' => "MomoTestStore",
+                    'requestId' => $requestId,
+                    'amount' => $finalPrice,
+                    'orderId' => $billCode,
+                    'orderInfo' => $orderInfo,
+                    'redirectUrl' => $redirectUrl,
+                    'ipnUrl' => $ipnUrl,
+                    'lang' => 'vi',
+                    'extraData' => $extraData,
+                    'requestType' => $requestType,
+                    'signature' => $signature,
+                ];
+
+                $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
+                $result = $this->execPostRequest($endpoint, json_encode($data));
+                $jsonResult = json_decode($result, true);
+
+                $variant->decrement('stock', $validatedData['variant_quantity']);
+
+                $user->points -= $pointsToUse;
+                $user->save();
+
+                DB::commit();
+
+
+                $userEmail = Auth::user()->email;
+                Mail::to($userEmail)->send(new OrderConfirmationMail($bill));
+
+                if (isset($jsonResult['payUrl'])) {
+                    DB::commit();
+                    return redirect()->to($jsonResult['payUrl']);
+                } else {
+                    throw new \Exception('Lỗi khi tạo yêu cầu thanh toán MoMo: ' . ($jsonResult['message'] ?? 'Không xác định'));
+                }
             }
 
             // Thanh toán COD, lưu vào cơ sở dữ liệu

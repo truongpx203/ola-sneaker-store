@@ -18,7 +18,7 @@ class ProductController extends Controller
             $query->where('is_show', 1) // Chỉ lấy biến thể có is_show bằng 1
                 ->whereNotNull('sale_price') // Chỉ lấy biến thể có giá sale
                 ->orderBy('sale_price', 'asc');
-        }])->where('is_visible', 1)->orderBy('id', 'desc')->take(8)->get();
+        }])->where('is_visible', 1)->orderBy('id', 'desc')->take(16)->get();
 
         // Lấy sản phẩm bán chạy nhất
         $topBanChayNhat = DB::table('products')

@@ -75,7 +75,7 @@
                                 <div class="outer-box">
                                     <div class="flex-grow-1 overflow-hidden ms-3">
                                         <p class="text-uppercase fw-medium text-success text-truncate mb-3">
-                                            thành công</p>
+                                           Giao hàng thành công</p>
                                         <div class="d-flex align-items-center mb-3">
                                             <h4 class="fs-4 flex-grow-1 mb-0">{{ $giaoThanhCong }}</h4>
                                         </div>
