@@ -31,7 +31,7 @@
                 <div class="row">
                     <div class="col-lg-12 col-md-12">
 
-                        @if ($errors->any())
+                        {{-- @if ($errors->any())
                             <div class="alert alert-danger" role="alert">
                                 <ul>
                                     @foreach ($errors->all() as $error)
@@ -39,7 +39,11 @@
                                     @endforeach
                                 </ul>
                             </div>
-                        @endif
+                        @endif --}}
+                        @error('note')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
+
                         @if (Session('error'))
                         <div class="alert alert-danger" role="alert">
                             {{ Session('error') }}
@@ -357,7 +361,7 @@
                                     </div>
                                     <div class="single-input-item">
                                         <button type="submit" class="btn btn-light" style="border-radius: 0"
-                                            {{ $bill->bill_status !== 'pending' ? 'disabled' : '' }}>Hủy đơn</button>
+                                            {{ $bill->bill_status !== 'pending' ? 'disabled' : '' }} onclick="return confirm('Bạn chắc chắn muốn hủy đơn chứ!')">Hủy đơn</button>
                                     </div>
                                 </form>
 
