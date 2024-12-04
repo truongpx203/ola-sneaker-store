@@ -23,7 +23,9 @@ use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\WishlistController;
 
 use App\Models\Bill;
-
+use App\Models\VoucerHistory;
+use App\Models\Voucher;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -161,8 +163,6 @@ Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
             Route::put('/update/{id}',          [VoucherController::class, 'update'])->name('update');
             Route::delete('/delete/{id}',       [VoucherController::class, 'destroy'])->name('destroy');
         });
-
-
 });
 
 
@@ -205,7 +205,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/chat', [App\Http\Controllers\MessageController::class, 'showChat'])->name('chat.show');
     Route::post('/chat/message', [App\Http\Controllers\MessageController::class, 'messageReceived'])->name('chat.message');
     Route::post('/chat/greet/{receiver}', [App\Http\Controllers\MessageController::class, 'greetReceived'])->name('chat.greet');
-
 });
 
 
@@ -220,7 +219,7 @@ Route::get('tt-thanh-cong/{bill}', function ($billId) {
     return view('client.tt-thanh-cong', compact('bill'));
 })->name('tt-thanh-cong');
 
-Route::get('/payment/return', [CheckoutController::class, 'returnFromVNPAY'])->name('checkout.vnpay.returnFrom');
+Route::get('/payment/return/{voucher_id?}', [CheckoutController::class, 'returnFromVNPAY'])->name('checkout.vnpay.returnFrom');
 Route::post('/checkout/vnpay', [CheckoutController::class, 'processVNPAY'])->name('checkout.vnpay');
 
 // Route::post('/checkout/cod', [CheckoutController::class, 'processCheckout'])->name('checkout.cod');
@@ -276,4 +275,3 @@ Route::get('show-bill-item', function () {
 
 
 //chat
-

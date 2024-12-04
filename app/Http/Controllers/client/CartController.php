@@ -167,23 +167,23 @@ class CartController extends Controller
             'couponCode.string' => 'Mã giảm giá phải là một chuỗi ký tự.',
             'couponCode.exists' => 'Mã giảm giá không hợp lệ.',
         ]);
-
+        
         // Lấy voucher từ mã giảm giá nhập vào
         $voucher = Voucher::where('code', $validatedData['couponCode'])->first();
-
-        // Kiểm tra nếu đã có voucher trong session
-        if (session()->has('coupon') && session('coupon')->code == $voucher->code) {
-            return redirect()->back()->with('error', 'Mã giảm giá ' . $voucher->code . ' đang được sử dụng');
-        }
 
         // Kiểm tra các điều kiện của voucher
         $currentDateTime = now();
         $startDateTime = Carbon::parse($voucher->start_datetime);  // Chuyển ngày bắt đầu của voucher sang đối tượng Carbon
         $endDateTime = Carbon::parse($voucher->end_datetime);  // Chuyển ngày kết thúc của voucher sang đối tượng Carbon
 
+        // Kiểm tra thời gian sử dụng của voucher
+        if ($currentDateTime->lt($startDateTime) || $currentDateTime->gt($endDateTime)) {
+            return redirect()->back()->with('error', 'Mã giảm giá không hợp lệ do thời gian không hợp lệ');
+        }
+
         // Kiểm tra số lượng voucher còn lại
         if ($voucher->used_quantity >= $voucher->quantity) {
-            return redirect()->back()->with('error', 'Mã giảm giá ' . $voucher->code . ' đã hết số lượng');
+            return redirect()->back()->with('error', 'Mã giảm giá không hợp lệ');
         }
 
         // Kiểm tra xem voucher có dành cho người dùng này không
@@ -191,27 +191,7 @@ class CartController extends Controller
         if (!in_array(Auth::user()->id, $forUserIds)) {
             return redirect()->back()->with('error', 'Mã giảm giá không dành cho bạn');
         }
+        return redirect()->back()->with(compact('voucher'))->with('success', 'Mã giảm giá đã được áp dụng');
 
-        // Kiểm tra thời gian sử dụng của voucher
-        if ($currentDateTime->lt($startDateTime) || $currentDateTime->gt($endDateTime)) {
-            return redirect()->back()->with('error', 'Mã giảm giá không hợp lệ do thời gian không hợp lệ');
-        }
-
-        if (session()->has('coupon')) {
-            // Nếu voucher cũ đang sử dụng, trả lại số lượng đã dùng
-            $voucherSession = Voucher::where('code', session('coupon')->code)->first();
-            $voucherSession->update([
-                'used_quantity' => $voucherSession->used_quantity - 1,
-            ]);
-        }
-        // Cập nhật session và voucher
-        session(['coupon' => $voucher]);
-
-        // Cập nhật số lượng đã dùng của voucher
-        $voucher->update([
-            'used_quantity' => $voucher->used_quantity + 1,
-        ]);
-
-        return redirect()->back()->with('success', 'Mã giảm giá đã được áp dụng');
     }
 }

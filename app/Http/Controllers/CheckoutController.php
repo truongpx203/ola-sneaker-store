@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Mail\OrderConfirmationMail;
 use App\Models\Product;
+use App\Models\VoucerHistory;
+use App\Models\Voucher;
 use Illuminate\Support\Facades\Mail;
 
 class CheckoutController extends Controller
@@ -32,16 +34,12 @@ class CheckoutController extends Controller
         });
 
         // Kiểm tra nếu có voucher trong session
-        if (session()->has('coupon')) {
-            $voucher = session('coupon');
-            $discount = $voucher->value;  // Phần trăm giảm giá từ voucher
-            $discountAmount = $total_price * ($discount / 100);  // Tính giảm giá dựa trên tổng giỏ hàng
-
+        if (session('voucher')) {
+            $discountAmount = $total_price * (session('voucher.value') / 100);  // Tính giảm giá dựa trên tổng giỏ hàng
             // Giới hạn số tiền giảm tối đa
-            if ($discountAmount > $voucher->max_price) {
-                $discountAmount = $voucher->max_price;
+            if ($discountAmount > session('voucher.max_price')) {
+                $discountAmount = session('voucher.max_price');
             }
-
             // Áp dụng giảm giá vào tổng giỏ hàng
             $total_price -= $discountAmount;
         }
@@ -133,17 +131,13 @@ class CheckoutController extends Controller
                 return $item->variants->sale_price * $item->variant_quantity;
             });
 
-            // Kiểm tra nếu có voucher trong session
-            if (session()->has('coupon')) {
-                $voucher = session('coupon');
-                $discount = $voucher->value;  // Phần trăm giảm giá từ voucher
-                $discountAmount = $total_price * ($discount / 100);  // Tính giảm giá dựa trên tổng giỏ hàng
-
+            if ($request->voucher_id != null) {
+                $voucher = Voucher::where('id', $request->voucher_id)->first();
+                $discountAmount = $total_price * ($voucher->value / 100);  // Tính giảm giá dựa trên tổng giỏ hàng
                 // Giới hạn số tiền giảm tối đa
                 if ($discountAmount > $voucher->max_price) {
                     $discountAmount = $voucher->max_price;
                 }
-
                 // Áp dụng giảm giá vào tổng giỏ hàng
                 $total_price -= $discountAmount;
             }
@@ -298,16 +292,14 @@ class CheckoutController extends Controller
         $totalPrice = $cartItems->sum(function ($item) {
             return $item->variants->sale_price * $item->variant_quantity;
         });
-        if (session()->has('coupon')) {
-            $voucher = session('coupon');
-            $discount = $voucher->value;  // Phần trăm giảm giá từ voucher
-            $discountAmount = $totalPrice * ($discount / 100);  // Tính giảm giá dựa trên tổng giỏ hàng
 
+        if ($request->voucher_id != null) {
+            $voucher = Voucher::where('id', $request->voucher_id)->first();
+            $discountAmount = $totalPrice * ($voucher->value / 100);  // Tính giảm giá dựa trên tổng giỏ hàng
             // Giới hạn số tiền giảm tối đa
             if ($discountAmount > $voucher->max_price) {
                 $discountAmount = $voucher->max_price;
             }
-
             // Áp dụng giảm giá vào tổng giỏ hàng
             $totalPrice -= $discountAmount;
         }
@@ -324,7 +316,7 @@ class CheckoutController extends Controller
 
         $vnp_TxnRef = $code;
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        $vnp_Returnurl = route('checkout.vnpay.returnFrom');
+        $vnp_Returnurl = route('checkout.vnpay.returnFrom', $request->voucher_id);
         $vnp_TmnCode = "KA1BV3N8";
         $vnp_HashSecret = "12GUKMUAGMQR4QW57D26MKG56RCYN9G8";
 
@@ -359,14 +351,12 @@ class CheckoutController extends Controller
     }
 
 
-    public function returnFromVNPAY(Request $request)
+    public function returnFromVNPAY(Request $request, $voucher_id = null)
     {
         Log::info('VNPAY return response:', $request->all());
-
         $vnp_ResponseCode = $request->input('vnp_ResponseCode');
         $vnp_TxnRef = $request->input('vnp_TxnRef');
         $vnp_SecureHash = $request->input('vnp_SecureHash');
-
         $vnp_HashSecret = "12GUKMUAGMQR4QW57D26MKG56RCYN9G8";
         $inputData = $request->except('vnp_SecureHash');
         ksort($inputData);
@@ -424,16 +414,14 @@ class CheckoutController extends Controller
                 $totalPrice = $cartItems->sum(function ($item) {
                     return $item->variants->sale_price * $item->variant_quantity;
                 });
-                if (session()->has('coupon')) {
-                    $voucher = session('coupon');
-                    $discount = $voucher->value;  // Phần trăm giảm giá từ voucher
-                    $discountAmount = $totalPrice * ($discount / 100);  // Tính giảm giá dựa trên tổng giỏ hàng
 
+                if ($voucher_id) {
+                    $voucher = Voucher::where('id', $request->voucher_id)->first();
+                    $discountAmount = $totalPrice * ($voucher->value / 100);  // Tính giảm giá dựa trên tổng giỏ hàng
                     // Giới hạn số tiền giảm tối đa
                     if ($discountAmount > $voucher->max_price) {
                         $discountAmount = $voucher->max_price;
                     }
-
                     // Áp dụng giảm giá vào tổng giỏ hàng
                     $totalPrice -= $discountAmount;
                 }
@@ -481,6 +469,17 @@ class CheckoutController extends Controller
                 }
 
                 Cart::where('user_id', $user_id)->delete();
+                if ($voucher_id) {
+                    $voucher->update([
+                        "used_quantity" => $voucher->used_quantity + 1,
+                    ]);
+                    VoucerHistory::create([
+                        'voucher_id' => $voucher_id,
+                        'user_id' => $bill->user_id,
+                        'bill_id' => $bill->id,
+                        'at_datetime' => now()->format('Y-m-d H:m:i'),
+                    ]);
+                }
                 DB::commit();
 
                 $userEmail = Auth::user()->email;
@@ -878,7 +877,7 @@ class CheckoutController extends Controller
                     'product_image_url' => $variant->product->primary_image_url,
                 ]);
 
-               
+
                 // Xử lý API MoMo
                 $partnerCode = 'MOMOBKUN20180529';
                 $accessKey = 'klm05TvNBzhg7h7j';

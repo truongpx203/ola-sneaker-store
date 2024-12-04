@@ -148,7 +148,7 @@
                         </div>
                     </div>
                     <div class="row justify-content-end">
-                        <div class="col-md-12 col-lg-4">
+                        {{-- <div class="col-md-12 col-lg-4">
                             <div class="shipping-form-coupon">
                                 <div class="section-title-cart">
                                     <h5 class="title">Mã giảm giá</h5>
@@ -176,7 +176,7 @@
 
                                 </form>
                             </div>
-                        </div>
+                        </div> --}}
 
                         <div class="col-md-12 col-lg-4">
                             <div class="shipping-form-cart-totals">
@@ -194,18 +194,6 @@
                                                     <p class="price">{{ number_format($provisional) }} VNĐ</p>
                                                 </td>
                                             </tr>
-                                            @if (isset($discount) && $discount != null)
-                                                <tr class="cart-subtotal">
-                                                    <td>
-                                                        <p class="value">Giảm giá</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="price">{{ $discount . '%' }}
-                                                        </p>
-                                                    </td>
-                                                </tr>
-                                            @endif
-
                                             <tr class="order-total">
                                                 <td>
                                                     <p class="value">Tổng tiền</p>
