@@ -742,16 +742,13 @@ class CheckoutController extends Controller
         //29/11/2024
         // $discount = 0; // Định nghĩa mặc định là 0
         // $discountAmount = 0; // Định nghĩa mặc định là 0
-        if (session()->has('coupon')) {
-            $voucher = session('coupon');
-            $discount = $voucher->value;  // Phần trăm giảm giá từ voucher
-            $discountAmount = $totalPrice * ($discount / 100);  // Tính giảm giá dựa trên tổng giỏ hàng
-
+        // Kiểm tra nếu có voucher trong session
+        if (session('voucher')) {
+            $discountAmount = $totalPrice * (session('voucher.value') / 100);  // Tính giảm giá dựa trên tổng giỏ hàng
             // Giới hạn số tiền giảm tối đa
-            if ($discountAmount > $voucher->max_price) {
-                $discountAmount = $voucher->max_price;
+            if ($discountAmount > session('voucher.max_price')) {
+                $discountAmount = session('voucher.max_price');
             }
-
             // Áp dụng giảm giá vào tổng giỏ hàng
             $totalPrice -= $discountAmount;
         }
@@ -824,16 +821,13 @@ class CheckoutController extends Controller
             // Tính tổng giá trị sản phẩm
             $totalPrice = $variant->sale_price * $validatedData['variant_quantity'];
 
-            if (session()->has('coupon')) {
-                $voucher = session('coupon');
-                $discount = $voucher->value;  // Phần trăm giảm giá từ voucher
-                $discountAmount = $totalPrice * ($discount / 100);  // Tính giảm giá dựa trên tổng giỏ hàng
-
+            if ($request->voucher_id != null) {
+                $voucher = Voucher::where('id', $request->voucher_id)->first();
+                $discountAmount = $totalPrice * ($voucher->value / 100);  // Tính giảm giá dựa trên tổng giỏ hàng
                 // Giới hạn số tiền giảm tối đa
                 if ($discountAmount > $voucher->max_price) {
                     $discountAmount = $voucher->max_price;
                 }
-
                 // Áp dụng giảm giá vào tổng giỏ hàng
                 $totalPrice -= $discountAmount;
             }
@@ -854,7 +848,7 @@ class CheckoutController extends Controller
 
             // Xử lý thanh toán dựa trên phương thức đã chọn
             if ($validatedData['payment_type'] === 'vnpay') {
-                return $this->paymentVNPAY($billCode, $totalPrice, $validatedData, $variant);
+                return $this->paymentVNPAY($billCode, $totalPrice, $validatedData, $variant, $request->voucher_id);
             }
 
             // Xử lý thanh toán MoMo
@@ -977,6 +971,17 @@ class CheckoutController extends Controller
             $user->points -= $pointsToUse;
             $user->save();
 
+            if ($request->voucher_id != null) {
+                $voucher->update([
+                    "used_quantity" => $voucher->used_quantity + 1,
+                ]);
+                VoucerHistory::create([
+                    'voucher_id' => $request->voucher_id,
+                    'user_id' => $bill->user_id,
+                    'bill_id' => $bill->id,
+                    'at_datetime' => now()->format('Y-m-d H:m:i'),
+                ]);
+            }
             DB::commit();
 
 
@@ -993,10 +998,10 @@ class CheckoutController extends Controller
         }
     }
 
-    private function paymentVNPAY($billCode, $totalPrice, $validatedData, $variant)
+    private function paymentVNPAY($billCode, $totalPrice, $validatedData, $variant, $voucher_id = null)
     {
-        $user = Auth::user(); //7/11/2024
 
+        $user = Auth::user(); //7/11/2024
         // Kiểm tra điểm tích lũy(7/11/2024)
         $pointsToUse = $validatedData['points_to_use'] ?? 0;
         $pointValue = 10000; // Mỗi điểm giảm giá 10,000 VND
@@ -1018,7 +1023,7 @@ class CheckoutController extends Controller
 
         $vnp_TxnRef = $billCode;
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        $vnp_Returnurl = route('checkout.vnpay.return');
+        $vnp_Returnurl = route('checkout.vnpay.return', $voucher_id);
         $vnp_TmnCode = "KA1BV3N8";
         $vnp_HashSecret = "12GUKMUAGMQR4QW57D26MKG56RCYN9G8";
 
@@ -1062,7 +1067,7 @@ class CheckoutController extends Controller
         return redirect($vnp_Url . "?" . $query);
     }
 
-    public function vnpayReturn(Request $request)
+    public function vnpayReturn(Request $request, $voucher_id = null)
     {
         // Xử lý kết quả trả về từ VNPAY
         $vnp_ResponseCode = $request->input('vnp_ResponseCode');
@@ -1104,16 +1109,13 @@ class CheckoutController extends Controller
 
                 $totalPrice = $variant->sale_price * $validatedData['variant_quantity'];
 
-                if (session()->has('coupon')) {
-                    $voucher = session('coupon');
-                    $discount = $voucher->value;  // Phần trăm giảm giá từ voucher
-                    $discountAmount = $totalPrice * ($discount / 100);  // Tính giảm giá dựa trên tổng giỏ hàng
-
+                if ($voucher_id) {
+                    $voucher = Voucher::where('id', $request->voucher_id)->first();
+                    $discountAmount = $totalPrice * ($voucher->value / 100);  // Tính giảm giá dựa trên tổng giỏ hàng
                     // Giới hạn số tiền giảm tối đa
                     if ($discountAmount > $voucher->max_price) {
                         $discountAmount = $voucher->max_price;
                     }
-
                     // Áp dụng giảm giá vào tổng giỏ hàng
                     $totalPrice -= $discountAmount;
                 }
@@ -1162,7 +1164,17 @@ class CheckoutController extends Controller
 
                 // Giảm số lượng hàng tồn kho
                 $variant->decrement('stock', $validatedData['variant_quantity']);
-
+                if ($voucher_id) {
+                    $voucher->update([
+                        "used_quantity" => $voucher->used_quantity + 1,
+                    ]);
+                    VoucerHistory::create([
+                        'voucher_id' => $request->voucher_id,
+                        'user_id' => $bill->user_id,
+                        'bill_id' => $bill->id,
+                        'at_datetime' => now()->format('Y-m-d H:m:i'),
+                    ]);
+                }
                 // Gửi email xác nhận
                 $userEmail = Auth::user()->email;
                 Mail::to($userEmail)->send(new OrderConfirmationMail($bill));

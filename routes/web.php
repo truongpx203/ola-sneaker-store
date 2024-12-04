@@ -237,7 +237,7 @@ Route::post('/contact', [ContactController::class, 'submitForm'])->name('contact
 // mua ngay
 Route::get('/buy-now', [CheckoutController::class, 'buyNow'])->name('buy.now');
 Route::post('/buy-now/process', [CheckoutController::class, 'processBuyNow'])->name('buy.now.process');
-Route::get('/checkout/vnpay/return', [CheckoutController::class, 'vnpayReturn'])->name('checkout.vnpay.return');
+Route::get('/checkout/vnpay/return/{voucher_id?}', [CheckoutController::class, 'vnpayReturn'])->name('checkout.vnpay.return');
 
 
 

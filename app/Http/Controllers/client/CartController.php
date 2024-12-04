@@ -10,6 +10,7 @@ use App\Models\Variant;
 use App\Models\client\Cart;
 use App\Models\Product;
 use App\Models\ProductSize;
+use App\Models\VoucerHistory;
 use App\Models\Voucher;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -167,10 +168,14 @@ class CartController extends Controller
             'couponCode.string' => 'Mã giảm giá phải là một chuỗi ký tự.',
             'couponCode.exists' => 'Mã giảm giá không hợp lệ.',
         ]);
-        
+
         // Lấy voucher từ mã giảm giá nhập vào
         $voucher = Voucher::where('code', $validatedData['couponCode'])->first();
-
+        // Kiểm tra xem đã dùng mã lần nào chưa
+        $voucherHistory = VoucerHistory::query()->where('voucher_id', $voucher->id)->first();
+        if ($voucherHistory) {
+            return redirect()->back()->with('error', 'Mã giảm giá bạn đã từng dùng rồi');
+        }
         // Kiểm tra các điều kiện của voucher
         $currentDateTime = now();
         $startDateTime = Carbon::parse($voucher->start_datetime);  // Chuyển ngày bắt đầu của voucher sang đối tượng Carbon
@@ -192,6 +197,5 @@ class CartController extends Controller
             return redirect()->back()->with('error', 'Mã giảm giá không dành cho bạn');
         }
         return redirect()->back()->with(compact('voucher'))->with('success', 'Mã giảm giá đã được áp dụng');
-
     }
 }
