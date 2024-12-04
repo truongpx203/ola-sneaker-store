@@ -139,7 +139,7 @@
                                                         height="110" alt="img"></td>
                                                 <td>{{ $item->variant->size->name }}</td>
                                                 <td>{{ $item->variant_quantity }}</td>
-                                                <td>{{ number_format($item->sale_price, 0, ',', '.') }}</td>
+                                                <td>{{ number_format($item->sale_price, 0, ',', '.') }} đ</td>
                                                 {{-- <td>{{ number_format($bill->total_price, 0, ',', '.') }}</td> --}}
                                                 <td>
                                                     @if ($item->has_reviewed)
@@ -265,7 +265,7 @@
                                     {{-- <p class="saved-message">Tiền ship: <span class="text-danger">30.000đ</span></p> --}}
                                     <strong>
                                         <p class="saved-message">Tổng tiền hàng:
-                                            {{ number_format($bill->total_price, 0, ',', '.') }}<span class="text-danger"
+                                            {{ number_format($bill->total_price, 0, ',', '.') }} đ<span class="text-danger"
                                                 id="formattedTotal"></span></p>
                                     </strong>
                                 </div>

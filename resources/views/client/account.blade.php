@@ -43,9 +43,6 @@
                                                     data-bs-target="#orders" type="button" role="tab"
                                                     aria-controls="orders" aria-selected="false"> Đơn hàng</button>
                                                 {{-- <button class="nav-link" id="download-tab" data-bs-toggle="tab" data-bs-target="#download" type="button" role="tab" aria-controls="download" aria-selected="false">Download</button> --}}
-                                                <button class="nav-link" id="address-edit-tab" data-bs-toggle="tab"
-                                                    data-bs-target="#address-edit" type="button" role="tab"
-                                                    aria-controls="address-edit" aria-selected="false">Địa chỉ</button>
                                                 <button class="nav-link" id="voucher-list-tab" data-bs-toggle="tab"
                                                     data-bs-target="#voucher-list" type="button" role="tab"
                                                     aria-controls="voucher-list" aria-selected="false">Mã giảm giá của
@@ -65,7 +62,7 @@
                                         <div class="tab-pane fade show active" id="account-info" role="tabpanel"
                                             aria-labelledby="account-info-tab">
                                             <div class="myaccount-content">
-                                                <h3>Thôn tin tài khoản</h3>
+                                                <h3>Thông tin tài khoản</h3>
                                                 @if (Session('success'))
                                                     <div class="alert alert-success" role="alert">
                                                         {{ Session('success') }}
@@ -340,58 +337,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        {{-- <div class="tab-pane fade" id="download" role="tabpanel" aria-labelledby="download-tab">
-                  <div class="myaccount-content">
-                    <h3>Tải xuống</h3>
-                    <div class="myaccount-table table-responsive text-center">
-                      <table class="table table-bordered">
-                        <thead class="thead-light">
-                          <tr>
-                            <th>Product</th>
-                            <th>Date</th>
-                            <th>Expire</th>
-                            <th>Download</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>Haven - Free Real Estate PSD Template</td>
-                            <td>Aug 22, 2022</td>
-                            <td>Yes</td>
-                            <td><a href="#/" class="check-btn sqr-btn"><i class="fa fa-cloud-download"></i> Download File</a></td>
-                          </tr>
-                          <tr>
-                            <td>HasTech - Profolio Business Template</td>
-                            <td>Sep 12, 2022</td>
-                            <td>Never</td>
-                            <td><a href="#/" class="check-btn sqr-btn"><i class="fa fa-cloud-download"></i> Download File</a></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div> --}}
-                                        {{-- <div class="tab-pane fade" id="payment-method" role="tabpanel" aria-labelledby="payment-method-tab">
-                  <div class="myaccount-content">
-                    <h3>Payment Method</h3>
-                    <p class="saved-message">You Can't Saved Your Payment Method yet.</p>
-                  </div>
-                </div> --}}
-                                        <div class="tab-pane fade" id="address-edit" role="tabpanel"
-                                            aria-labelledby="address-edit-tab">
-                                            <div class="myaccount-content">
-                                                <h3>Địa chỉ thanh toán</h3>
-                                                <address>
-                                                    <p><strong>Alex Tuntuni</strong></p>
-                                                    <p>1355 Market St, Suite 900 <br>
-                                                        San Francisco, CA 94103</p>
-                                                    <p>Mobile: (123) 456-7890</p>
-                                                </address>
-                                                <a href="#/" class="check-btn sqr-btn"><i class="fa fa-edit"></i>Sửa
-                                                    Địa Chỉ</a>
-                                            </div>
-                                        </div>
-
+                                        
                                         {{-- 7/11/2024 --}}
 
                                         <div class="tab-pane fade" id="points" role="tabpanel"
