@@ -85,57 +85,60 @@
                         {{ session('success') }}
                     </div>
                 @endif
-
                 @if (session('error'))
                     <div class="alert alert-danger">
                         {{ session('error') }}
                     </div>
                 @endif
-                <div class="row">
-                    <div class="col-12">
-                        <div class="checkout-page-coupon-wrap">
-                            <!--== Start Checkout Coupon Accordion ==-->
-                            <div class="coupon-accordion" id="CouponAccordion">
-                                <div class="card">
-                                    <h3>
-                                        <i class="fa fa-info-circle"></i>
-                                        Có phiếu giảm giá?
-                                        <a href="#/" data-bs-toggle="collapse" data-bs-target="#couponaccordion">Nhấp
-                                            vào đây để nhập mã của bạn</a>
-                                    </h3>
-                                    <div id="couponaccordion" class="collapse" data-bs-parent="#CouponAccordion">
-                                        <div class="card-body">
-                                            <div class="apply-coupon-wrap mb-60">
-                                                <p>Nếu bạn có mã giảm giá, vui lòng áp dụng bên dưới.</p>
-                                                <form action="{{ route('cart.voucher') }}" method="POST">
-                                                    @csrf
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <input type="text" id="couponCode" name="couponCode"
-                                                                    class="form-control"
-                                                                    placeholder="Nhập mã phiếu giảm giá của bạn" required>
+                @if (session('voucher') == null)
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="checkout-page-coupon-wrap">
+                                <!--== Start Checkout Coupon Accordion ==-->
+                                <div class="coupon-accordion" id="CouponAccordion">
+                                    <div class="card">
+                                        <h3>
+                                            <i class="fa fa-info-circle"></i>
+                                            Có phiếu giảm giá?
+                                            <a href="#/" data-bs-toggle="collapse"
+                                                data-bs-target="#couponaccordion">Nhấp
+                                                vào đây để nhập mã của bạn</a>
+                                        </h3>
+                                        <div id="couponaccordion" class="collapse" data-bs-parent="#CouponAccordion">
+                                            <div class="card-body">
+                                                <div class="apply-coupon-wrap mb-60">
+                                                    <p>Nếu bạn có mã giảm giá, vui lòng áp dụng bên dưới.</p>
+                                                    <form action="{{ route('cart.voucher') }}" method="POST">
+                                                        @csrf
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <input type="text" id="couponCode" name="couponCode"
+                                                                        class="form-control"
+                                                                        placeholder="Nhập mã phiếu giảm giá của bạn"
+                                                                        required value="{{ session('voucher.code') }}">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <button class="btn-coupon" type="submit">Áp dụng</button>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <button class="btn-coupon" type="submit">Áp dụng</button>
-                                                        </div>
-                                                    </div>
-                                                </form>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <!--== End Checkout Coupon Accordion ==-->
                             </div>
-                            <!--== End Checkout Coupon Accordion ==-->
                         </div>
                     </div>
-                </div>
+                @endif
                 <form id="checkout-form" action="{{ route('buy.now.process') }}" method="post">
                     @csrf
                     <input type="hidden" name="variant_id" value="{{ $variant->id }}">
                     <input type="hidden" name="variant_quantity" value="{{ $quantity }}">
-
+                    <input type="hidden" name="voucher_id" value="{{ session('voucher.id') }}">
                     <div class="row">
                         <div class="col-lg-6">
                             <!--== Start Billing Accordion ==-->
@@ -244,10 +247,10 @@
                                                 <th>Phí vận chuyển</th>
                                                 <td>Miễn phí</td>
                                             </tr>
-                                            @if (isset($discount) && $discount != null)
+                                            @if (session('voucher'))
                                                 <tr class="cart-subtotal">
                                                     <th>Giảm giá</th>
-                                                    <td>{{ $discount . '%' }}</td>
+                                                    <td>{{ session('voucher.value') . '%' }}</td>
                                                 </tr>
                                             @endif
                                             <tr class="order-total">
