@@ -48,7 +48,8 @@
                                                     aria-controls="address-edit" aria-selected="false">Địa chỉ</button>
                                                 <button class="nav-link" id="voucher-list-tab" data-bs-toggle="tab"
                                                     data-bs-target="#voucher-list" type="button" role="tab"
-                                                    aria-controls="voucher-list" aria-selected="false">Mã giảm giá của bạn</button>
+                                                    aria-controls="voucher-list" aria-selected="false">Mã giảm giá của
+                                                    bạn</button>
                                                 {{-- 7/11/2024  --}}
                                                 <button class="nav-link" id="points-tab" data-bs-toggle="tab"
                                                     data-bs-target="#points" type="button" role="tab"
@@ -302,7 +303,7 @@
                                             <div class="myaccount-content">
                                                 <h3>Mã giảm giá của {{ Auth::user()->full_name }}</h3>
                                                 <div class="myaccount-table table-responsive text-center">
-                                                    @if (count($listVouchers)<=0 )
+                                                    @if (count($listVouchers) <= 0)
                                                         <div class="alert alert-info">Bạn chưa có mã giảm giá nào.</div>
                                                     @else
                                                         <table class="table table-bordered">
@@ -321,7 +322,8 @@
                                                                     <tr>
                                                                         <td>{{ $listVoucher->code }}</td>
                                                                         <td>{{ $listVoucher->value }}</td>
-                                                                        <td>{{ number_format($listVoucher->max_price) }}</td>
+                                                                        <td>{{ number_format($listVoucher->max_price) }}
+                                                                        </td>
                                                                         <td>{{ $listVoucher->description }}</td>
                                                                         <td>{{ $listVoucher->start_datetime }}</td>
                                                                         <td>{{ $listVoucher->end_datetime }}</td>

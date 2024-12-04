@@ -41,14 +41,14 @@
                             </div>
                         @endif --}}
                         @error('note')
-                        <div class="alert alert-danger">{{ $message }}</div>
-                    @enderror
+                            <div class="alert alert-danger">{{ $message }}</div>
+                        @enderror
 
                         @if (Session('error'))
-                        <div class="alert alert-danger" role="alert">
-                            {{ Session('error') }}
-                        </div>
-                    @endif
+                            <div class="alert alert-danger" role="alert">
+                                {{ Session('error') }}
+                            </div>
+                        @endif
                         @if (Session('success'))
                             <div class="alert alert-success" role="alert">
                                 {{ Session('success') }}
@@ -225,7 +225,8 @@
                                                                     </div>
                                                                     <div class="p-3">
                                                                         <div class="form-group">
-                                                                            <button type="submit" onclick="return confirm('Bạn chỉ có thể đánh giá 1 lần bạn chắc với đánh giá hiện tại chứ!')"
+                                                                            <button type="submit"
+                                                                                onclick="return confirm('Bạn chỉ có thể đánh giá 1 lần bạn chắc với đánh giá hiện tại chứ!')"
                                                                                 class="btn btn-outline-danger"
                                                                                 style="margin-left: 87%; border-radius: 0">Đăng
                                                                                 bình luận</button>
@@ -269,118 +270,120 @@
                                     </strong>
                                 </div>
                             </div>
-                        </div>
-                        <div class="myaccount-content">
-                            <h3>Trạng thái đơn hàng</h3>
-                            <div class="myaccount-table table-responsive text-center">
-                                <table class="table table-bordered">
-                                    <thead class="thead-light">
-                                        <tr>
-                                            <th>STT</th>
-                                            <th>Trạng thái</th>
-                                            <th>Ghi chú</th>
-                                            <th>Thời gian</th>
-                                        </tr>
-                                    </thead>
-                                    @php
-                                        $statusMapping = [
-                                            'pending' => 'Chờ xác nhận',
-                                            'confirmed' => 'Đã xác nhận',
-                                            'in_delivery' => 'Đang giao',
-                                            'delivered' => 'Giao hàng thành công',
-                                            'failed' => 'Giao hàng thất bại',
-                                            'canceled' => 'Đã hủy',
-                                            'completed' => 'Hoàn thành',
-                                        ];
-                                    @endphp
-
-                                    <tbody>
-                                        @foreach ($bill->histories as $index => $history)
+                            {{-- @endif --}}
+                            <div class="myaccount-content">
+                                <h3>Trạng thái đơn hàng</h3>
+                                <div class="myaccount-table table-responsive text-center">
+                                    <table class="table table-bordered">
+                                        <thead class="thead-light">
                                             <tr>
-                                                <td>{{ $index + 1 }}</td>
-                                                <td>{{ $statusMapping[$history->to_status] }}</td>
-                                                <td>{{ $history->note ?? '-' }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($history->at_datetime)->format('d/m/Y H:i') }}
-                                                </td>
+                                                <th>STT</th>
+                                                <th>Trạng thái</th>
+                                                <th>Ghi chú</th>
+                                                <th>Thời gian</th>
                                             </tr>
-                                        @endforeach
+                                        </thead>
+                                        @php
+                                            $statusMapping = [
+                                                'pending' => 'Chờ xác nhận',
+                                                'confirmed' => 'Đã xác nhận',
+                                                'in_delivery' => 'Đang giao',
+                                                'delivered' => 'Giao hàng thành công',
+                                                'failed' => 'Giao hàng thất bại',
+                                                'canceled' => 'Đã hủy',
+                                                'completed' => 'Hoàn thành',
+                                            ];
+                                        @endphp
 
-                                    </tbody>
-                                    @if ($bill->bill_status === 'completed')
-                                        <div class="alert alert-success" role="alert">
-                                            Đơn hàng đã hoàn thành.
-                                        </div>
-                                    @elseif ($bill->bill_status === 'pending')
-                                        <div class="alert alert-info" role="alert">
-                                            Đơn hàng đang chờ xác nhận.
-                                        </div>
-                                    @elseif ($bill->bill_status === 'confirmed')
-                                        <div class="alert alert-warning" role="alert">
-                                            Đơn hàng đã được xác nhận.
-                                        </div>
-                                    @elseif ($bill->bill_status === 'in_delivery')
-                                        <div class="alert alert-primary" role="alert">
-                                            Đơn hàng đang được giao.
-                                        </div>
-                                    @elseif ($bill->bill_status === 'delivered')
-                                        <div class="alert alert-success" role="alert">
-                                            Đơn hàng đã được giao thành công.
-                                        </div>
-                                    @elseif ($bill->bill_status === 'failed')
-                                        <div class="alert alert-danger" role="alert">
-                                            Đơn hàng giao thất bại.
-                                        </div>
-                                    @elseif ($bill->bill_status === 'canceled')
-                                        <div class="alert alert-danger" role="alert">
-                                            Đơn hàng đã bị hủy.
-                                        </div>
-                                    @endif
-                                </table>
+                                        <tbody>
+                                            @foreach ($bill->histories as $index => $history)
+                                                <tr>
+                                                    <td>{{ $index + 1 }}</td>
+                                                    <td>{{ $statusMapping[$history->to_status] }}</td>
+                                                    <td>{{ $history->note ?? '-' }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($history->at_datetime)->format('d/m/Y H:i') }}
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+
+                                        </tbody>
+                                        @if ($bill->bill_status === 'completed')
+                                            <div class="alert alert-success" role="alert">
+                                                Đơn hàng đã hoàn thành.
+                                            </div>
+                                        @elseif ($bill->bill_status === 'pending')
+                                            <div class="alert alert-info" role="alert">
+                                                Đơn hàng đang chờ xác nhận.
+                                            </div>
+                                        @elseif ($bill->bill_status === 'confirmed')
+                                            <div class="alert alert-warning" role="alert">
+                                                Đơn hàng đã được xác nhận.
+                                            </div>
+                                        @elseif ($bill->bill_status === 'in_delivery')
+                                            <div class="alert alert-primary" role="alert">
+                                                Đơn hàng đang được giao.
+                                            </div>
+                                        @elseif ($bill->bill_status === 'delivered')
+                                            <div class="alert alert-success" role="alert">
+                                                Đơn hàng đã được giao thành công.
+                                            </div>
+                                        @elseif ($bill->bill_status === 'failed')
+                                            <div class="alert alert-danger" role="alert">
+                                                Đơn hàng giao thất bại.
+                                            </div>
+                                        @elseif ($bill->bill_status === 'canceled')
+                                            <div class="alert alert-danger" role="alert">
+                                                Đơn hàng đã bị hủy.
+                                            </div>
+                                        @endif
+                                    </table>
+                                </div>
                             </div>
-                        </div>
-                        <!-- Kiểm tra trạng thái để hiển thị form hoàn thành -->
-                        @if ($bill->bill_status === 'delivered')
-                            <div class="complete-order-form m-4 text-center">
-                                <form action="{{ route('completeOrder', $bill->id) }}" method="POST">
-                                    @csrf
-                                    <div class="single-input-item">
-                                        <button type="submit" class="btn btn-primary">Đánh dấu hoàn thành đơn
-                                            hàng</button>
-                                    </div>
-                                </form>
-                            </div>
-                        @endif
-                        <div class="myaccount-content">
-                            <div class="account-details-form">
-                                <form action="{{ route('cancelOrder', $bill->id) }}" method="POST">
-                                    @csrf
-                                    <div class="form-floating mb-4">
-                                        <textarea class="form-control" name="note" placeholder="Nhập lý do hủy đơn hàng tại đây" id="floatingTextarea2"
-                                            style="height: 100px" {{ $bill->bill_status !== 'pending' ? 'disabled' : '' }}></textarea>
-                                        <label for="floatingTextarea2">Ghi chú</label>
-                                    </div>
-                                    <div class="single-input-item">
-                                        <button type="submit" class="btn btn-light" style="border-radius: 0"
-                                            {{ $bill->bill_status !== 'pending' ? 'disabled' : '' }} onclick="return confirm('Bạn chắc chắn muốn hủy đơn chứ!')">Hủy đơn</button>
-                                    </div>
-                                </form>
+                            <!-- Kiểm tra trạng thái để hiển thị form hoàn thành -->
+                            @if ($bill->bill_status === 'delivered')
+                                <div class="complete-order-form m-4 text-center">
+                                    <form action="{{ route('completeOrder', $bill->id) }}" method="POST">
+                                        @csrf
+                                        <div class="single-input-item">
+                                            <button type="submit" class="btn btn-primary">Đánh dấu hoàn thành đơn
+                                                hàng</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            @endif
+                            <div class="myaccount-content">
+                                <div class="account-details-form">
+                                    <form action="{{ route('cancelOrder', $bill->id) }}" method="POST">
+                                        @csrf
+                                        <div class="form-floating mb-4">
+                                            <textarea class="form-control" name="note" placeholder="Nhập lý do hủy đơn hàng tại đây" id="floatingTextarea2"
+                                                style="height: 100px" {{ $bill->bill_status !== 'pending' ? 'disabled' : '' }}></textarea>
+                                            <label for="floatingTextarea2">Ghi chú</label>
+                                        </div>
+                                        <div class="single-input-item">
+                                            <button type="submit" class="btn btn-light" style="border-radius: 0"
+                                                {{ $bill->bill_status !== 'pending' ? 'disabled' : '' }}
+                                                onclick="return confirm('Bạn chắc chắn muốn hủy đơn chứ!')">Hủy
+                                                đơn</button>
+                                        </div>
+                                    </form>
 
-                                <style>
-                                    .form-control {
-                                        border-radius: 0;
-                                        border: 1px solid #ced4da;
-                                    }
+                                    <style>
+                                        .form-control {
+                                            border-radius: 0;
+                                            border: 1px solid #ced4da;
+                                        }
 
-                                    .alert {
-                                        border-radius: 0;
-                                        border: 1px solid #ced4da;
-                                    }
-                                </style>
+                                        .alert {
+                                            border-radius: 0;
+                                            border: 1px solid #ced4da;
+                                        }
+                                    </style>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
         </section>
         <!--== End My Account Wrapper ==-->
     </main>
