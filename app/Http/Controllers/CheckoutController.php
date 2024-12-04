@@ -193,7 +193,17 @@ class CheckoutController extends Controller
             $user->save();
 
             Cart::where('user_id', $user_id)->delete();
-
+            if ($request->voucher_id != null) {
+                $voucher->update([
+                    "used_quantity" => $voucher->used_quantity + 1,
+                ]);
+                VoucerHistory::create([
+                    'voucher_id' => $request->voucher_id,
+                    'user_id' => $bill->user_id,
+                    'bill_id' => $bill->id,
+                    'at_datetime' => now()->format('Y-m-d H:m:i'),
+                ]);
+            }
             DB::commit();
 
             // Gửi email xác nhận đơn hàng đến email của khách hàng
