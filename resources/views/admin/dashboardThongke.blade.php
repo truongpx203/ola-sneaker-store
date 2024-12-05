@@ -9,115 +9,141 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="card-title mb-0">#1. Thống kê đơn hàng</h4>
+                <div class="card-header border-0 d-flex align-items-center my-auto">
+                    <h4 class="card-title mb-0"># Thống kê đơn hàng</h4>
                 </div>
 
-                <div class="card-body bg-body-tertiary">
+                <div class="card-body bg-white ">
                     <div class="row">
-                        {{-- <div class="col-xl-4">
-                            <div class="card card-animate">
-                                <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-xl-3">
+                                <div class="card card-animate">
                                     <div class="d-flex align-items-center">
                                         <div class="avatar-sm flex-shrink-0">
-                                            <span class="avatar-title bg-primary-subtle text-primary rounded-2 fs-2">
-                                                <i class="ri-information-line"></i>
+                                            <span class="avatar-title bg-warning-subtle text-warning rounded-2 fs-2">
+                                                <i class="ri-time-line"></i>
                                             </span>
                                         </div>
-                                        <div class="flex-grow-1 overflow-hidden ms-3">
-                                            <p class="text-uppercase fw-medium text-muted text-truncate mb-3">Chờ xác nhận
-                                            </p>
+                                        <div class="flex-grow-1 ms-3">
+                                            <p class="text-uppercase fw-medium text-muted mb-3">Chờ xác nhận</p>
                                             <div class="d-flex align-items-center mb-3">
                                                 <h4 class="fs-4 flex-grow-1 mb-0">{{ $choXacNhan }}</h4>
                                             </div>
                                         </div>
                                     </div>
-                                </div><!-- end card body -->
+                                </div>
                             </div>
-                        </div><!-- end col --> --}}
-                        <div class="row mb-4">
-                            <div class="col-md-4">
-                                <div class="outer-box">
-                                    <div class="flex-grow-1 overflow-hidden ms-3">
-                                        <p class="text-uppercase fw-medium text-warning text-truncate mb-3">Chờ xác nhận</p>
-                                        <div class="d-flex align-items-center mb-3">
-                                            <h4 class="fs-4 flex-grow-1 mb-0">{{ $choXacNhan }}</h4>
+
+                            <div class="col-xl-3">
+                                <div class="card card-animate">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm flex-shrink-0">
+                                            <span class="avatar-title bg-success-subtle text-success rounded-2 fs-2">
+                                                <i class="ri-checkbox-circle-line"></i>
+                                            </span>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <p class="text-uppercase fw-medium text-muted mb-3">Đã xác nhận</p>
+                                            <div class="d-flex align-items-center mb-3">
+                                                <h4 class="fs-4 flex-grow-1 mb-0">{{ $daXacNhan }}</h4>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
-                                <div class="outer-box">
-                                    <div class="flex-grow-1 overflow-hidden ms-3">
-                                        <p class="text-uppercase fw-medium text-info mb-3">Đã xác nhận</p>
-                                        <div class="d-flex align-items-center mb-3">
-                                            <h4 class="fs-4 flex-grow-1 mb-0">{{ $daXacNhan }}</h4>
+                            <div class="col-xl-3">
+                                <div class="card card-animate">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm flex-shrink-0">
+                                            <span class="avatar-title bg-danger-subtle text-danger rounded-2 fs-2">
+                                                <i class="ri-close-circle-line"></i>
+                                            </span>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <p class="text-uppercase fw-medium text-muted mb-3">Đã hủy</p>
+                                            <div class="d-flex align-items-center mb-3">
+                                                <h4 class="fs-4 flex-grow-1 mb-0">{{ $daHuy }}</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3">
+                                <div class="card card-animate">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm flex-shrink-0">
+                                            <span class="avatar-title bg-info-subtle text-info rounded-2 fs-2">
+                                                <i class="ri-truck-line"></i>
+                                            </span>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <p class="text-uppercase fw-medium text-muted mb-3">Đang giao</p>
+                                            <div class="d-flex align-items-center mb-3">
+                                                <h4 class="fs-4 flex-grow-1 mb-0">{{ $dangGiao }}</h4>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
-                                <div class="outer-box">
-                                    <div class="flex-grow-1 overflow-hidden ms-3">
-                                        <p class="text-uppercase fw-medium text-info text-truncate mb-3">Đang giao</p>
-                                        <div class="d-flex align-items-center mb-3">
-                                            <h4 class="fs-4 flex-grow-1 mb-0">{{ $dangGiao }}</h4>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                         <div class="row">
 
-                            <div class="col-md-3">
-                                <div class="outer-box">
-                                    <div class="flex-grow-1 overflow-hidden ms-3">
-                                        <p class="text-uppercase fw-medium text-success text-truncate mb-3">
-                                           Giao hàng thành công</p>
-                                        <div class="d-flex align-items-center mb-3">
-                                            <h4 class="fs-4 flex-grow-1 mb-0">{{ $giaoThanhCong }}</h4>
+                            <div class="col-xl-4">
+                                <div class="card card-animate">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm flex-shrink-0">
+                                            <span class="avatar-title bg-success-subtle text-success rounded-2 fs-2">
+                                                <i class="ri-truck-fill"></i>
+                                            </span>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <p class="text-uppercase fw-medium text-muted mb-3">Giao hàng thành công</p>
+                                            <div class="d-flex align-items-center mb-3">
+                                                <h4 class="fs-4 flex-grow-1 mb-0">{{ $giaoThanhCong }}</h4>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
-                                <div class="outer-box">
-                                    <div class="flex-grow-1 overflow-hidden ms-3">
-                                        <p class="text-uppercase fw-medium text-danger text-truncate mb-3">
-                                            thất bại</p>
-                                        <div class="d-flex align-items-center mb-3">
-                                            <h4 class="fs-4 flex-grow-1 mb-0">{{ $giaoThatBai }}</h4>
+                            <div class="col-xl-4">
+                                <div class="card card-animate">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm flex-shrink-0">
+                                            <span class="avatar-title bg-danger-subtle text-danger rounded-2 fs-2">
+                                                <i class="ri-error-warning-line"></i>
+                                            </span>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <p class="text-uppercase fw-medium text-muted mb-3">Giao hàng thất bại</p>
+                                            <div class="d-flex align-items-center mb-3">
+                                                <h4 class="fs-4 flex-grow-1 mb-0">{{ $giaoThatBai }}</h4>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
-                                <div class="outer-box">
-                                    <div class="flex-grow-1 overflow-hidden ms-3">
-                                        <p class="text-uppercase fw-medium text-success text-truncate mb-3">
-                                            hoàn thành</p>
-                                        <div class="d-flex align-items-center mb-3">
-                                            <h4 class="fs-4 flex-grow-1 mb-0">{{ $hoanThanh }}</h4>
+                            <div class="col-xl-4">
+                                <div class="card card-animate">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm flex-shrink-0">
+                                            <span class="avatar-title bg-success-subtle text-success rounded-2 fs-2">
+                                                <i class="ri-check-double-line"></i>
+                                            </span>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <p class="text-uppercase fw-medium text-muted mb-3">Đơn hàng đã hoàn thành</p>
+                                            <div class="d-flex align-items-center mb-3">
+                                                <h4 class="fs-4 flex-grow-1 mb-0">{{ $hoanThanh }}</h4>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
-                                <div class="outer-box">
-                                    <div class="flex-grow-1 overflow-hidden ms-3">
-                                        <p class="text-uppercase fw-medium text-danger  text-truncate mb-3">Đã hủy
-                                        </p>
-                                        <div class="d-flex align-items-center mb-3">
-                                            <h4 class="fs-4 flex-grow-1 mb-0">{{ $daHuy }}</h4>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -127,136 +153,131 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
-                    <div class="card">
+                    <div class="card-header border-0 d-flex align-items-center my-auto">
+                        <h4 class="card-title mb-0"># Thống kê doanh thu, lợi nhuận</h4>
+                        <ul class="nav nav-pills dasboard_admin" id="pills-tab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="dasboard-day-tab" data-bs-toggle="pill"
+                                    data-bs-target="#dasboard-day" type="button" role="tab"
+                                    aria-controls="dasboard-day" aria-selected="true">Theo ngày</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="dasboard-month-tab" data-bs-toggle="pill"
+                                    data-bs-target="#dasboard-month" type="button" role="tab"
+                                    aria-controls="dasboard-month" aria-selected="false">Theo tháng</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="dasboard-year-tab" data-bs-toggle="pill"
+                                    data-bs-target="#dasboard-year" type="button" role="tab"
+                                    aria-controls="dasboard-year" aria-selected="false">Theo năm</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="dasboard-tg-tab" data-bs-toggle="pill"
+                                    data-bs-target="#dasboard-tg" type="button" role="tab"
+                                    aria-controls="dasboard-tg" aria-selected="false">Theo khoảng thời gian</button>
+                            </li>
+                        </ul>
 
-
-                        <div class="card-header border-0 d-flex align-items-center my-auto">
-                            <h4 class="card-title mb-0">#2. Thống kê doanh thu</h4>
-                            <ul class="nav nav-pills dasboard_admin" id="pills-tab" role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="dasboard-day-tab" data-bs-toggle="pill"
-                                        data-bs-target="#dasboard-day" type="button" role="tab"
-                                        aria-controls="dasboard-day" aria-selected="true">Theo ngày</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="dasboard-month-tab" data-bs-toggle="pill"
-                                        data-bs-target="#dasboard-month" type="button" role="tab"
-                                        aria-controls="dasboard-month" aria-selected="false">Theo tháng</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="dasboard-year-tab" data-bs-toggle="pill"
-                                        data-bs-target="#dasboard-year" type="button" role="tab"
-                                        aria-controls="dasboard-year" aria-selected="false">Theo năm</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="dasboard-tg-tab" data-bs-toggle="pill"
-                                        data-bs-target="#dasboard-tg" type="button" role="tab"
-                                        aria-controls="dasboard-tg" aria-selected="false">Theo khoảng thời gian</button>
-                                </li>
-                            </ul>
-
-                        </div><!-- end card header -->
-                        {{-- Thống kê ngày --}}
-                        {{-- <div class="card-body p-0 pb-2">
+                    </div><!-- end card header -->
+                    {{-- Thống kê ngày --}}
+                    {{-- <div class="card-body p-0 pb-2">
                         <div class="w-100"> --}}
-                        <div class="tab-content">
-                            <div class="card-body">
-                                <div class="tab-content" id="pills-tabContent">
-                                    <div class="tab-pane fade show active" id="dasboard-day" role="tabpanel"
-                                        aria-labelledby="dasboard-day-tab" tabindex="0">
-                                        <div class="section-header mb-3">
-                                            <h5 class="text-uppercase">Thống kê theo ngày</h5>
-                                        </div>
+                    <div class="tab-content">
+                        <div class="card-body">
+                            <div class="tab-content" id="pills-tabContent">
+                                <div class="tab-pane fade show active" id="dasboard-day" role="tabpanel"
+                                    aria-labelledby="dasboard-day-tab" tabindex="0">
+                                    <div class="section-header mb-3">
+                                        <h5 class="text-uppercase">Thống kê theo ngày</h5>
+                                    </div>
 
-                                        <div class="date-filter mb-4">
-                                            <form id="form-statistics" class="d-flex align-items-center">
-                                                <label for="date" class="me-2">Ngày:</label>
-                                                <input type="date" id="date" name="date"
-                                                    value="{{ now()->toDateString() }}" class="form-control me-2"
-                                                    style="max-width: 200px;">
-                                                {{-- <button type="submit" class="btn btn-primary">Thống kê</button> --}}
+                                    <div class="date-filter mb-4">
+                                        <form id="form-statistics" class="d-flex align-items-center">
+                                            <label for="date" class="me-2">Ngày:</label>
+                                            <input type="date" id="date" name="date"
+                                                value="{{ now()->toDateString() }}" class="form-control me-2"
+                                                style="max-width: 200px;">
+                                            {{-- <button type="submit" class="btn btn-primary">Thống kê</button> --}}
+                                        </form>
+                                    </div>
+
+                                    <div class="chart">
+                                        <canvas id="hourlyChart" class="w-100" style="max-height: 300px;"></canvas>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="dasboard-month" role="tabpanel"
+                                    aria-labelledby="dasboard-month-tab" tabindex="0">
+                                    <div class="section-header mb-3">
+                                        <h5 class="text-uppercase">Thống kê theo tháng</h5>
+                                    </div>
+
+                                    <div class="month-filter mb-4">
+                                        <div class="d-flex justify-content-end">
+                                            <form id="form-statistics-month" class="d-flex align-items-center">
+                                                <label for="month" class="me-2">Tháng:</label>
+                                                <input type="month" id="month" name="month"
+                                                    class="form-control me-2" value="{{ now()->format('Y-m') }}" required>
+                                                {{-- <button type="submit" class="btn btn-primary">thống kê</button> --}}
                                             </form>
                                         </div>
-
-                                        <div class="chart">
-                                            <canvas id="hourlyChart" class="w-100" style="max-height: 300px;"></canvas>
-                                        </div>
                                     </div>
-                                    <div class="tab-pane fade" id="dasboard-month" role="tabpanel"
-                                        aria-labelledby="dasboard-month-tab" tabindex="0">
-                                        <div class="section-header mb-3">
-                                            <h5 class="text-uppercase">Thống kê theo tháng</h5>
-                                        </div>
 
-                                        <div class="month-filter mb-4">
-                                            <div class="d-flex justify-content-end">
-                                                <form id="form-statistics-month" class="d-flex align-items-center">
-                                                    <label for="month" class="me-2">Tháng:</label>
-                                                    <input type="month" id="month" name="month"
-                                                        class="form-control me-2" value="{{ now()->format('Y-m') }}"
-                                                        required>
-                                                    {{-- <button type="submit" class="btn btn-primary">thống kê</button> --}}
-                                                </form>
-                                            </div>
-                                        </div>
-
-                                        <div class="chart">
-                                            <canvas id="monthlyChart" class="w-100" style="max-height: 300px;"></canvas>
-                                        </div>
+                                    <div class="chart">
+                                        <canvas id="monthlyChart" class="w-100" style="max-height: 300px;"></canvas>
                                     </div>
-                                    <div class="tab-pane fade" id="dasboard-tg" role="tabpanel" aria-labelledby="dasboard-tg-all" tabindex="0">
-                                        <div class="section-header mb-3">
-                                            <h5 class="text-uppercase">Thống kê theo Khoảng thời gian</h5>
-                                        </div>
-                                        <div class="month-filter mb-4">
-                                            <div class="d-flex justify-content-end align-items-center">
-                                                <form id="form-statistics-time" class="d-flex align-items-center">
-                                                    <div class="d-flex align-items-center me-3">
-                                                        <label for="start_date" class="mb-0 me-2" style="white-space: nowrap;">Ngày bắt đầu:</label>
-                                                        <input type="date" id="start_date" name="start_date" class="form-control me-2" required>
-                                                    </div>
-                                                    <div class="d-flex align-items-center me-3">
-                                                        <label for="end_date" class="mb-0 me-2" style="white-space: nowrap;">Ngày kết thúc:</label>
-                                                        <input type="date" id="end_date" name="end_date" class="form-control me-2" required>
-                                                    </div>
-                                                    <button type="submit" class="btn btn-primary">Thống kê</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                        <div class="chart">
-                                            <canvas id="timeRangeChart" class="w-100"
-                                                style="max-height: 300px;"></canvas>
-                                        </div>
+                                </div>
+                                <div class="tab-pane fade" id="dasboard-tg" role="tabpanel"
+                                    aria-labelledby="dasboard-tg-all" tabindex="0">
+                                    <div class="section-header mb-3">
+                                        <h5 class="text-uppercase">Thống kê theo Khoảng thời gian</h5>
                                     </div>
-                                    <div class="tab-pane fade" id="dasboard-month" role="tabpanel"
-                                        aria-labelledby="dasboard-month-tab" tabindex="0"></div>
-                                    <div class="tab-pane fade" id="dasboard-year" role="tabpanel"
-                                        aria-labelledby="dasboard-year-tab" tabindex="0">
-                                        <div class="section-header mb-3">
-                                            <h5 class="text-uppercase">Thống kê theo năm</h5>
-                                        </div>
-
-                                        <div class="date-filter mb-4">
-                                            <form id="form-statistics-year" class="d-flex align-items-center">
-                                                <label for="year" class="me-2">Năm:</label>
-                                                <input type="number" id="year" name="year"
-                                                    value="{{ now()->format('Y') }}" class="form-control me-2"
-                                                    style="max-width: 200px;">
+                                    <div class="month-filter mb-4">
+                                        <div class="d-flex justify-content-end align-items-center">
+                                            <form id="form-statistics-time" class="d-flex align-items-center">
+                                                <div class="d-flex align-items-center me-3">
+                                                    <label for="start_date" class="mb-0 me-2"
+                                                        style="white-space: nowrap;">Ngày bắt đầu:</label>
+                                                    <input type="date" id="start_date" name="start_date"
+                                                        class="form-control me-2" required>
+                                                </div>
+                                                <div class="d-flex align-items-center me-3">
+                                                    <label for="end_date" class="mb-0 me-2"
+                                                        style="white-space: nowrap;">Ngày kết thúc:</label>
+                                                    <input type="date" id="end_date" name="end_date"
+                                                        class="form-control me-2" required>
+                                                </div>
                                                 <button type="submit" class="btn btn-primary">Thống kê</button>
                                             </form>
-
                                         </div>
+                                    </div>
+                                    <div class="chart">
+                                        <canvas id="timeRangeChart" class="w-100" style="max-height: 300px;"></canvas>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="dasboard-month" role="tabpanel"
+                                    aria-labelledby="dasboard-month-tab" tabindex="0"></div>
+                                <div class="tab-pane fade" id="dasboard-year" role="tabpanel"
+                                    aria-labelledby="dasboard-year-tab" tabindex="0">
+                                    <div class="section-header mb-3">
+                                        <h5 class="text-uppercase">Thống kê theo năm</h5>
+                                    </div>
 
-                                        <div class="chart">
-                                            <canvas id="hourlyChartYear" class="w-100"
-                                                style="max-height: 300px;"></canvas>
-                                        </div>
+                                    <div class="date-filter mb-4">
+                                        <form id="form-statistics-year" class="d-flex align-items-center">
+                                            <label for="year" class="me-2">Năm:</label>
+                                            <input type="number" id="year" name="year"
+                                                value="{{ now()->format('Y') }}" class="form-control me-2"
+                                                style="max-width: 200px;">
+                                            <button type="submit" class="btn btn-primary">Thống kê</button>
+                                        </form>
+
+                                    </div>
+
+                                    <div class="chart">
+                                        <canvas id="hourlyChartYear" class="w-100" style="max-height: 300px;"></canvas>
                                     </div>
                                 </div>
                             </div>
-
-                            {{-- </div><!-- end card body -->
-                    </div> --}}
                         </div>
                     </div>
                 </div>
@@ -274,8 +295,9 @@
                                                 <tr>
                                                     <td>
                                                         <div class="d-flex align-items-center">
-                                                            <div class="avatar-sm bg-light rounded p-1 me-2">
+                                                            <div class="avatar-sm bg-light rounded me-2">
                                                                 <img src="{{ Storage::url($item->primary_image_url) }}"
+                                                                    style="height: 48px; min-width: 48px; object-fit: cover"
                                                                     alt="{{ $item->product_name }}"
                                                                     class="img-fluid d-block">
                                                             </div>
@@ -311,8 +333,9 @@
                                                 <tr>
                                                     <td>
                                                         <div class="d-flex align-items-center">
-                                                            <div class="avatar-sm bg-light rounded p-1 me-2">
+                                                            <div class="avatar-sm bg-light rounded me-2">
                                                                 <img src="{{ Storage::url($item->primary_image_url) }}"
+                                                                    style="height: 48px; min-width: 48px; object-fit: cover"
                                                                     alt="{{ $item->product_name }}"
                                                                     class="img-fluid d-block">
                                                             </div>
@@ -324,7 +347,7 @@
                                                     <td>
                                                         <span class="text-muted">Tổng doanh thu:</span>
                                                         <h5 class="fs-14 my-1 fw-normal">
-                                                            {{ number_format($item->total_revenue, 0, ',', '.') }} VNĐ
+                                                            {{ number_format($item->total_revenue, 0, ',', '.') }} đ
                                                         </h5>
                                                     </td>
                                                 </tr>
@@ -350,8 +373,9 @@
                                                 <tr>
                                                     <td>
                                                         <div class="d-flex align-items-center">
-                                                            <div class="avatar-sm bg-light rounded p-1 me-2">
+                                                            <div class="avatar-sm bg-light rounded me-2">
                                                                 <img src="{{ Storage::url($item->primary_image_url) }}"
+                                                                    style="height: 48px; min-width: 48px; object-fit: cover"
                                                                     alt="{{ $item->product_name }}"
                                                                     class="img-fluid d-block">
                                                             </div>
@@ -364,7 +388,7 @@
                                                     <td>
                                                         <span class="text-muted">Tổng lợi nhuận:</span>
                                                         <h5 class="fs-14 my-1 fw-normal">
-                                                            {{ number_format($item->total_profit, 0, ',', '.') }} VNĐ</h5>
+                                                            {{ number_format($item->total_profit, 0, ',', '.') }} đ</h5>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -485,84 +509,86 @@
     {{-- Thống kê ngày --}}
     @section('scripts')
         <script>
-
             // Hàm gửi yêu cầu và cập nhật biểu đồ khi thay đổi ngày
-        function fetchDataAndUpdateChart(date) {
-            fetch('{{ route('statistics') }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({ date: date })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    updateChart(data);  // Cập nhật biểu đồ
-                    updateTotal(data);  // Cập nhật tổng số liệu
+            function fetchDataAndUpdateChart(date) {
+                fetch('{{ route('statistics') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            date: date
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        updateChart(data); // Cập nhật biểu đồ
+                        updateTotal(data); // Cập nhật tổng số liệu
+                    });
+            }
+
+            // Tự động lấy dữ liệu cho ngày hiện tại khi tải trang
+            document.addEventListener('DOMContentLoaded', function() {
+                const currentDate = new Date().toISOString().split('T')[0]; // Lấy ngày hiện tại (yyyy-mm-dd)
+                document.getElementById('date').value = currentDate; // Gán giá trị ngày hiện tại vào input date
+                fetchDataAndUpdateChart(currentDate); // Gửi yêu cầu lấy dữ liệu cho ngày hiện tại
+
+                // Lắng nghe sự kiện thay đổi ngày và gửi yêu cầu cập nhật dữ liệu
+                document.getElementById('date').addEventListener('change', function() {
+                    const date = this.value;
+                    fetchDataAndUpdateChart(date);
                 });
-        }
-
-        // Tự động lấy dữ liệu cho ngày hiện tại khi tải trang
-        document.addEventListener('DOMContentLoaded', function() {
-            const currentDate = new Date().toISOString().split('T')[0]; // Lấy ngày hiện tại (yyyy-mm-dd)
-            document.getElementById('date').value = currentDate;  // Gán giá trị ngày hiện tại vào input date
-            fetchDataAndUpdateChart(currentDate);  // Gửi yêu cầu lấy dữ liệu cho ngày hiện tại
-
-            // Lắng nghe sự kiện thay đổi ngày và gửi yêu cầu cập nhật dữ liệu
-            document.getElementById('date').addEventListener('change', function() {
-                const date = this.value;
-                fetchDataAndUpdateChart(date);
             });
-        });
 
-        const hourlyctx = document.getElementById('hourlyChart').getContext('2d');
-        const hourlyChart = new Chart(hourlyctx, {
-            type: 'bar',
-            data: {
-                labels: Array.from({ length: 24 }, (_, i) => `${i}:00`),
-                datasets: [
-                    {
-                        label: 'Doanh thu (VNĐ)',
-                        data: Array(24).fill(0),
-                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    },
-                    {
-                        label: 'Lợi nhuận (VNĐ)',
-                        data: Array(24).fill(0),
-                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1
-                    }
-                ]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        position: 'left',
-                        title: {
-                            display: true,
-                            text: 'Doanh thu và Lợi nhuận (VNĐ)'
+            const hourlyctx = document.getElementById('hourlyChart').getContext('2d');
+            const hourlyChart = new Chart(hourlyctx, {
+                type: 'bar',
+                data: {
+                    labels: Array.from({
+                        length: 24
+                    }, (_, i) => `${i}:00`),
+                    datasets: [{
+                            label: 'Doanh thu (VNĐ)',
+                            data: Array(24).fill(0),
+                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Lợi nhuận (VNĐ)',
+                            data: Array(24).fill(0),
+                            backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Doanh thu và Lợi nhuận (VNĐ)'
+                            }
                         }
                     }
                 }
+            });
+
+            // Hàm cập nhật biểu đồ
+            function updateChart(data) {
+                hourlyChart.data.datasets[0].data = data.revenue; // Dữ liệu doanh thu
+                hourlyChart.data.datasets[1].data = data.profit; // Dữ liệu lợi nhuận
+                hourlyChart.update();
             }
-        });
 
-        // Hàm cập nhật biểu đồ
-        function updateChart(data) {
-            hourlyChart.data.datasets[0].data = data.revenue; // Dữ liệu doanh thu
-            hourlyChart.data.datasets[1].data = data.profit;  // Dữ liệu lợi nhuận
-            hourlyChart.update();
-        }
-
-        // Hàm cập nhật tổng số liệu
-        function updateTotal(data) {
-            console.log("Cập nhật số liệu tổng:", data.total);
-        }
+            // Hàm cập nhật tổng số liệu
+            function updateTotal(data) {
+                console.log("Cập nhật số liệu tổng:", data.total);
+            }
 
 
             // Thống kê theo năm
