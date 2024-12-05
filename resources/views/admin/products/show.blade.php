@@ -29,6 +29,14 @@
                                         disabled>
                                 </div>
                                 <div class="mt-3">
+                                    <label for="status" class="form-label">Trạng thái: </label>
+                                        @if ($product->is_visible)
+                                        <span class="badge bg-success-subtle text-success text-uppercase fs-6">Hiển thị</span>
+                                    @else
+                                        <span class="badge bg-danger-subtle text-danger text-uppercase fs-6">Ẩn</span>
+                                    @endif
+                                </div>
+                                <div class="mt-3">
                                     <label for="primary_image_url" class="form-label">Hình ảnh</label>
                                     <br>
                                     <img src="{{ asset('storage/' . $product->primary_image_url) }}"
@@ -44,7 +52,7 @@
                                     </div>
                                     <div class="mt-3">
                                         <label for="detailed_description" class="form-label">Mô tả chi tiết</label>
-                                        {!! $product->detailed_description !!}
+                                        <textarea class="form-control" name="summary" id="summary" rows="4" disabled>  {!! $product->detailed_description !!}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -88,21 +96,21 @@
                                                     {{ $variant->stock }}
                                                 </td>
                                                 <td>
-                                                    {{ number_format($variant->listed_price, 0, ',', '.') }} VNĐ
+                                                    {{ number_format($variant->listed_price, 0, ',', '.') }} đ
                                                 </td>
                                                 <td>
-                                                    {{ number_format($variant->sale_price, 0, ',', '.') }} VNĐ
+                                                    {{ number_format($variant->sale_price, 0, ',', '.') }} đ
                                                 </td>
                                                 <td>
-                                                    {{ number_format($variant->import_price, 0, ',', '.') }} VNĐ
+                                                    {{ number_format($variant->import_price, 0, ',', '.') }} đ
                                                 </td>
                                                 <td>
                                                     @if ($variant->is_show)
                                                         <span
-                                                            class="badge bg-success-subtle text-success text-uppercase">Show</span>
+                                                            class="badge bg-success-subtle text-success text-uppercase">Hiển thị</span>
                                                     @else
                                                         <span
-                                                            class="badge bg-danger-subtle text-danger text-uppercase">Hide</span>
+                                                            class="badge bg-danger-subtle text-danger text-uppercase">Ẩn</span>
                                                     @endif
                                                 </td>
                                             </tr>
