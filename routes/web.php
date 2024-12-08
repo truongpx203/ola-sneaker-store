@@ -4,6 +4,7 @@ use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\client\Account;
 
+use App\Http\Controllers\admin\ContactController as AdminContactController; //12/7/2024
 use App\Http\Controllers\admin\BillController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\ProductReviewController as AdminProductReviewController;
@@ -135,6 +136,15 @@ Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
             Route::get('/edit/{id}',            [ProductSizeController::class, 'edit'])->name('edit');
             Route::put('/update/{id}',          [ProductSizeController::class, 'update'])->name('update');
             Route::delete('/delete/{id}',       [ProductSizeController::class, 'destroy'])->name('destroy');
+        });
+
+    // Route quản lý liên hệ (12/7/2024)
+    Route::prefix('contacts')
+        ->as('contacts.')
+        ->group(function () {
+            Route::get('/', [AdminContactController::class, 'index'])->name('index'); // Danh sách liên hệ
+            Route::get('/{id}', [AdminContactController::class, 'show'])->name('show'); // Xem chi tiết liên hệ
+            Route::delete('/{id}', [AdminContactController::class, 'destroy'])->name('destroy'); // Xóa liên hệ
         });
 
     // bills
