@@ -10,19 +10,21 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ContactNotification extends Mailable
+class ReplyContact extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $contact; //Để truyền dữ liệu vào view
+    public $contact;
+    public $replyMessage;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(Contact $contact)
+    public function __construct(Contact $contact, $replyMessage)
     {
         //
-        $this->contact = $contact; //Gán dữ liệu từ contact model
+        $this->contact = $contact;
+        $this->replyMessage = $replyMessage;
     }
 
     /**
@@ -31,8 +33,7 @@ class ContactNotification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            // to: ['admin@example.com'], // Email admin
-            subject: 'Thông báo liên hệ mới', // Tiêu đề email
+            subject: 'Phản hồi từ Admin',
         );
     }
 
@@ -42,8 +43,9 @@ class ContactNotification extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.new_contact', // Đường dẫn view email
-            with: ['contact' =>$this->contact] //Truyền dữ liệu tới view
+            view: 'emails.reply_contact',
+            with:  ['contact' => $this->contact,
+                    'replyMessage' => $this->replyMessage,]
         );
     }
 

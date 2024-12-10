@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('subject')->nullable(); // Tiêu đề
             $table->text('message'); // Nội dung
             $table->boolean('is_resolved')->default(false); // Đã phản hồi hay chưa
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null'); //12/7/2024
+            // $table->foreign('user_id')->references('id')->on('users')->onDelete('set null'); //12/7/2024
             $table->timestamps(); //Thời gian tạo và cập nhật
         });
     }

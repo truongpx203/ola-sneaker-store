@@ -112,9 +112,10 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th>ID</th>
-                                        <th>Tên người gửi</th>
+                                        <th>Họ và tên</th>
                                         <th>Email</th>
                                         <th>Tiêu đề</th>
+                                        <th>Trạng thái</th>
                                         <th>Ngày gửi</th>
                                         <th>Hành động</th>
                                     </tr>
@@ -125,7 +126,14 @@
                                             <td>{{ $contact->id }}</td>
                                             <td>{{ $contact->name }}</td>
                                             <td>{{ $contact->email }}</td>
-                                            <td>{{ $contact->subject }}</td>
+                                            <td>{{ $contact->subject ?? 'Không có tiêu đề' }}</td>
+                                            <td>
+                                                @if($contact->is_resolved)
+                                                    <span class="badge bg-success">Đã phản hồi</span>
+                                                @else
+                                                    <span class="badge bg-warning">Chưa phản hồi</span>
+                                                @endif
+                                            </td>
                                             <td>{{ $contact->created_at->format('d-m-Y H:i') }}</td>
                                             <td>
                                                 <a href="{{ route('contacts.show', $contact->id) }}"

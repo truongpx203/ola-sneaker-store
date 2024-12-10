@@ -144,6 +144,7 @@ Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
         ->group(function () {
             Route::get('/', [AdminContactController::class, 'index'])->name('index'); // Danh sách liên hệ
             Route::get('/{id}', [AdminContactController::class, 'show'])->name('show'); // Xem chi tiết liên hệ
+            Route::post('/contacts/{contact}/reply', [AdminContactController::class, 'reply'])->name('reply'); //10/12/2024
             Route::delete('/{id}', [AdminContactController::class, 'destroy'])->name('destroy'); // Xóa liên hệ
         });
 

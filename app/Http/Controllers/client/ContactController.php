@@ -16,6 +16,10 @@ class ContactController extends Controller
     // Hiển thị form liên hệ
     public function showForm()
     {
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Bạn cần đăng nhập để liên hệ.');
+        }    
+
         $user = Auth::user(); // Lấy thông tin người dùng đã đăng nhập
         return view('client.contact', compact('user')); // Hiển thị form
     }
@@ -23,27 +27,38 @@ class ContactController extends Controller
     // Xử lý form liên hệ
     public function submitForm(ContactFormRequest $request)
     {
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Bạn cần đăng nhập để gửi liên hệ.');
+        }
+
         // Xác thực dữ liệu
         $validated = $request->validated();
 
         // Kiểm tra nếu người dùng đã đăng nhập và gán user_id
-        if (auth()->check()) {
-            $validated['user_id'] = auth()->id(); // Gán user_id
-        }
+        // if (Auth::check()) {
+        //     $validated['user_id'] = Auth::id(); // Gán user_id
+        // }
+        $validated['user_id'] = Auth::id(); // Gán user_id của người dùng đã đăng nhập
 
         // Lưu thông tin vào cơ sở dữ liệu
         $contact = Contact::create($validated);
 
-        // Kiểm tra sự tồn tại của user trước khi gửi email
-        if ($contact->user && $contact->user->email) {
-            // Gửi email cho user hoặc admin
-            Mail::to($contact->user->email)->send(new ContactNotification($contact));
-        } else {
-            // Gửi email thông báo cho admin nếu không có người dùng liên kết
-            Mail::to('admin@example.com')->send(new ContactNotification($contact));
-        }
+        // Gửi email thông báo cho admin 
+        try {
+            // Lấy danh sách email của admin từ cơ sở dữ liệu
+            $adminEmails = \App\Models\User::where('role', 'admin')->pluck('email')->toArray();
 
-        // Nếu có lỗi trong quá trình gửi email, trả về thông báo lỗi
-        return back()->with('success', 'Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm.');
+            // Nếu có admin, gửi email
+            if (!empty($adminEmails)) {
+                Mail::to($adminEmails)->send(new ContactNotification($contact));
+            }
+
+            // Trả về thông báo thành công
+            return back()->with('success', 'Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm.');
+        } catch (\Exception $e) {
+            // Nếu có lỗi trong quá trình gửi email, trả về thông báo lỗi
+            \Log::error('Error sending contact email: ' . $e->getMessage());
+            return back()->with('error', 'Có lỗi xảy ra khi gửi email. Vui lòng thử lại sau.');
+        }
     }
 }
