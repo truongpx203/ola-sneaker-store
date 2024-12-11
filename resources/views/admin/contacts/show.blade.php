@@ -43,14 +43,16 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
+            </div>
+
+            <div class="card">
                 <div class="card-body">
                     <div class="live-preview">
                         @if (!$contact->is_resolved)
                             <div class="card">
                                 <div class="card-header">
-                                    Phản hồi liên hệ
+                                    <h4 class="card-title mb-0 flex-grow-1">Phản hồi liên hệ</h4>
                                 </div>
                                 <div class="card-body">
                                     <form action="{{ route('contacts.reply', $contact->id) }}" method="POST">
