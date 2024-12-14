@@ -46,7 +46,7 @@ class BillController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
-        $statusList = ['pending', 'confirmed', 'in_delivery', 'delivered', 'failed', 'canceled', 'completed'];
+        $statusList = ['pending', 'confirmed', 'in_delivery', 'delivered', 'failed', 'canceled'];
 
         // Xác thực yêu cầu đầu vào
         $request->validate([
@@ -70,7 +70,7 @@ class BillController extends Controller
             'pending' => ['confirmed', 'canceled'],
             'confirmed' => ['in_delivery'],
             'in_delivery' => ['delivered', 'failed'],
-            'delivered' => ['completed'],
+            'delivered' => [],
             'failed' => [],
             'canceled' => [],
             'completed' => []
@@ -135,8 +135,8 @@ class BillController extends Controller
         }
 
         if ($bill->bill_status === 'delivered' && $oldStatus !== 'completed') {
-            // UpdateOrderStatus::dispatch($bill->id)->delay(now()->addDays(3));
-            UpdateOrderStatus::dispatch($bill->id)->delay(now()->addMinutes(1));
+            UpdateOrderStatus::dispatch($bill->id)->delay(now()->addDays(3));
+            // UpdateOrderStatus::dispatch($bill->id)->delay(now()->addMinutes(1));
             if ($bill->bill_status === 'completed') {
                 $bill->awardPointsToUser(); 
             }
