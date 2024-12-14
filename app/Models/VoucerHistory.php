@@ -15,7 +15,11 @@ class VoucerHistory extends Model
     protected $fillable = [
         'voucher_id',
         'user_id',
-        'bill_id ',
+        'bill_id',
         'at_datetime',
     ];
+    public function voucher()
+    {
+        return $this->belongsTo(Voucher::class);
+    }
 }

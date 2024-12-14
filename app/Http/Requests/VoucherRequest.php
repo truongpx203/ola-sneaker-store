@@ -50,7 +50,6 @@ class VoucherRequest extends FormRequest
                             ],
                             'start_datetime' => [
                                 'required',
-                                'after_or_equal:' . Carbon::now()->format('Y-m-d H:i'),
                             ],
                             'end_datetime' => [
                                 'required',
@@ -88,7 +87,6 @@ class VoucherRequest extends FormRequest
                             ],
                             'start_datetime' => [
                                 'required',
-                                'after_or_equal:' . now()->format('Y-m-d H:i'),
                             ],
                             'end_datetime' => [
                                 'required',

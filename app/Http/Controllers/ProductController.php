@@ -148,6 +148,7 @@ class ProductController extends Controller
                 'summary' => $request->summary,
                 'detailed_description' => html_entity_decode(strip_tags($request->detailed_description)),
                 'category_id' => $request->category_id,
+                'is_visible' => $request->has('is_visible') ? 1 : 0,
             ]);
     
             // Xử lý ảnh chính (primary image)

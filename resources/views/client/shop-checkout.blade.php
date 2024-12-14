@@ -80,46 +80,65 @@
                         @endforeach
                     </div>
                 @endif
-                <div class="row">
-                    <div class="col-12">
-                      <div class="checkout-page-coupon-wrap">
-                        <!--== Start Checkout Coupon Accordion ==-->
-                        <div class="coupon-accordion" id="CouponAccordion">
-                          <div class="card">
-                            <h3>
-                              <i class="fa fa-info-circle"></i>
-                              Có phiếu giảm giá?
-                              <a href="#/" data-bs-toggle="collapse" data-bs-target="#couponaccordion">Nhấp vào đây để nhập mã của bạn</a>
-                            </h3>
-                            <div id="couponaccordion" class="collapse" data-bs-parent="#CouponAccordion">
-                              <div class="card-body">
-                                <div class="apply-coupon-wrap mb-60">
-                                  <p>Nếu bạn có mã giảm giá, vui lòng áp dụng bên dưới.</p>
-                                  <form action="#" method="post">
-                                    <div class="row">
-                                      <div class="col-md-6">
-                                        <div class="form-group">
-                                          <input class="form-control" type="text" placeholder="Mã gỉảm giá">
-                                        </div>
-                                      </div>
-                                      <div class="col-md-6">
-                                        <button class="btn-coupon">Áp dụng</button>
-                                      </div>
-                                    </div>
-                                  </form>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <!--== End Checkout Coupon Accordion ==-->
-                      </div>
+                @if (session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
                     </div>
-                  </div>
+                @endif
+                @if (session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
+                @if (session('voucher') == null)
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="checkout-page-coupon-wrap">
+                                <!--== Start Checkout Coupon Accordion ==-->
+                                <div class="coupon-accordion" id="CouponAccordion">
+                                    <div class="card">
+                                        <h3>
+                                            <i class="fa fa-info-circle"></i>
+                                            Có phiếu giảm giá?
+                                            <a href="#/" data-bs-toggle="collapse"
+                                                data-bs-target="#couponaccordion">Nhấp
+                                                vào đây để nhập mã của bạn</a>
+                                        </h3>
+                                        <div id="couponaccordion" class="collapse" data-bs-parent="#CouponAccordion">
+                                            <div class="card-body">
+                                                <div class="apply-coupon-wrap mb-60">
+                                                    <p>Nếu bạn có mã giảm giá, vui lòng áp dụng bên dưới.</p>
+                                                    <form action="{{ route('cart.voucher') }}" method="POST">
+                                                        @csrf
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <input type="text" id="couponCode" name="couponCode"
+                                                                        class="form-control"
+                                                                        placeholder="Nhập mã phiếu giảm giá của bạn"
+                                                                        required value="{{ session('voucher.code') }}">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <button class="btn-coupon" type="submit">Áp dụng</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--== End Checkout Coupon Accordion ==-->
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
                 <form id="checkout-form" action="{{ route('checkout.process') }}" method="post">
                     @csrf
                     <input type="hidden" name="user_id" value="{{ Auth::id() }}">
-
+                    <input type="hidden" name="voucher_id" value="{{ session('voucher.id') }}">
                     <div class="row">
                         <div class="col-lg-6">
                             <!--== Start Billing Accordion ==-->
@@ -170,8 +189,7 @@
                                                         title="required">*</abbr></label>
                                                 <input id="street-address" type="text" name="address"
                                                     class="form-control" placeholder="Nhập địa chỉ người nhận"
-                                                    value="{{ old('name', $user->address) }}"
-                                                    >
+                                                    value="{{ old('name', $user->address) }}">
                                                 @error('address')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
@@ -228,77 +246,94 @@
                                                 <th>Phí vận chuyển</th>
                                                 <td>Miễn phí</td>
                                             </tr>
+                                            @if (session('voucher'))
+                                                <tr class="shipping">
+                                                    <th>Giảm giá</th>
+                                                    <td>{{ session('voucher.value') . '%' }}</td>
+                                                </tr>
+                                            @endif
                                             <tr class="order-total">
                                                 <th>Tổng cộng</th>
                                                 {{-- 7/11/2024 --}}
-
-                                                <td id="finalTotal">{{ number_format($total_price) }} đ</td> 
-
+                                                <td id="finalTotal">{{ number_format($total_price) }} đ</td>
                                             </tr>
                                         </tfoot>
                                     </table>
 
                                     <div class="shop-payment-method">
-                                        <div id="PaymentMethodAccordion">
-                                            {{-- 7/11/2024 --}}
-                                            <div>
+                                        <div id="PaymentMethodAccordion" class="accordion">
+                                            <!-- Dùng điểm tích lũy (7/11/2024) -->
+                                            <div class="mb-4">
                                                 <!-- Các trường nhập thông tin đơn hàng khác -->
-
                                                 <!-- Số điểm người dùng có -->
-                                                <p>Bạn có {{ $userPoints }} điểm tích lũy</p>
-
+                                                <p class="fw-bold">Bạn có <strong>{{ $userPoints }}</strong> điểm tích
+                                                    lũy</p>
                                                 <!-- Ô nhập số điểm muốn sử dụng -->
-                                                <label for="points_to_use">Số điểm muốn sử dụng:</label>
+                                                <label for="points_to_use" class="form-label">Số điểm muốn sử
+                                                    dụng:</label>
                                                 <input type="number" id="points_to_use" name="points_to_use"
-                                                    min="0" max="{{ $userPoints }}" value="0"
-                                                    oninput="calculateDiscount()">
+                                                    class="form-control" min="0" max="{{ $userPoints }}"
+                                                    value="0" oninput="calculateDiscount()">
+                                                <small class="form-text text-muted">1 điểm = 10,000 VNĐ giảm giá</small>
+
+                                                {{-- <div class="mt-2">
+                                                    <p class="text-success">Tổng giảm giá: <span id="discountAmount">0</span> VNĐ</p>
+                                                </div> --}}
                                             </div>
 
-                                            <div>
-                                                <input type="radio" id="payment_cod" name="payment_type"
-                                                    value="cod">
-                                                <label for="payment_cod">Thanh toán khi nhận hàng (COD)</label>
+                                            <!-- Chọn phương thức thanh toán -->
+                                            <div class="mb-4">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" id="payment_cod"
+                                                        name="payment_type" value="cod" checked>
+                                                    <label class="form-check-label" for="payment_cod">
+                                                        Thanh toán khi nhận hàng (COD)
+                                                    </label>
+                                                </div>
+
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" id="payment_vnpay"
+                                                        name="payment_type" value="vnpay">
+                                                    <label class="form-check-label" for="payment_vnpay"
+                                                        aria-labelledby="check_payments4"
+                                                        data-bs-parent="#PaymentMethodAccordion">
+                                                        Thanh toán với VNPAY
+                                                    </label>
+                                                </div>
+
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" id="payment_momo"
+                                                        name="payment_type" value="momo">
+                                                    <label class="form-check-label" for="payment_momo">Thanh toán
+                                                        MOMO</label>
+                                                </div>
                                             </div>
 
-                                            <div>
-                                                <input type="radio" id="payment_vnpay" name="payment_type"
-                                                    value="vnpay">
-                                                <label for="payment_vnpay" aria-labelledby="check_payments4"
-                                                    data-bs-parent="#PaymentMethodAccordion">Thanh toán VNPAY</label>
-                                            </div>
-                                            <div>
-                                                <input type="radio" id="payment_momo" name="payment_type"
-                                                    value="momo">
-                                                <label for="payment_momo">Thanh toán MOMO</label>
-                                            </div>
+                                            @error('payment_type')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
 
+                                            <!-- Nút đặt hàng -->
+                                            <a href=""><button type="submit"class="btn-theme">Đặt
+                                                    hàng</button></a>
                                         </div>
-                                        @error('payment_type')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                        <a href=""><button type="submit"class="btn-theme">Đặt hàng</button></a>
                                     </div>
                                 </div>
+                                <!--== End Order Details Accordion ==-->
                             </div>
-                            <!--== End Order Details Accordion ==-->
                         </div>
-                    </div>
                 </form>
-                {{-- 7/11/2024 --}}
+                {{-- 24/11/2024 --}}
                 <script>
                     function calculateDiscount() {
-                        const pointsToUse = parseInt(document.getElementById('points_to_use').value) || 0;
-                        const pointValue = 10000; // Giá trị mỗi điểm là 10000 VND
-                        const originalTotal = {{ $total_price }};
-
-                        // Tính số tiền giảm giá
-                        const discountAmount = pointsToUse * pointValue;
-
-                        // Tính tổng giá trị sau khi giảm
-                        const finalTotal = Math.max(0, originalTotal - discountAmount);
-
-                        // Cập nhật giao diện
-                        document.getElementById('finalTotal').innerText = new Intl.NumberFormat().format(finalTotal) + ' đ';
+                        var points = document.getElementById('points_to_use').value;
+                        var totalPrice = {{ $total_price }};
+                        var discount = points * 10000; // Giả sử mỗi điểm = 10000 VNĐ
+                        if (discount > totalPrice) {
+                            discount = totalPrice; // Không thể giảm quá số tiền cần thanh toán
+                        }
+                        var finalPrice = totalPrice - discount;
+                        document.getElementById('finalTotal').textContent = new Intl.NumberFormat('vi-VN').format(finalPrice) + ' VND';
                     }
                 </script>
 
@@ -325,7 +360,7 @@
                             if (paymentType === 'vnpay') {
                                 document.getElementById('checkout-form').action = "{{ route('checkout.vnpay') }}";
                             } else if (paymentType === 'momo') {
-                                document.getElementById('checkout-form').action = "{{ route('checkout.momo')}}";
+                                document.getElementById('checkout-form').action = "{{ route('checkout.momo') }}";
                             } else {
                                 document.getElementById('checkout-form').action = "{{ route('checkout.process') }}";
                             }
@@ -340,47 +375,46 @@
 @endsection
 
 @section('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const checkoutButton = document.getElementById('checkoutButton');
-        const paymentVnpay = document.getElementById('payment_vnpay');
-        const bankSelectionModal = document.getElementById('bankSelectionModal');
-        const confirmBankButton = document.getElementById('confirmBankButton');
-        const bankCodeSelect = document.getElementById('bankCode');
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkoutButton = document.getElementById('checkoutButton');
+            const paymentVnpay = document.getElementById('payment_vnpay');
+            const bankSelectionModal = document.getElementById('bankSelectionModal');
+            const confirmBankButton = document.getElementById('confirmBankButton');
+            const bankCodeSelect = document.getElementById('bankCode');
 
-        checkoutButton.addEventListener('click', function() {
-            if (paymentVnpay.checked) {
-                // Show the bank selection modal if VNPAY is selected
-                bankSelectionModal.style.display = 'block';
-            } else {
-                // If COD is selected, submit the form directly
-                document.querySelector('form').submit();
+            checkoutButton.addEventListener('click', function() {
+                if (paymentVnpay.checked) {
+                    // Show the bank selection modal if VNPAY is selected
+                    bankSelectionModal.style.display = 'block';
+                } else {
+                    // If COD is selected, submit the form directly
+                    document.querySelector('form').submit();
+                }
+            });
+
+            confirmBankButton.addEventListener('click', function() {
+                const selectedBank = bankCodeSelect.value;
+
+                if (selectedBank) {
+                    // Attach selected bank code to form and submit
+                    const form = document.querySelector('form');
+                    const bankInput = document.createElement('input');
+                    bankInput.type = 'hidden';
+                    bankInput.name = 'bank_code';
+                    bankInput.value = selectedBank;
+                    form.appendChild(bankInput);
+                    form.submit();
+                }
+            });
+
+            // Close modal when clicked outside of it (optional)
+            window.onclick = function(event) {
+                if (event.target == bankSelectionModal) {
+                    bankSelectionModal.style.display = "none";
+                }
             }
         });
-
-        confirmBankButton.addEventListener('click', function() {
-            const selectedBank = bankCodeSelect.value;
-
-            if (selectedBank) {
-                // Attach selected bank code to form and submit
-                const form = document.querySelector('form');
-                const bankInput = document.createElement('input');
-                bankInput.type = 'hidden';
-                bankInput.name = 'bank_code';
-                bankInput.value = selectedBank;
-                form.appendChild(bankInput);
-                form.submit();
-            }
-        });
-
-        // Close modal when clicked outside of it (optional)
-        window.onclick = function(event) {
-            if (event.target == bankSelectionModal) {
-                bankSelectionModal.style.display = "none";
-            }
-        }
-    });
-</script>
+    </script>
 
 @endsection
-

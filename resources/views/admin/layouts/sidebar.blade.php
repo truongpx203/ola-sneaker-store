@@ -31,7 +31,7 @@
             <div id="two-column-menu">
             </div>
             <ul class="navbar-nav" id="navbar-nav">
-                <li class="menu-title"><span data-key="t-menu">Menu</span></li>
+                {{-- <li class="menu-title"><span data-key="t-menu">Menu</span></li> --}}
                 <li class="nav-item">
 
                     <a class="nav-link menu-link" href="{{route('dashboard')}}"
@@ -45,7 +45,7 @@
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#user" data-bs-toggle="collapse"
                         role="button" aria-expanded="false" aria-controls="user">
-                        <i class="ri-gift-line"></i> <span data-key="t-layouts">User</span>
+                        <i class="ri-user-line"></i> <span data-key="t-layouts">User</span>
                     </a>
                     <div class="collapse menu-dropdown" id="user">
                         <ul class="nav nav-sm flex-column">
@@ -67,7 +67,7 @@
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarLayouts" data-bs-toggle="collapse"
                         role="button" aria-expanded="false" aria-controls="sidebarLayouts">
-                        <i class="ri-layout-3-line"></i> <span data-key="t-layouts">Danh mục sản phẩm </span>
+                        <i class="ri-layout-grid-line"></i> <span data-key="t-layouts">Danh mục sản phẩm </span>
                     </a>
                     <div class="collapse menu-dropdown" id="sidebarLayouts">
                         <ul class="nav nav-sm flex-column">
@@ -88,7 +88,7 @@
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarProducts" data-bs-toggle="collapse"
                         role="button" aria-expanded="false" aria-controls="sidebarProducts">
-                        <i class="ri-gift-line"></i> <span data-key="t-layouts">Sản phẩm</span>
+                        <i class="ri-store-line"></i> <span data-key="t-layouts">Sản phẩm</span>
                     </a>
                     <div class="collapse menu-dropdown" id="sidebarProducts">
                         <ul class="nav nav-sm flex-column">
@@ -108,23 +108,9 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="#variantProducts" data-bs-toggle="collapse" role="button"
-                        aria-expanded="false" aria-controls="variantProducts">
-                        <i class="ri-product-hunt-line"></i> <span data-key="t-layouts">Sản phẩm biến thể </span>
-                    </a>
-                    <div class="collapse menu-dropdown" id="variantProducts">
-                        <ul class="nav nav-sm flex-column">
-                            <li class="nav-item">
-                                <a href="{{ route('variants.index') }}" class="nav-link" data-key="t-horizontal">Danh sách</a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-
-                <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarProductsizes" data-bs-toggle="collapse"
                         role="button" aria-expanded="false" aria-controls="sidebarProductsizes">
-                        <i class="ri-layout-3-line"></i> <span data-key="t-layouts">Kích thước sản phẩm</span>
+                        <i class="ri-ruler-line"></i> <span data-key="t-layouts">Kích thước sản phẩm</span>
                     </a>
                     <div class="collapse menu-dropdown" id="sidebarProductsizes">
                         <ul class="nav nav-sm flex-column">
@@ -146,7 +132,7 @@
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#bills" data-bs-toggle="collapse"
                         role="button" aria-expanded="false" aria-controls="bills">
-                        <i class="ri-layout-3-line"></i> <span data-key="t-layouts">Hóa đơn</span>
+                        <i class="ri-bill-line"></i> <span data-key="t-layouts">Hóa đơn</span>
                     </a>
                     <div class="collapse menu-dropdown" id="bills">
                         <ul class="nav nav-sm flex-column">
@@ -162,7 +148,7 @@
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#review" data-bs-toggle="collapse"
                         role="button" aria-expanded="false" aria-controls="review">
-                        <i class="ri-layout-3-line"></i> <span data-key="t-layouts">Đánh giá</span>
+                        <i class="ri-star-line"></i> <span data-key="t-layouts">Đánh giá</span>
                     </a>
                     <div class="collapse menu-dropdown" id="review">
                         <ul class="nav nav-sm flex-column">
@@ -178,12 +164,28 @@
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#voucher" data-bs-toggle="collapse"
                         role="button" aria-expanded="false" aria-controls="voucher">
-                        <i class="ri-layout-3-line"></i> <span data-key="t-layouts">Mã giảm giá</span>
+                        <i class="ri-coupon-line"></i> <span data-key="t-layouts">Mã giảm giá</span>
                     </a>
                     <div class="collapse menu-dropdown" id="voucher">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <a href="{{route('voucher.index')}}" target="_self" class="nav-link"
+                                    data-key="t-horizontal">Danh sách</a>
+
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#voucher" data-bs-toggle="collapse"
+                        role="button" aria-expanded="false" aria-controls="voucher">
+                        <i class="ri-coupon-line"></i> <span data-key="t-layouts">Banner</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="voucher">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="{{route('banners.index')}}" target="_self" class="nav-link"
                                     data-key="t-horizontal">Danh sách</a>
 
                             </li>

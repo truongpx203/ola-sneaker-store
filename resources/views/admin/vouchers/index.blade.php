@@ -19,11 +19,11 @@
             </div>
         </div>
     </div>
-    {{-- @if ($errors->has('error_voucher'))
+    @if ($errors->has('error_voucher'))
         <div class="alert alert-danger">
             {{ $errors->first('error_voucher') }}
         </div>
-    @endif --}}
+    @endif
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
@@ -32,8 +32,7 @@
                     <a href="{{ route('voucher.create') }}" class="btn btn-primary mb-3">Thêm Mới </a>
                 </div>
                 <div class="card-body">
-                    <table id="example" class="table table-bordered dt-responsive nowrap table-striped align-middle"
-                        style="width:100%">
+                    <table id="example" class="table table-bordered dt-responsive align-middle" style="width:100%">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -117,8 +116,8 @@
     </script>
 @endsection
 @section('scriptsToastr')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
         console.log("Success message:", "{{ session('success') }}");
         toastr.options = {

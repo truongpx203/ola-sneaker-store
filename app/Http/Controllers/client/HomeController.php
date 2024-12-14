@@ -5,6 +5,7 @@ namespace App\Http\Controllers\client;
 use App\Http\Controllers\Controller;
 use App\Mail\OrderCanceledMail;
 use App\Mail\OrderCompletedMail;
+use App\Models\Banner;
 use App\Models\Bill;
 use App\Models\BillHistory;
 use App\Models\BillItem;
@@ -56,6 +57,20 @@ class HomeController extends Controller
         ]);
 
         $bill->bill_status = 'canceled';
+
+        // Nếu đơn hàng sử dụng điểm, hoàn lại số điểm cho người dùng (24/11/2024)
+        if ($bill->points_used > 0) {
+            $bill->returnPointsToUser();  // Gọi phương thức hoàn lại điểm
+        }
+
+        // Hoàn lại số lượng tồn kho cho từng sản phẩm trong đơn hàng
+        foreach ($bill->items as $item) {
+            $variant = $item->variant;
+            if ($variant) {
+                $variant->increment('stock', $item->variant_quantity);
+            }
+        }
+
         $bill->save();
 
         $atDatetime = now();
@@ -86,6 +101,12 @@ class HomeController extends Controller
         }
 
         $bill->bill_status = 'completed';
+
+        // Cộng điểm cho người dùng khi đơn hàng hoàn thành
+        if ($bill->bill_status === 'completed') {
+            $bill->awardPointsToUser(); // Cộng điểm cho người dùng
+        }
+
         $bill->save();
 
         BillHistory::create([

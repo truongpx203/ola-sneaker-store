@@ -99,16 +99,16 @@
               <div class="header-middle-align-start">
                 <div class="header-logo-area">
                   <a href="{{route('/')}}">
-                    <img class="logo-main" src="{{asset('assets/img/logo.webp')}}" width="131" height="34" alt="Logo" />
+                    <img class="logo-main" src="{{asset('assets/img/O (3).png')}}" width="131" height="34" alt="Logo" />
                     <img class="logo-light" src="{{asset('assets/img/logo-light.webp')}}" width="131" height="34" alt="Logo" />
                   </a>
                 </div>
               </div>
               <div class="header-middle-align-center">
                 <div class="header-search-area">
-                    <form class="header-searchbox" id="searchForm" method="GET" action="{{ route('search') }}">
+                    <form class="header-searchbox" method="GET" action="{{ route('search') }}">
                         <input type="search" name="name" class="form-control" placeholder="Tìm kiếm">
-                        <button class="btn-submit"  type="submit"><i class="pe-7s-search"></i></button>
+                        <button class="btn-submit" type="submit"><i class="pe-7s-search"></i></button>
                     </form>
                 </div>
             </div>

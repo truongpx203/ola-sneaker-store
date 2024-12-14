@@ -8,53 +8,28 @@
         <section class="home-slider-area">
             <div class="swiper-container home-slider-container default-slider-container">
                 <div class="swiper-wrapper home-slider-wrapper slider-default">
-                    <div class="swiper-slide">
-                        <div class="slider-content-area slider-content-area-two"
-                            data-bg-img="assets/img/slider/slider-02.webp">
-                            <div class="container">
-                                <div class="slider-container">
-                                    <div class="row justify-content-between align-items-center">
-                                        <div class="col-lg-5">
-                                            <div class="slider-content">
-                                                <div class="content">
-                                                    <div class="desc-box">
-                                                        {{-- <p class="desc">Up To 30% Off</p> --}}
-                                                    </div>
-                                                    <div class="title-box">
-                                                        <h2 class="title"><span class="font-weight-600">Phong cách mới,
-                                                                đẳng cấp mới</span></h2>
-                                                        <h4 class="font-weight-400 text-white mb-4">Thiết kế đột phá cho
-                                                            bước đi tự tin</h4>
-                                                    </div>
-                                                    <div class="btn-box">
-                                                        <a class="btn-slider" href="shop.html">Xem ngay</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="slider-content-area slider-content-area-two"
-                            data-bg-img="assets/img/slider/slider-04.webp">
-                            <div class="container">
-                                <div class="slider-container">
-                                    <div class="row justify-content-between align-items-center">
-                                        <div class="col-lg-5">
-                                            <div class="slider-content">
-                                                <div class="content">
-                                                    <div class="desc-box">
-                                                        <p class="desc">Up To 30% Off</p>
-                                                    </div>
-                                                    <div class="title-box">
-                                                        <h2 class="title"><span class="font-weight-400">Exclusive<br>
-                                                            </span>New Shoes</h2>
-                                                    </div>
-                                                    <div class="btn-box">
-                                                        <a class="btn-slider" href="shop.html">Shop Now</a>
+                    @foreach ($banner as $item)
+                        <div class="swiper-slide">
+                            <div class="slider-content-area slider-content-area-two"
+                                data-bg-img="{{ asset('storage/' . $item->image) }}">
+                                <div class="container">
+                                    <div class="slider-container">
+                                        <div class="row justify-content-between align-items-center">
+                                            <div class="col-lg-5">
+                                                <div class="slider-content">
+                                                    <div class="content">
+                                                        <div class="desc-box">
+                                                            {{-- <p class="desc">Up To 30% Off</p> --}}
+                                                        </div>
+                                                        <div class="title-box">
+                                                            <h2 class="title"><span class="font-weight-600">Phong cách mới,
+                                                                    đẳng cấp mới</span></h2>
+                                                            <h4 class="font-weight-400 text-white mb-4">Thiết kế đột phá cho
+                                                                bước đi tự tin</h4>
+                                                        </div>
+                                                        <div class="btn-box">
+                                                            <a class="btn-slider" href="{{route('shop.filter')}}">Xem ngay</a>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -62,10 +37,11 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
 
+
+                        </div>
+                    @endforeach
+                </div>
                 <!--== Add Swiper Arrows ==-->
                 <div class="swiper-btn-wrap">
                     <div class="swiper-btn-prev">
@@ -410,10 +386,12 @@
                                                             </h4>
                                                             <div class="prices">
                                                                 <span
-                                                                    class="price-old">{{ number_format($product->listed_price) }} đ</span>
+                                                                    class="price-old">{{ number_format($product->listed_price) }}
+                                                                    đ</span>
                                                                 <span class="sep">-</span>
                                                                 <span
-                                                                    class="price">{{ number_format($product->min_sale_price) }} đ</span>
+                                                                    class="price">{{ number_format($product->min_sale_price) }}
+                                                                    đ</span>
                                                             </div>
                                                             {{-- <div class="total-sold">
                                                                 <span>Tổng số lượng đã bán:

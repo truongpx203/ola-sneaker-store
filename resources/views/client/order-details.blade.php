@@ -31,7 +31,7 @@
                 <div class="row">
                     <div class="col-lg-12 col-md-12">
 
-                        @if ($errors->any())
+                        {{-- @if ($errors->any())
                             <div class="alert alert-danger" role="alert">
                                 <ul>
                                     @foreach ($errors->all() as $error)
@@ -39,7 +39,16 @@
                                     @endforeach
                                 </ul>
                             </div>
-                        @endif
+                        @endif --}}
+                        @error('note')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
+
+                        @if (Session('error'))
+                        <div class="alert alert-danger" role="alert">
+                            {{ Session('error') }}
+                        </div>
+                    @endif
                         @if (Session('success'))
                             <div class="alert alert-success" role="alert">
                                 {{ Session('success') }}
@@ -130,7 +139,7 @@
                                                         height="110" alt="img"></td>
                                                 <td>{{ $item->variant->size->name }}</td>
                                                 <td>{{ $item->variant_quantity }}</td>
-                                                <td>{{ number_format($item->sale_price, 0, ',', '.') }}</td>
+                                                <td>{{ number_format($item->sale_price, 0, ',', '.') }} đ</td>
                                                 {{-- <td>{{ number_format($bill->total_price, 0, ',', '.') }}</td> --}}
                                                 <td>
                                                     @if ($item->has_reviewed)
@@ -255,7 +264,7 @@
                                     {{-- <p class="saved-message">Tiền ship: <span class="text-danger">30.000đ</span></p> --}}
                                     <strong>
                                         <p class="saved-message">Tổng tiền hàng:
-                                            {{ number_format($bill->total_price, 0, ',', '.') }}<span class="text-danger"
+                                            {{ number_format($bill->total_price, 0, ',', '.') }} đ<span class="text-danger"
                                                 id="formattedTotal"></span></p>
                                     </strong>
                                 </div>
@@ -352,7 +361,7 @@
                                     </div>
                                     <div class="single-input-item">
                                         <button type="submit" class="btn btn-light" style="border-radius: 0"
-                                            {{ $bill->bill_status !== 'pending' ? 'disabled' : '' }}>Hủy đơn</button>
+                                            {{ $bill->bill_status !== 'pending' ? 'disabled' : '' }} onclick="return confirm('Bạn chắc chắn muốn hủy đơn chứ!')">Hủy đơn</button>
                                     </div>
                                 </form>
 

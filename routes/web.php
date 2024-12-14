@@ -1,5 +1,6 @@
 <?php
 
+use App\Exports\DateExport;
 use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\client\Account;
@@ -8,6 +9,7 @@ use App\Http\Controllers\admin\BillController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\ProductReviewController as AdminProductReviewController;
 use App\Http\Controllers\admin\UserController;
+use App\Http\Controllers\BannerController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\client\AccountController;
@@ -19,11 +21,15 @@ use App\Http\Controllers\client\CartController;
 use App\Http\Controllers\client\ContactController;
 use App\Http\Controllers\ProductSizeController;
 use App\Http\Controllers\client\ProductReviewController;
+use App\Http\Controllers\DateExportController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\WishlistController;
 
 use App\Models\Bill;
-
+use App\Models\VoucerHistory;
+use App\Models\Voucher;
+use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 /*
 |--------------------------------------------------------------------------
@@ -134,6 +140,17 @@ Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
             Route::put('/update/{id}',          [ProductSizeController::class, 'update'])->name('update');
             Route::delete('/delete/{id}',       [ProductSizeController::class, 'destroy'])->name('destroy');
         });
+    Route::prefix('banners')
+        ->as('banners.')
+        ->group(function () {
+            Route::get('/',                     [BannerController::class, 'index'])->name('index');
+            Route::get('/create',               [BannerController::class, 'create'])->name('create');
+            Route::post('/store',               [BannerController::class, 'store'])->name('store');
+            Route::get('/edit/{id}',            [BannerController::class, 'edit'])->name('edit');
+            Route::put('/update/{id}',          [BannerController::class, 'update'])->name('update');
+            Route::delete('/delete/{banner}',       [BannerController::class, 'destroy'])->name('destroy');
+
+        });
 
     // bills
     Route::get('/bills', [BillController::class, 'index'])->name('bills.index');
@@ -162,6 +179,10 @@ Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
             Route::delete('/delete/{id}',       [VoucherController::class, 'destroy'])->name('destroy');
         });
 
+       Route::get('/date-export', [DateExportController::class,'dateExport']);
+       Route::get('/month-export', [DateExportController::class,'monthExport']);
+       Route::get('/year-export', [DateExportController::class,'yearExport']);
+
 
 });
 
@@ -188,6 +209,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/account', [AccountController::class, 'account'])->name('account');
 
     Route::post('/updateProfile', [AccountController::class, 'updateProfile'])->name('your.route.name');
+    Route::post('/profile/update-password', [AccountController::class, 'updatePassword'])->name('profile.update.password');
+
+
 
     // chi tiết đơn hàng truyền id bảng bill
     Route::get('order-details/{id}', [HomeController::class, 'detailBill'])->name('order-details');
@@ -208,7 +232,7 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
-
+// Route::get('/', [BannerController::class, 'showSlider']);
 // Thanh toán
 
 Route::get('tt-that-bai', function () {
@@ -220,7 +244,7 @@ Route::get('tt-thanh-cong/{bill}', function ($billId) {
     return view('client.tt-thanh-cong', compact('bill'));
 })->name('tt-thanh-cong');
 
-Route::get('/payment/return', [CheckoutController::class, 'returnFromVNPAY'])->name('checkout.vnpay.returnFrom');
+Route::get('/payment/return/{voucher_id?}', [CheckoutController::class, 'returnFromVNPAY'])->name('checkout.vnpay.returnFrom');
 Route::post('/checkout/vnpay', [CheckoutController::class, 'processVNPAY'])->name('checkout.vnpay');
 
 // Route::post('/checkout/cod', [CheckoutController::class, 'processCheckout'])->name('checkout.cod');
@@ -238,7 +262,7 @@ Route::post('/contact', [ContactController::class, 'submitForm'])->name('contact
 // mua ngay
 Route::get('/buy-now', [CheckoutController::class, 'buyNow'])->name('buy.now');
 Route::post('/buy-now/process', [CheckoutController::class, 'processBuyNow'])->name('buy.now.process');
-Route::get('/checkout/vnpay/return', [CheckoutController::class, 'vnpayReturn'])->name('checkout.vnpay.return');
+Route::get('/checkout/vnpay/return/{voucher_id?}', [CheckoutController::class, 'vnpayReturn'])->name('checkout.vnpay.return');
 
 
 
@@ -275,5 +299,4 @@ Route::get('show-bill-item', function () {
 });
 
 
-//chat
 
