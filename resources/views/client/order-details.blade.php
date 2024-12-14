@@ -3,6 +3,67 @@
 @section('title', 'Chi tiết đơn hàng')
 
 @section('content')
+<style>
+    /* .container {
+                            padding: 20px;
+                        } */
+    .section-title {
+        font-weight: bold;
+        margin-top: 20px;
+    }
+
+    .table th,
+    .table td {
+        vertical-align: middle;
+    }
+
+    .total {
+        font-weight: bold;
+        text-align: right;
+    }
+
+    .voucher {
+        text-align: right;
+    }
+
+    .badge {
+        padding: 0.5em 1em;
+        border-radius: 0.25rem;
+        color: #fff;
+    }
+
+    .bg-gray {
+        background-color: #7d7d7d;
+    }
+
+    .bg-blue {
+        background-color: #007bff;
+    }
+
+    .bg-lightblue {
+        background-color: #5bc0de;
+    }
+
+    .bg-green {
+        background-color: #28a745;
+    }
+
+    .bg-red {
+        background-color: #dc3545;
+    }
+
+    .bg-orange {
+        background-color: #fd7e14;
+    }
+
+    .bg-darkgray {
+        background-color: #343a40;
+    }
+    .td-status{
+        max-width: 400px;
+    }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <main class="main-content">
         <!--== Start Page Header Area Wrapper ==-->
         <div class="page-header-area" data-bg-img="{{ asset('assets/img/photos/bg3.webp') }}">
@@ -277,28 +338,38 @@
                                     <thead class="thead-light">
                                         <tr>
                                             <th>STT</th>
-                                            <th>Trạng thái</th>
+                                            <th style="width: 450px">Trạng thái</th>
                                             <th>Ghi chú</th>
                                             <th>Thời gian</th>
                                         </tr>
                                     </thead>
                                     @php
-                                        $statusMapping = [
-                                            'pending' => 'Chờ xác nhận',
-                                            'confirmed' => 'Đã xác nhận',
-                                            'in_delivery' => 'Đang giao',
-                                            'delivered' => 'Giao hàng thành công',
-                                            'failed' => 'Giao hàng thất bại',
-                                            'canceled' => 'Đã hủy',
-                                            'completed' => 'Hoàn thành',
-                                        ];
+                                            $statusMapping = [
+                                                'pending' => ['text' => 'Chờ xác nhận', 'class' => 'badge bg-gray', 'icon' => 'bi-hourglass'],
+                                                'confirmed' => ['text' => 'Đã xác nhận', 'class' => 'badge bg-blue', 'icon' => 'bi-check-circle'],
+                                                'in_delivery' => ['text' => 'Đang giao', 'class' => 'badge bg-lightblue', 'icon' => 'bi-truck'],
+                                                'delivered' => ['text' => 'Giao hàng thành công', 'class' => 'badge bg-green', 'icon' => 'bi-box'],
+                                                'failed' => ['text' => 'Giao hàng thất bại', 'class' => 'badge bg-red', 'icon' => 'bi-x-circle'],
+                                                'canceled' => ['text' => 'Đã hủy', 'class' => 'badge bg-orange', 'icon' => 'bi-x-octagon'],
+                                                'completed' => ['text' => 'Hoàn thành', 'class' => 'badge bg-darkgray', 'icon' => 'bi-trophy'],
+                                            ];
                                     @endphp
 
                                     <tbody>
                                         @foreach ($bill->histories as $index => $history)
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
-                                                <td>{{ $statusMapping[$history->to_status] }}</td>
+                                                <td class="td-status d-flex justify-content-between align-items-center border-0" style="padding-left: 40px;">
+                                                    <span class="{{ $statusMapping[$history->from_status]['class'] ?? '' }}">
+                                                        <i class="fa me-2 {{ $statusMapping[$history->from_status]['icon'] ?? 'fa-question-circle' }}"></i>
+                                                        {{ $statusMapping[$history->from_status]['text'] ?? $history->from_status }}
+                                                    </span>
+                                                    &rarr; <!-- Mũi tên để chỉ hướng -->
+                                                    <span class="{{ $statusMapping[$history->to_status]['class'] ?? '' }}">
+                                                        <i class="fa me-2 {{ $statusMapping[$history->to_status]['icon'] ?? 'fa-question-circle' }}"></i>
+                                                        {{ $statusMapping[$history->to_status]['text'] ?? $history->to_status }}
+                                                    </span>
+                                                </td>
                                                 <td>{{ $history->note ?? '-' }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($history->at_datetime)->format('d/m/Y H:i') }}
                                                 </td>
