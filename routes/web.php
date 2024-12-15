@@ -5,6 +5,7 @@ use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\client\Account;
 
+use App\Http\Controllers\admin\ContactController as AdminContactController; //12/7/2024
 use App\Http\Controllers\admin\BillController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\ProductReviewController as AdminProductReviewController;
@@ -29,7 +30,9 @@ use App\Models\Bill;
 use App\Models\VoucerHistory;
 use App\Models\Voucher;
 use Illuminate\Support\Facades\Auth;
+
 use Maatwebsite\Excel\Facades\Excel;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -152,6 +155,16 @@ Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
 
         });
 
+    // Route quản lý liên hệ (12/7/2024)
+    Route::prefix('contacts')
+        ->as('contacts.')
+        ->group(function () {
+            Route::get('/', [AdminContactController::class, 'index'])->name('index'); // Danh sách liên hệ
+            Route::get('/{id}', [AdminContactController::class, 'show'])->name('show'); // Xem chi tiết liên hệ
+            Route::post('/contacts/{contact}/reply', [AdminContactController::class, 'reply'])->name('reply'); //10/12/2024
+            Route::delete('/{id}', [AdminContactController::class, 'destroy'])->name('destroy'); // Xóa liên hệ
+        });
+
     // bills
     Route::get('/bills', [BillController::class, 'index'])->name('bills.index');
     Route::get('/bills/{id}', [BillController::class, 'show'])->name('bills.show');
@@ -179,9 +192,11 @@ Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
             Route::delete('/delete/{id}',       [VoucherController::class, 'destroy'])->name('destroy');
         });
 
+
        Route::get('/date-export', [DateExportController::class,'dateExport']);
        Route::get('/month-export', [DateExportController::class,'monthExport']);
        Route::get('/year-export', [DateExportController::class,'yearExport']);
+
 
 
 });
@@ -229,7 +244,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/chat', [App\Http\Controllers\MessageController::class, 'showChat'])->name('chat.show');
     Route::post('/chat/message', [App\Http\Controllers\MessageController::class, 'messageReceived'])->name('chat.message');
     Route::post('/chat/greet/{receiver}', [App\Http\Controllers\MessageController::class, 'greetReceived'])->name('chat.greet');
-
 });
 
 // Route::get('/', [BannerController::class, 'showSlider']);

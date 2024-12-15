@@ -151,6 +151,7 @@
                                                             </div>
                                                         </fieldset>
                                                         <div class="single-input-item">
+
                                                             <button type="submit" class="check-btn sqr-btn">Lưu thông
                                                                 tin</button>
                                                         </div>
@@ -266,7 +267,7 @@
                                                 </div>
                                             </div>
                                         </div>
-
+                                        
                                         {{-- 7/11/2024 --}}
 
                                         <div class="tab-pane fade" id="points" role="tabpanel"

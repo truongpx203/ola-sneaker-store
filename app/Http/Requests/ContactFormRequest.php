@@ -32,10 +32,23 @@ class ContactFormRequest extends FormRequest
     public function messages()
     {
         return [
+            // 'name.required' => 'Vui lòng nhập họ tên.',
+            // 'email.required' => 'Vui lòng nhập email.',
+            // 'email.email' => 'Email không hợp lệ.',
+            // 'message.required' => 'Vui lòng nhập nội dung.',
+
+            // 10/12/2024
+
             'name.required' => 'Vui lòng nhập họ tên.',
+            'name.string' => 'Họ tên phải là chuỗi ký tự.',
+            'name.max' => 'Họ tên không được vượt quá 255 ký tự.',
             'email.required' => 'Vui lòng nhập email.',
             'email.email' => 'Email không hợp lệ.',
+            'email.max' => 'Email không được vượt quá 255 ký tự.',
+            'subject.string' => 'Tiêu đề phải là chuỗi ký tự.',
+            'subject.max' => 'Tiêu đề không được vượt quá 255 ký tự.',
             'message.required' => 'Vui lòng nhập nội dung.',
+            'message.string' => 'Nội dung phải là chuỗi ký tự.',
         ];
     }
 }

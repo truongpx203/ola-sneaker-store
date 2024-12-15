@@ -178,6 +178,7 @@
                                     data-bs-target="#dasboard-tg" type="button" role="tab"
                                     aria-controls="dasboard-tg" aria-selected="false">Theo khoảng thời gian</button>
                             </li>
+
                             <li class="nav-item ms-auto" role="presentation"> <!-- Thêm 'ms-auto' -->
                                 <button class="btn  dropdown-toggle" type="button" id="exportDropdown"
                                     data-bs-toggle="dropdown" aria-expanded="false" role="tab">
@@ -207,6 +208,7 @@
                                     </li>
                                 </ul>
                             </li>
+
                         </ul>
 
                     </div><!-- end card header -->
@@ -247,8 +249,9 @@
                                             <form id="form-statistics-month" class="d-flex align-items-center">
                                                 <label for="month" class="me-2">Tháng:</label>
                                                 <input type="month" id="month" name="month"
-                                                    class="form-control me-2" value="{{ now()->format('Y-m') }}"
-                                                    required>
+
+                                                    class="form-control me-2" value="{{ now()->format('Y-m') }}" required>
+
                                                 {{-- <button type="submit" class="btn btn-primary">thống kê</button> --}}
                                             </form>
                                         </div>
@@ -303,17 +306,11 @@
                                             <button type="submit" class="btn btn-primary">Thống kê</button>
                                         </form>
 
-                                    </div>
 
+                                    </div>
 
                                     <div class="chart">
                                         <canvas id="hourlyChartYear" class="w-100" style="max-height: 300px;"></canvas>
-                                    </div>
-                                </div>
-                                <div class="date-filter mb-4">
-                                    <div class="d-flex justify-content-end">
-
-
                                     </div>
                                 </div>
                             </div>
