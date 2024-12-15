@@ -73,14 +73,14 @@
                             <div class="row gy-4">
                                 <div class="col-md-6">
                                     <div>
-                                        <label for="quantity" class="form-label">Số lượng mã</label>
-                                        <input type="number" class="form-control" name="quantity" id="quantity">
+                                        <label for="max_price" class="form-label">Số tiền tối đa</label>
+                                        <input type="number" class="form-control" name="max_price" id="namax_priceme">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div>
-                                        <label for="max_price" class="form-label">Số tiền tối đa</label>
-                                        <input type="number" class="form-control" name="max_price" id="namax_priceme">
+                                        <label for="description" class="form-label">Mô tả</label>
+                                        <input type="text" class="form-control" name="description" id="description">
                                     </div>
                                 </div>
                             </div>
@@ -109,7 +109,7 @@
                     <div class="card-body">
                         <div class="live-preview">
                             <div class="row gy-4">
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <div>
                                         <label for="for_user_ids" class="form-label">Chọn người được dùng được dùng mã(giữ
                                             Ctrl để chọn nhiều)</label>
@@ -121,12 +121,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div>
-                                        <label for="description" class="form-label">Mô tả</label>
-                                        <input type="text" class="form-control" name="description" id="description">
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -159,7 +154,6 @@
             });
         </script>
     @endif
-
 @endsection
 @section('scriptsToastr')
     @if (session('success'))
@@ -175,5 +169,4 @@
             });
         </script>
     @endif
-
 @endsection

@@ -35,6 +35,7 @@ class VoucherController extends Controller
     public function store(VoucherRequest $request)
     {
         $request->merge([
+            'quantity' => count($request->for_user_ids),
             'for_user_ids' => json_encode($request->for_user_ids)
         ]);
         $voucher = Voucher::create($request->all());
@@ -74,7 +75,7 @@ class VoucherController extends Controller
         $voucher = Voucher::find($id);
         $data = [
             "value" => $request->value,
-            "quantity" => $request->quantity,
+            "quantity" => count($request->for_user_ids),
             "max_price" => $request->max_price,
             "start_datetime" => $request->start_datetime,
             "end_datetime" => $request->end_datetime,

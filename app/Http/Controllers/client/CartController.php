@@ -196,6 +196,6 @@ class CartController extends Controller
         if (!in_array(Auth::user()->id, $forUserIds)) {
             return redirect()->back()->with('error', 'Mã giảm giá không dành cho bạn');
         }
-        return redirect()->back()->with(compact('voucher'))->with('success', 'Mã giảm giá đã được áp dụng');
+        return redirect()->back()->with(compact('voucher'))->with('success', 'Mã giảm giá "' . $validatedData['couponCode'] . '" đã được áp dụng');
     }
 }

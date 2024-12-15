@@ -90,7 +90,7 @@
                         {{ session('error') }}
                     </div>
                 @endif
-                @if (session('voucher') == null)
+                {{-- @if (session('voucher') == null) --}}
                     <div class="row">
                         <div class="col-12">
                             <div class="checkout-page-coupon-wrap">
@@ -133,7 +133,7 @@
                             </div>
                         </div>
                     </div>
-                @endif
+                {{-- @endif --}}
                 <form id="checkout-form" action="{{ route('buy.now.process') }}" method="post">
                     @csrf
                     <input type="hidden" name="variant_id" value="{{ $variant->id }}">

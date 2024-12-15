@@ -55,11 +55,6 @@ class VoucherRequest extends FormRequest
                                 'required',
                                 'after_or_equal:start_datetime'
                             ],
-                            'quantity' => [
-                                'required',
-                                'numeric',
-                                'min:1'
-                            ],
                             'for_user_ids' => [
                                 'required',
                             ]
@@ -91,11 +86,6 @@ class VoucherRequest extends FormRequest
                             'end_datetime' => [
                                 'required',
                                 'after_or_equal:start_datetime',
-                            ],
-                            'quantity' => [
-                                'required',
-                                'numeric',
-                                'min:1',
                             ],
                             'for_user_ids' => [
                                 'required',
@@ -130,7 +120,6 @@ class VoucherRequest extends FormRequest
             'max_price'  => 'Giá tối đa',
             'start_datetime'  => 'Ngày bắt đầu',
             'end_datetime'  => 'Ngày kết thúc',
-            'quantity'  => 'Số lượng',
             'for_user_ids'  => 'Người được cấp riêng'
         ];
     }
