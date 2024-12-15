@@ -5,8 +5,8 @@
 @section('content')
     <style>
         /* .container {
-                                padding: 20px;
-                            } */
+                                        padding: 20px;
+                                    } */
         .section-title {
             font-weight: bold;
             margin-top: 20px;
@@ -60,7 +60,7 @@
             background-color: #343a40;
         }
 
-        .td-status{
+        .td-status {
             max-width: 400px;
         }
     </style>
@@ -175,14 +175,15 @@
                         @endforeach
                     </tbody>
                 </table>
-                <div class="voucher">Mã giảm giá (Voucher): -{{ number_format($bill->discount ?? 0, 0, ',', '.') }} đ
-                </div>
+                @if (isset($voucerHistory))
+                    <div class="voucher">Mã giảm giá (Voucher): {{ $voucerHistory->voucher->value }}%
+                    </div>
+                @endif
                 <div class="total">Tổng: {{ number_format($bill->total_price, 0, ',', '.') }} đ</div>
             </div>
         </div>
         @php
             $statusMapping = [
-
                 'pending' => ['text' => 'Chờ xác nhận', 'class' => 'badge bg-gray', 'icon' => 'fa-hourglass-half'],
                 'confirmed' => ['text' => 'Đã xác nhận', 'class' => 'badge bg-blue', 'icon' => 'fa-check-circle'],
                 'in_delivery' => ['text' => 'Đang giao', 'class' => 'badge bg-lightblue', 'icon' => 'fa-truck'],
@@ -190,7 +191,6 @@
                 'failed' => ['text' => 'Giao hàng thất bại', 'class' => 'badge bg-red', 'icon' => 'fa-times-circle'],
                 'canceled' => ['text' => 'Đã hủy', 'class' => 'badge bg-orange', 'icon' => 'fa-ban'],
                 'completed' => ['text' => 'Hoàn thành', 'class' => 'badge bg-darkgray', 'icon' => 'fa-trophy'],
-
             ];
         @endphp
         <div class="card mb-4">
@@ -215,14 +215,16 @@
 
                                 <td class="td-status d-flex justify-content-between align-items-center border-0">
                                     <span class="{{ $statusMapping[$history->from_status]['class'] ?? '' }}">
-                                        <i class="fa me-2 {{ $statusMapping[$history->from_status]['icon'] ?? 'fa-question-circle' }}"></i>
+                                        <i
+                                            class="fa me-2 {{ $statusMapping[$history->from_status]['icon'] ?? 'fa-question-circle' }}"></i>
 
                                         {{ $statusMapping[$history->from_status]['text'] ?? $history->from_status }}
                                     </span>
                                     &rarr; <!-- Mũi tên để chỉ hướng -->
                                     <span class="{{ $statusMapping[$history->to_status]['class'] ?? '' }}">
 
-                                        <i class="fa me-2 {{ $statusMapping[$history->to_status]['icon'] ?? 'fa-question-circle' }}"></i>
+                                        <i
+                                            class="fa me-2 {{ $statusMapping[$history->to_status]['icon'] ?? 'fa-question-circle' }}"></i>
 
                                         {{ $statusMapping[$history->to_status]['text'] ?? $history->to_status }}
                                     </span>
@@ -252,7 +254,6 @@
                     <div class="mb-3">
                         <label for="status" class="form-label">Trạng Thái</label>
                         <select name="status" class="form-select" id="bill_status"
-
                             {{ in_array($bill->bill_status, ['completed', 'delivered', 'canceled', 'failed']) ? 'disabled' : '' }}>
 
                             <option value="pending" {{ $bill->bill_status == 'pending' ? 'selected' : '' }}>Chờ xác nhận
@@ -298,14 +299,12 @@
                     <div class="mb-3">
                         <label for="note" class="form-label">Ghi chú</label>
                         <textarea name="note" class="form-control" id="note" rows="3"
-
                             {{ in_array($bill->bill_status, ['delivered', 'completed', 'canceled', 'failed']) ? 'disabled' : '' }}></textarea>
 
                     </div>
                     <a href="{{ route('bills.index') }}"><button type="button" class="btn btn-secondary">Quay
                             lại</button></a>
                     <button type="submit" class="btn btn-primary" id="submit-btn"
-
                         {{ in_array($bill->bill_status, ['delivered', 'completed', 'canceled', 'failed']) ? 'disabled' : '' }}>Lưu</button>
 
                 </form>
