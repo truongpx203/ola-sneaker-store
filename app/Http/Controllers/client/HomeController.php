@@ -10,6 +10,7 @@ use App\Models\Bill;
 use App\Models\BillHistory;
 use App\Models\BillItem;
 use App\Models\ProductReview;
+use App\Models\VoucerHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -29,7 +30,7 @@ class HomeController extends Controller
             // Nếu không phải, chuyển hướng về trang khác và hiển thị thông báo lỗi
             return redirect()->route('page-not-found')->with('error', 'Bạn không có quyền truy cập vào đơn hàng này.');
         }
-
+        $voucerHistory=VoucerHistory::query()->with('voucher')->where('bill_id',$id)->first();
         foreach ($bill->items as $item) {
             // Kiểm tra xem người dùng đã đánh giá sản phẩm này trong đơn hàng này chưa
             $item->has_reviewed = ProductReview::where('variant_id', $item->variant->id)
@@ -38,7 +39,7 @@ class HomeController extends Controller
                 ->exists();
         }
 
-        return view('client.order-details', compact('bill'));
+        return view('client.order-details', compact('bill','voucerHistory'));
     }
 
     public function cancelOrder(Request $request, $id)
