@@ -6,6 +6,8 @@
 
 @section('content')
     <h3 class="mb-3">Thống kê bán hàng</h3>
+
+
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
@@ -176,6 +178,37 @@
                                     data-bs-target="#dasboard-tg" type="button" role="tab"
                                     aria-controls="dasboard-tg" aria-selected="false">Theo khoảng thời gian</button>
                             </li>
+
+                            <li class="nav-item ms-auto" role="presentation"> <!-- Thêm 'ms-auto' -->
+                                <button class="btn  dropdown-toggle" type="button" id="exportDropdown"
+                                    data-bs-toggle="dropdown" aria-expanded="false" role="tab">
+                                    Xuất Excel
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="exportDropdown">
+                                    <li>
+                                        <form action="{{ url('admin/date-export') }}" method="get"
+                                            style="display: inline;">
+                                            @csrf
+                                            <button class="dropdown-item" type="submit">Xuất theo ngày</button>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form action="{{ url('admin/month-export') }}" method="get"
+                                            style="display: inline;">
+                                            @csrf
+                                            <button class="dropdown-item" type="submit">Xuất theo tháng</button>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form action="{{ url('admin/year-export') }}" method="get"
+                                            style="display: inline;">
+                                            @csrf
+                                            <button class="dropdown-item" type="submit">Xuất theo năm</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+
                         </ul>
 
                     </div><!-- end card header -->
@@ -216,7 +249,9 @@
                                             <form id="form-statistics-month" class="d-flex align-items-center">
                                                 <label for="month" class="me-2">Tháng:</label>
                                                 <input type="month" id="month" name="month"
+
                                                     class="form-control me-2" value="{{ now()->format('Y-m') }}" required>
+
                                                 {{-- <button type="submit" class="btn btn-primary">thống kê</button> --}}
                                             </form>
                                         </div>
@@ -271,6 +306,7 @@
                                             <button type="submit" class="btn btn-primary">Thống kê</button>
                                         </form>
 
+
                                     </div>
 
                                     <div class="chart">
@@ -278,6 +314,7 @@
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -487,6 +524,47 @@
                     /* Đảm bảo bảng chiếm hết chiều rộng */
                     table-layout: auto;
                     /* Để các cột tự động giãn */
+                }
+
+                .dasboard_admin {
+                    display: flex;
+                    gap: 8px;
+                    /* Khoảng cách giữa các mục */
+                    margin-bottom: 0;
+                    /* Xóa khoảng cách bên dưới */
+                    flex-wrap: nowrap;
+                    /* Giữ tất cả các mục trên cùng một dòng */
+                    overflow: hidden;
+                    /* Ngăn mục tràn khỏi container */
+                }
+
+                .dasboard_admin .nav-item {
+                    flex-shrink: 1;
+                    /* Các mục có thể co lại khi không đủ chỗ */
+                    max-width: 150px;
+                    /* Giới hạn chiều rộng tối đa của mỗi mục */
+                    text-overflow: ellipsis;
+                    /* Thêm dấu "..." nếu nội dung bị tràn */
+                    white-space: nowrap;
+                    /* Không cho phép xuống dòng */
+                    overflow: hidden;
+                    /* Ẩn nội dung tràn */
+                }
+
+                .dasboard_admin .ms-auto {
+                    flex-shrink: 0;
+                    /* Nút "Xuất Excel" không bị co lại */
+                    margin-left: auto;
+                    /* Đẩy nút sang phải */
+                }
+
+                .btn {
+                    color: #405189;
+                    /* Màu chữ mặc định (gần đen) */
+                    background-color: transparent;
+                    /* Nền trong suốt */
+                    border: 1px solid transparent;
+                    /* Không có viền */
                 }
             </style>
         </div>

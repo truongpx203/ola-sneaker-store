@@ -135,8 +135,10 @@ class BillController extends Controller
         }
 
         if ($bill->bill_status === 'delivered' && $oldStatus !== 'completed') {
+
             UpdateOrderStatus::dispatch($bill->id)->delay(now()->addDays(3));
             // UpdateOrderStatus::dispatch($bill->id)->delay(now()->addMinutes(1));
+
             if ($bill->bill_status === 'completed') {
                 $bill->awardPointsToUser(); 
             }

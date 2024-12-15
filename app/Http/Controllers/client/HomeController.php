@@ -5,6 +5,7 @@ namespace App\Http\Controllers\client;
 use App\Http\Controllers\Controller;
 use App\Mail\OrderCanceledMail;
 use App\Mail\OrderCompletedMail;
+use App\Models\Banner;
 use App\Models\Bill;
 use App\Models\BillHistory;
 use App\Models\BillItem;

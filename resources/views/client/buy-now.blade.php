@@ -277,10 +277,12 @@
                                                 <input type="number" id="points_to_use" name="points_to_use"
                                                     class="form-control" min="0" max="{{ $userPoints }}"
                                                     value="0" oninput="calculateDiscount()">
+
                                                 <small class="form-text text-muted">1 điểm = 10,000 VNĐ giảm giá</small> <br>
                                                 <small class="form-text text-muted">
                                                     Đơn hàng có giá trị <strong>400.000 VNĐ</strong> sẽ được cộng <strong>1 điểm tích lũy</strong>.
                                                 </small>
+
 
                                                 {{-- <div class="mt-2">
                                                     <p class="text-success">Tổng giảm giá: <span id="discountAmount">0</span> VNĐ</p>

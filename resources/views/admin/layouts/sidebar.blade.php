@@ -106,7 +106,7 @@
                         </ul>
                     </div>
                 </li>
-                
+
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarProductsizes" data-bs-toggle="collapse"
                         role="button" aria-expanded="false" aria-controls="sidebarProductsizes">
@@ -170,6 +170,22 @@
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <a href="{{route('voucher.index')}}" target="_self" class="nav-link"
+                                    data-key="t-horizontal">Danh sách</a>
+
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#voucher" data-bs-toggle="collapse"
+                        role="button" aria-expanded="false" aria-controls="voucher">
+                        <i class="ri-coupon-line"></i> <span data-key="t-layouts">Banner</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="voucher">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="{{route('banners.index')}}" target="_self" class="nav-link"
                                     data-key="t-horizontal">Danh sách</a>
 
                             </li>
