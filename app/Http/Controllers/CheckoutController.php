@@ -143,10 +143,18 @@ class CheckoutController extends Controller
             }
             // 7/11/2024
             /// Xác định điểm sử dụng và tính giảm giá
+            // $pointsToUse = $request->input('points_to_use', 0);
+            // if ($pointsToUse > $user->points) {
+            //     return redirect()->back()->withErrors(['error' => 'Số điểm bạn nhập không hợp lệ.']);
+            // }
+            //Sửa 17/12/2024
             $pointsToUse = $request->input('points_to_use', 0);
-            if ($pointsToUse > $user->points) {
-                return redirect()->back()->withErrors(['error' => 'Số điểm bạn nhập không hợp lệ.']);
+            if ($pointsToUse > $user->points || $pointsToUse < 0) {
+                return redirect()->back()->withErrors([
+                    'error' => 'Số điểm bạn nhập không hợp lệ. Bạn chỉ có ' . $user->points . ' điểm.'
+                ]);
             }
+
             $discountAmount = $pointsToUse * 10000;
             $finalPrice = max(0, $total_price - $discountAmount);
 
@@ -294,8 +302,16 @@ class CheckoutController extends Controller
         $pointsToUse = $validateData['points_to_use'] ?? 0;
         $user = Auth::user();
         // Kiểm tra nếu số điểm người dùng nhập vượt quá số điểm hiện có
-        if ($pointsToUse > $user->points) {
-            return redirect()->back()->withErrors(['error' => 'Số điểm bạn nhập vượt quá số điểm hiện có.']);
+        // if ($pointsToUse > $user->points) {
+        //     return redirect()->back()->withErrors(['error' => 'Số điểm bạn nhập vượt quá số điểm hiện có.']);
+        // }
+
+        //Sửa 17/12/2024
+        $pointsToUse = $request->input('points_to_use', 0);
+        if ($pointsToUse > $user->points || $pointsToUse < 0) {
+            return redirect()->back()->withErrors([
+                'error' => 'Số điểm bạn nhập không hợp lệ. Bạn chỉ có ' . $user->points . ' điểm.'
+            ]);
         }
 
         // Tính tổng giá trị giỏ hàng
@@ -409,9 +425,18 @@ class CheckoutController extends Controller
                 $pointsToUse = session('payment.points_to_use', 0);
                 $user = Auth::user();
 
-                if ($pointsToUse > $user->points) {
+                // if ($pointsToUse > $user->points) {
+                //     DB::rollBack();
+                //     return redirect()->route('tt-that-bai')->withErrors(['error' => 'Số điểm sử dụng vượt quá số điểm bạn có.']);
+                // }
+
+                // Sửa ngày 17/12/2024
+                // Kiểm tra tính hợp lệ của số điểm sử dụng
+                if ($pointsToUse > $user->points || $pointsToUse < 0) {
                     DB::rollBack();
-                    return redirect()->route('tt-that-bai')->withErrors(['error' => 'Số điểm sử dụng vượt quá số điểm bạn có.']);
+                    return redirect()->route('tt-that-bai')->withErrors([
+                        'error' => 'Số điểm bạn nhập không hợp lệ. Bạn chỉ có ' . $user->points . ' điểm.'
+                    ]);
                 }
 
                 // Lấy lại thông tin từ session
@@ -834,8 +859,15 @@ class CheckoutController extends Controller
 
             // Xử lý số điểm giảm giá(7/11/2024)
             $pointsToUse = $validatedData['points_to_use'] ?? 0;
-            if ($pointsToUse > $user->points) {
-                return redirect()->back()->withErrors(['error' => 'Số điểm bạn nhập vượt quá số điểm hiện có.']);
+            // if ($pointsToUse > $user->points) {
+            //     return redirect()->back()->withErrors(['error' => 'Số điểm bạn nhập vượt quá số điểm hiện có.']);
+            // }
+
+            // Sửa 17/12/2024
+            if ($pointsToUse > $user->points || $pointsToUse < 0) {
+                return redirect()->back()->withErrors([
+                    'error' => 'Số điểm bạn nhập không hợp lệ. Bạn chỉ có ' . $user->points . ' điểm.'
+                ]);
             }
             $pointValue = 10000; // Giá trị mỗi điểm là 10,000 VND
             $discountAmount = $pointsToUse * $pointValue;
@@ -1006,8 +1038,15 @@ class CheckoutController extends Controller
         $pointsToUse = $validatedData['points_to_use'] ?? 0;
         $pointValue = 10000; // Mỗi điểm giảm giá 10,000 VND
 
-        if ($pointsToUse > $user->points) {
-            return redirect()->route('checkout')->withErrors(['error' => 'Bạn không có đủ điểm để sử dụng!']);
+        // if ($pointsToUse > $user->points) {
+        //     return redirect()->route('checkout')->withErrors(['error' => 'Bạn không có đủ điểm để sử dụng!']);
+        // }
+
+        // Sửa 17/12/2024
+        if ($pointsToUse > $user->points || $pointsToUse < 0) {
+            return redirect()->back()->withErrors([
+                'error' => 'Số điểm bạn nhập không hợp lệ. Bạn chỉ có ' . $user->points . ' điểm.'
+            ]);
         }
 
         // Tính số tiền giảm giá(7/11/2024)
@@ -1102,9 +1141,18 @@ class CheckoutController extends Controller
                 $pointsToUse = session('payment.points_to_use', 0);
                 $user = Auth::user();
 
-                if ($pointsToUse > $user->points) {
+                // if ($pointsToUse > $user->points) {
+                //     DB::rollBack();
+                //     return redirect()->route('tt-that-bai')->withErrors(['error' => 'Số điểm sử dụng vượt quá số điểm bạn có.']);
+                // }
+
+                // Sửa 17/12/2024
+                // Kiểm tra tính hợp lệ của số điểm sử dụng
+                if ($pointsToUse > $user->points || $pointsToUse < 0) {
                     DB::rollBack();
-                    return redirect()->route('tt-that-bai')->withErrors(['error' => 'Số điểm sử dụng vượt quá số điểm bạn có.']);
+                    return redirect()->route('tt-that-bai')->withErrors([
+                        'error' => 'Số điểm bạn nhập không hợp lệ. Bạn chỉ có ' . $user->points . ' điểm.'
+                    ]);
                 }
 
                 $totalPrice = $variant->sale_price * $validatedData['variant_quantity'];

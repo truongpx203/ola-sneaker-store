@@ -274,12 +274,23 @@
                                                 <!-- Ô nhập số điểm muốn sử dụng -->
                                                 <label for="points_to_use" class="form-label">Số điểm muốn sử
                                                     dụng:</label>
+                                                {{-- <input type="number" id="points_to_use" name="points_to_use"
+                                                    class="form-control" min="0" max="{{ $userPoints }}"
+                                                    value="0" oninput="calculateDiscount()"> --}}
+
+                                                {{-- Sửa 17/12/2024 --}}
                                                 <input type="number" id="points_to_use" name="points_to_use"
                                                     class="form-control" min="0" max="{{ $userPoints }}"
-                                                    value="0" oninput="calculateDiscount()">
-                                                <small class="form-text text-muted">1 điểm = 10,000 VNĐ giảm giá</small> <br>
+                                                    value="0"
+                                                    oninput="validatePoints(this.value, {{ $userPoints }})">
+                                                <small id="pointsError" class="text-danger" style="display: none;">
+                                                    Số điểm bạn nhập vượt quá số điểm hiện có!
+                                                </small>
+                                                <small class="form-text text-muted">1 điểm = 10,000 VNĐ giảm giá</small>
+                                                <br>
                                                 <small class="form-text text-muted">
-                                                    Đơn hàng có giá trị <strong>400.000 VNĐ</strong> sẽ được cộng <strong>1 điểm tích lũy</strong>.
+                                                    Đơn hàng có giá trị <strong>400.000 VNĐ</strong> sẽ được cộng <strong>1
+                                                        điểm tích lũy</strong>.
                                                 </small>
 
                                                 {{-- <div class="mt-2">
@@ -331,7 +342,7 @@
                     </div>
                 </form>
                 {{-- 24/11/2024 --}}
-                <script>
+                {{-- <script>
                     function calculateDiscount() {
                         var points = document.getElementById('points_to_use').value;
                         var totalPrice = {{ $total_price }};
@@ -342,7 +353,33 @@
                         var finalPrice = totalPrice - discount;
                         document.getElementById('finalTotal').textContent = new Intl.NumberFormat('vi-VN').format(finalPrice) + ' VND';
                     }
+                </script> --}}
+                {{-- Sửa 17/12/2024 --}}
+                <script>
+                    function validatePoints(inputPoints, userPoints) {
+                        let pointsError = document.getElementById('pointsError');
+                        let pointsInput = document.getElementById('points_to_use');
+                        if (parseInt(inputPoints) > userPoints) {
+                            pointsError.style.display = 'block';
+                            pointsInput.value = userPoints; // Giới hạn số điểm nhập vào
+                        } else {
+                            pointsError.style.display = 'none';
+                        }
+                        calculateDiscount();
+                    }
+                
+                    function calculateDiscount() {
+                        var points = document.getElementById('points_to_use').value;
+                        var totalPrice = {{ $total_price }};
+                        var discount = points * 10000; // 1 điểm = 10,000 VNĐ
+                        if (discount > totalPrice) {
+                            discount = totalPrice;
+                        }
+                        var finalPrice = totalPrice - discount;
+                        document.getElementById('finalTotal').textContent = new Intl.NumberFormat('vi-VN').format(finalPrice) + ' VND';
+                    }
                 </script>
+
                 {{-- <script>
                     document.getElementById('checkout-form').addEventListener('submit', function(event) {
                         const paymentType = document.querySelector('input[name="payment_type"]:checked').value;

@@ -5,8 +5,8 @@
 @section('content')
     <style>
         /* .container {
-                                padding: 20px;
-                            } */
+                                    padding: 20px;
+                                } */
         .section-title {
             font-weight: bold;
             margin-top: 20px;
@@ -59,7 +59,8 @@
         .bg-darkgray {
             background-color: #343a40;
         }
-        .td-status{
+
+        .td-status {
             max-width: 400px;
         }
     </style>
@@ -169,8 +170,15 @@
                         @endforeach
                     </tbody>
                 </table>
-                <div class="voucher">Mã giảm giá (Voucher): -{{ number_format($bill->discount ?? 0, 0, ',', '.') }} đ
+                <div class="voucher">
+                    {{-- 17/12/20224 --}}
+                    @if ($bill->discount_amount > 0)
+                        <p class="saved-message">Giảm giá từ điểm: <span
+                                class="text-danger">-{{ number_format($bill->discount_amount, 0, ',', '.') }} đ</span></p>
+                    @endif
                 </div>
+                {{-- <div class="voucher">Mã giảm giá (Voucher): -{{ number_format($bill->discount ?? 0, 0, ',', '.') }} đ
+                </div> --}}
                 <div class="total">Tổng: {{ number_format($bill->total_price, 0, ',', '.') }} đ</div>
             </div>
         </div>
@@ -204,12 +212,14 @@
                                 <td>{{ $index + 1 }}</td>
                                 <td class="td-status d-flex justify-content-between align-items-center border-0">
                                     <span class="{{ $statusMapping[$history->from_status]['class'] ?? '' }}">
-                                        <i class="fa me-2 {{ $statusMapping[$history->from_status]['icon'] ?? 'fa-question-circle' }}"></i>
+                                        <i
+                                            class="fa me-2 {{ $statusMapping[$history->from_status]['icon'] ?? 'fa-question-circle' }}"></i>
                                         {{ $statusMapping[$history->from_status]['text'] ?? $history->from_status }}
                                     </span>
                                     &rarr; <!-- Mũi tên để chỉ hướng -->
                                     <span class="{{ $statusMapping[$history->to_status]['class'] ?? '' }}">
-                                        <i class="fa me-2 {{ $statusMapping[$history->to_status]['icon'] ?? 'fa-question-circle' }}"></i>
+                                        <i
+                                            class="fa me-2 {{ $statusMapping[$history->to_status]['icon'] ?? 'fa-question-circle' }}"></i>
                                         {{ $statusMapping[$history->to_status]['text'] ?? $history->to_status }}
                                     </span>
                                 </td>
@@ -241,7 +251,8 @@
                             {{ in_array($bill->bill_status, ['completed', 'delivered', 'canceled', 'failed']) ? 'disabled' : '' }}>
                             <option value="pending" {{ $bill->bill_status == 'pending' ? 'selected' : '' }}>Chờ xác nhận
                             </option>
-                            <option value="confirmed" {{ $bill->bill_status == 'confirmed' ? 'selected' : '' }}>Đã xác nhận
+                            <option value="confirmed" {{ $bill->bill_status == 'confirmed' ? 'selected' : '' }}>Đã xác
+                                nhận
                             </option>
                             <option value="in_delivery" {{ $bill->bill_status == 'in_delivery' ? 'selected' : '' }}>Đang
                                 giao</option>

@@ -321,7 +321,11 @@
 
 
                                 <div class="myaccount-content">
-                                    {{-- <p class="saved-message">Giảm giá: <span class="text-danger">-$1000</span></p> --}}
+                                    {{-- 17/12/20224 --}}
+                                    @if ($bill->discount_amount > 0)
+                                        <p class="saved-message">Giảm giá từ điểm: <span class="text-danger">-{{ number_format($bill->discount_amount, 0, ',', '.') }} đ</span></p>
+                                    @endif
+                                    
                                     {{-- <p class="saved-message">Tiền ship: <span class="text-danger">30.000đ</span></p> --}}
                                     <strong>
                                         <p class="saved-message">Tổng tiền hàng:
