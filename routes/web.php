@@ -9,6 +9,7 @@ use App\Http\Controllers\admin\BillController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\ProductReviewController as AdminProductReviewController;
 use App\Http\Controllers\admin\UserController;
+use App\Http\Controllers\BannerController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\client\AccountController;
@@ -20,6 +21,7 @@ use App\Http\Controllers\client\CartController;
 use App\Http\Controllers\client\ContactController;
 use App\Http\Controllers\ProductSizeController;
 use App\Http\Controllers\client\ProductReviewController;
+use App\Http\Controllers\DateExportController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\WishlistController;
 
@@ -174,6 +176,22 @@ Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
             Route::put('/update/{id}',          [VoucherController::class, 'update'])->name('update');
             Route::delete('/delete/{id}',       [VoucherController::class, 'destroy'])->name('destroy');
         });
+
+        Route::prefix('banners')
+        ->as('banners.')
+        ->group(function () {
+            Route::get('/',                     [BannerController::class, 'index'])->name('index');
+            Route::get('/create',               [BannerController::class, 'create'])->name('create');
+            Route::post('/store',               [BannerController::class, 'store'])->name('store');
+            Route::get('/edit/{id}',            [BannerController::class, 'edit'])->name('edit');
+            Route::put('/update/{id}',          [BannerController::class, 'update'])->name('update');
+            Route::delete('/delete/{banner}',       [BannerController::class, 'destroy'])->name('destroy');
+
+        });
+
+        Route::get('/date-export', [DateExportController::class,'dateExport']);
+        Route::get('/month-export', [DateExportController::class,'monthExport']);
+        Route::get('/year-export', [DateExportController::class,'yearExport']);
 });
 
 
