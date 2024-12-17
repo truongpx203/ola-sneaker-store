@@ -8,9 +8,10 @@
         <section class="home-slider-area">
             <div class="swiper-container home-slider-container default-slider-container">
                 <div class="swiper-wrapper home-slider-wrapper slider-default">
+                    @foreach ($banner as $item)
                     <div class="swiper-slide">
                         <div class="slider-content-area slider-content-area-two"
-                            data-bg-img="assets/img/slider/slider-02.webp">
+                            data-bg-img="{{ asset('storage/' . $item->image) }}">
                             <div class="container">
                                 <div class="slider-container">
                                     <div class="row justify-content-between align-items-center">
@@ -27,7 +28,7 @@
                                                             bước đi tự tin</h4>
                                                     </div>
                                                     <div class="btn-box">
-                                                        <a class="btn-slider" href="shop.html">Xem ngay</a>
+                                                        <a class="btn-slider" href="{{route('shop.filter')}}">Xem ngay</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -37,7 +38,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="swiper-slide">
+                    @endforeach
+                    {{-- <div class="swiper-slide">
                         <div class="slider-content-area slider-content-area-two"
                             data-bg-img="assets/img/slider/slider-04.webp">
                             <div class="container">
@@ -63,7 +65,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
 
                 <!--== Add Swiper Arrows ==-->

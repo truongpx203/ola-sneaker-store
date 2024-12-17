@@ -14,7 +14,7 @@
     {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script> --}}
-    
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>@yield('title')</title>
 
@@ -99,7 +99,7 @@
               <div class="header-middle-align-start">
                 <div class="header-logo-area">
                   <a href="{{route('/')}}">
-                    <img class="logo-main" src="{{asset('assets/img/logo.webp')}}" width="131" height="34" alt="Logo" />
+                    <img class="logo-main" src="{{asset('assets/img/O (3).png')}}" width="131" height="34" alt="Logo" />
                     <img class="logo-light" src="{{asset('assets/img/logo-light.webp')}}" width="131" height="34" alt="Logo" />
                   </a>
                 </div>
