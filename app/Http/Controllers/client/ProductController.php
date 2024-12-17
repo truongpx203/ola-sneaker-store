@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\client;
 
 use App\Http\Controllers\Controller;
+use App\Models\Banner;
 use App\Models\BillItem;
 use App\Models\Category;
 use App\Models\Product;
@@ -14,6 +15,8 @@ class ProductController extends Controller
 {
     public function showNewProducts()
     {
+        $banner = Banner::where('is_active', true)->take(5)->get();
+        
         $products = Product::with(['variants' => function ($query) {
             $query->where('is_show', 1) // Chỉ lấy biến thể có is_show bằng 1
                 ->whereNotNull('sale_price') // Chỉ lấy biến thể có giá sale
@@ -34,7 +37,7 @@ class ProductController extends Controller
                 DB::raw('(SELECT listed_price FROM variants v WHERE v.product_id = products.id AND v.sale_price = (SELECT MIN(v2.sale_price) FROM variants v2 WHERE v2.product_id = products.id AND v2.is_show = 1 AND v2.sale_price IS NOT NULL) LIMIT 1) as listed_price') // Giá niêm yết của biến thể có giá sale thấp nhất
             )
             ->whereIn('bills.bill_status', ['delivered', 'completed']) // Lấy đơn hàng đã giao và hoàn thành
-            ->where('products.is_visible', 1) 
+            ->where('products.is_visible', 1)
             ->whereNotNull('variants.sale_price') // Chỉ lấy biến thể có giá sale
             ->groupBy('products.id', 'products.name', 'products.primary_image_url') // Nhóm theo sản phẩm
             ->orderBy('total_quantity', 'desc') // Sắp xếp theo tổng số lượng bán
@@ -42,7 +45,7 @@ class ProductController extends Controller
             ->get();
 
 
-        return view('client.home', compact('products', 'topBanChayNhat'));
+        return view('client.home', compact('products', 'topBanChayNhat','banner'));
     }
 
     public function show($id)
@@ -54,7 +57,7 @@ class ProductController extends Controller
                 ->orderBy('product_sizes.name');
         }, 'productImages'])->where('is_visible', 1)->findOrFail($id);
 
-        // Tính toán và cập nhật average_rating 
+        // Tính toán và cập nhật average_rating
         $product->average_rating = $product->calculateAverageRating();
         $product->save();
 
