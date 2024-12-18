@@ -96,7 +96,7 @@ class CategoryController extends Controller
     
         // Kiểm tra xem danh mục có sản phẩm hay không
         if ($category->products()->count() > 0) {
-            return back()->with('error', 'Danh mục này có sản phẩm không thể xoá!');
+            return back()->with('error', 'Có sản phẩm trong danh mục này không thể xóa!');
         }
     
         $category->delete();
