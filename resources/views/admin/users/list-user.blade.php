@@ -1,7 +1,7 @@
 @extends('admin.layouts.master');
 
 @section('title')
-    Quản lý đánh giá
+    Quản lý tài khoản
 @endsection
 
 @section('content')

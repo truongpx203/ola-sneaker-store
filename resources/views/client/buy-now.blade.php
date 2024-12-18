@@ -318,12 +318,12 @@
                                                     </label>
                                                 </div>
 
-                                                <div class="form-check">
+                                                {{-- <div class="form-check">
                                                     <input class="form-check-input" type="radio" id="payment_momo"
                                                         name="payment_type" value="momo">
                                                     <label class="form-check-label" for="payment_momo">Thanh toán với
                                                         MOMO</label>
-                                                </div>
+                                                </div> --}}
                                             </div>
 
                                             @error('payment_type')

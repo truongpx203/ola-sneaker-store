@@ -752,14 +752,12 @@
                                                                 </ul>
                                                             </div>
                                                             <div class="product-action">
-                                                                <a class="btn-product-wishlist" href=""><i
-                                                                        class="fa fa-heart"></i></a>
-                                                                <a class="btn-product-cart" href=""><i
-                                                                        class="fa fa-shopping-cart"></i></a>
-                                                                <button type="button"
-                                                                    class="btn-product-quick-view-open">
-                                                                    <i class="fa fa-arrows"></i>
-                                                                </button>
+                                                                <form action="{{ route('wishlist.store') }}" method="POST">
+                                                                    @csrf
+                                                                    <input type="hidden" name="product_id" value="{{ $relatedProduct->id }}">
+                                                                    <button type="submit" class="btn-product-wishlist"><i
+                                                                            class="fa fa-heart"></i></button>
+                                                                </form>
                                                             </div>
                                                             <a class="banner-link-overlay"
                                                                 href="{{ route('product-detail', ['id' => $relatedProduct->id]) }}"></a>

@@ -72,7 +72,7 @@
                 <div class="header-info-items">
                   <div class="info-items">
                     <ul>
-                      <li class="number"><i class="fa fa-phone"></i><a href="tel://0123456789">+00 123 456 789</a></li>
+                      <li class="number"><i class="fa fa-phone"></i><a href="tel://0123456789">0328902188</a></li>
                       <li class="email"><i class="fa fa-envelope"></i><a href="mailto://datn@gmail.com">datn@gmail.com</a></li>
                       <li class="account">
                         <i class="fa fa-user"></i>
@@ -99,8 +99,8 @@
               <div class="header-middle-align-start">
                 <div class="header-logo-area">
                   <a href="{{route('/')}}">
-                    <img class="logo-main" src="{{asset('assets/img/logo.webp')}}" width="131" height="34" alt="Logo" />
-                    <img class="logo-light" src="{{asset('assets/img/logo-light.webp')}}" width="131" height="34" alt="Logo" />
+                    <img class="logo-main" src="{{asset('assets/img/OLASNEAKER.png')}}" width="200" style="height: 30px" alt="Logo" />
+                    {{-- <img class="logo-light" src="{{asset('assets/img/logo-light.webp')}}" width="131" height="34" alt="Logo" /> --}}
                   </a>
                 </div>
               </div>
@@ -153,9 +153,9 @@
                       <li><a href="index-two.html"><span>Home Two</span></a></li>
                     </ul>
                   </li> --}}
-                  <li><a href="#"><span>GIỚI THIỆU</span></a></li>
+                  {{-- <li><a href="#"><span>GIỚI THIỆU</span></a></li> --}}
                   <li><a href="{{route('shop.filter')}}"><span>SẢN PHẨM</span></a></li>
-                  <li><a href="{{route('/blog')}}"><span>Blog</span></a></li>
+                  {{-- <li><a href="{{route('/blog')}}"><span>Blog</span></a></li> --}}
                   <li><a href="{{route('contact.form')}}"><span>LIÊN HỆ</span></a></li>
                 </ul>
               </div>
@@ -262,11 +262,11 @@
                 <div class="collapse-body">
                   <div class="widget-menu-wrap">
                     <ul class="nav-menu">
-                      <li><a href="contact.html">Tư vấn giày thể thao</a></li>
-                      <li><a href="contact.html">Giao hàng tận nơi</a></li>
-                      <li><a href="contact.html">Đổi trả dễ dàng</a></li>
-                      <li><a href="contact.html">Hỗ trợ khách hàng</a></li>
-                      <li><a href="contact.html">Chương trình khuyến mãi</a></li>
+                      <li><p>Tư vấn giày thể thao</p></li>
+                      <li><p>Giao hàng tận nơi</p></li>
+                      <li><p>Đổi trả dễ dàng</p></li>
+                      <li><p>Hỗ trợ khách hàng</p></li>
+                      <li><p>Chương trình khuyến mãi</p></li>
                     </ul>
                   </div>
                 </div>
@@ -283,10 +283,10 @@
                 <div class="collapse-body">
                   <div class="widget-menu-wrap">
                     <ul class="nav-menu">
-                      <li><a href="account-login.html">Tài khoản của tôi</a></li>
-                      <li><a href="contact.html">Liên hệ</a></li>
+                      <li><a href="{{route('account')}}">Tài khoản của tôi</a></li>
+                      <li><a href="{{route('contact.form')}}">Liên hệ</a></li>
                       <li><a href="{{route('cart.show')}}">Giỏ hàng</a></li>
-                      <li><a href="shop.html">Cửa hàng</a></li>
+                      {{-- <li><a href="shop.html">Cửa hàng</a></li> --}}
                       {{-- <li><a href="account-login.html">Services Login</a></li> --}}
                     </ul>
                   </div>
@@ -305,8 +305,8 @@
                   <div class="widget-contact-wrap">
                     <ul>
                       <li><span>Địa chỉ: </span>Nam Từ Liêm - Hà Nội.</li>
-                      <li><span>Điện thoại:</span> <a href="tel://0123456789">0999999999</a></li>
-                      <li><span>Email:</span> <a href="mailto://demo@example.com">demo@example.com</a></li>
+                      <li><span>Điện thoại:</span> <a href="tel://0123456789">0328902188</a></li>
+                      <li><span>Email:</span> <a href="mailto://demo@example.com">datn@gmail.com</a></li>
                       <li><a target="_blank" href="https://www.hasthemes.com/">OlaSneaker.vn</a></li>
                     </ul>
                   </div>

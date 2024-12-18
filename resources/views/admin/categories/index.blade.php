@@ -128,6 +128,10 @@
         @if (session('error'))
             toastr.error("{{ session('error') }}");
         @endif
+
+        @if (session('message'))
+            toastr.success("{{ session('message') }}");
+        @endif
     </script>
 @endsection
 
