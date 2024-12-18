@@ -81,58 +81,7 @@
 
         <!--== Start Product Category Area Wrapper ==-->
         <section class="product-area product-category-area">
-            {{-- <div class="container-fluid">
-        <div class="row">
-          <div class="col-sm-6 col-lg-4">
-            <!--== Start Product Category Item ==-->
-            <div class="product-category">
-              <div class="inner-content">
-                <div class="product-category-content">
-                  <div class="content">
-                    <h4 class="sub-title">Sale 50% Off</h4>
-                    <h3 class="title"><a href="shop.html">Giày thể thao</a></h3>
-                  </div>
-                </div>
-                <div class="product-category-thumb" data-bg-img="assets/img/shop/category/1.webp"></div>
-                <a class="banner-link-overlay" href="shop.html"></a>
-              </div>
-            </div>
-            <!--== End Product Category Item ==-->
-          </div>
-          <div class="col-sm-6 col-lg-4">
-            <!--== Start Product Category Item ==-->
-            <div class="product-category mt-xs-30">
-              <div class="inner-content">
-                <div class="product-category-content">
-                  <div class="content">
-                    <h4 class="sub-title">Sale 50% Off</h4>
-                    <h3 class="title"><a href="shop.html">Giày mới nhập</a></h3>
-                  </div>
-                </div>
-                <div class="product-category-thumb" data-bg-img="assets/img/shop/category/2.webp"></div>
-                <a class="banner-link-overlay" href="shop.html"></a>
-              </div>
-            </div>
-            <!--== End Product Category Item ==-->
-          </div>
-          <div class="col-sm-6 col-lg-4">
-            <!--== Start Product Category Item ==-->
-            <div class="product-category mt-md-30">
-              <div class="inner-content">
-                <div class="product-category-content">
-                  <div class="content">
-                    <h4 class="sub-title">Sale 50% Off</h4>
-                    <h3 class="title"><a href="shop.html">Giày thể thao mới</a></h3>
-                  </div>
-                </div>
-                <div class="product-category-thumb" data-bg-img="assets/img/shop/category/3.webp"></div>
-                <a class="banner-link-overlay" href="shop.html"></a>
-              </div>
-            </div>
-            <!--== End Product Category Item ==-->
-          </div>
-        </div>
-      </div> --}}
+        
         </section>
         <!--== End Product Category Area Wrapper ==-->
 
@@ -183,11 +132,6 @@
                                                     <button type="submit" class="btn-product-wishlist"><i
                                                             class="fa fa-heart"></i></button>
                                                 </form>
-                                                <a class="btn-product-cart" href=""><i
-                                                        class="fa fa-shopping-cart"></i></a>
-                                                <button type="button" class="btn-product-quick-view-open">
-                                                    <i class="fa fa-arrows"></i>
-                                                </button>
                                             </div>
                                             <a class="banner-link-overlay"
                                                 href="{{ route('product-detail', ['id' => $product->id]) }}"></a>
@@ -252,7 +196,7 @@
                             {{-- <h4 class="sub-title">Saving 50%</h4> --}}
                             <h2 class="title">Cảm nhận sự khác biệt</h2>
                             <p class="desc">Giày thể thao thời trang cho phong cách sống năng động</p>
-                            <a class="btn-theme" href="shop.html">Xem ngay</a>
+                            <a class="btn-theme" href="{{route('shop.filter') }}">Xem ngay</a>
                         </div>
                     </div>
                 </div>
@@ -390,17 +334,12 @@
                                                                 </ul>
                                                             </div>
                                                             <div class="product-action">
-                                                                <a class="btn-product-wishlist"
-                                                                    href="shop-wishlist.html"><i
-                                                                        class="fa fa-heart"></i></a>
-                                                                <a class="btn-product-cart" href="shop-cart.html"><i
-                                                                        class="fa fa-shopping-cart"></i></a>
-                                                                <button type="button"
-                                                                    class="btn-product-quick-view-open">
-                                                                    <i class="fa fa-arrows"></i>
-                                                                </button>
-                                                                <a class="btn-product-compare" href="shop-compare.html"><i
-                                                                        class="fa fa-random"></i></a>
+                                                                <form action="{{ route('wishlist.store') }}" method="POST">
+                                                                    @csrf
+                                                                    <input type="hidden" name="product_id" value="{{ $product->product_id }}">
+                                                                    <button type="submit" class="btn-product-wishlist"><i
+                                                                            class="fa fa-heart"></i></button>
+                                                                </form>
                                                             </div>
                                                             <a class="banner-link-overlay" href="shop.html"></a>
                                                         </div>
@@ -444,126 +383,5 @@
         </section>
         <!--== End Product Area Wrapper ==-->
 
-        <!--== Start Product Collection Area Wrapper ==-->
-        {{-- <section class="product-area product-collection-area">
-      <div class="container pt--0">
-        <div class="row">
-          <div class="col-lg-4 col-md-6">
-            <!--== Start Product Collection Item ==-->
-            <div class="product-collection">
-              <div class="inner-content">
-                <div class="product-collection-content">
-                  <div class="content">
-                    <h3 class="title"><a href="shop.html">Giày thể thao</a></h3>
-                    <h4 class="price">Chỉ từ 350.000</h4>
-                  </div>
-                </div>
-                <div class="product-collection-thumb" data-bg-img="assets/img/shop/collection/1.webp"></div>
-                <a class="banner-link-overlay" href="shop.html"></a>
-              </div>
-            </div>
-            <!--== End Product Collection Item ==-->
-          </div>
-          <div class="col-lg-4 col-md-6">
-            <!--== Start Product Collection Item ==-->
-            <div class="product-collection">
-              <div class="inner-content">
-                <div class="product-collection-content">
-                  <div class="content">
-                    <h3 class="title"><a href="shop.html">Giày mới nhất</a></h3>
-                    <h4 class="price">From $90.00</h4>
-                  </div>
-                </div>
-                <div class="product-collection-thumb" data-bg-img="assets/img/shop/collection/2.webp"></div>
-                <a class="banner-link-overlay" href="shop.html"></a>
-              </div>
-            </div>
-            <!--== End Product Collection Item ==-->
-          </div>
-          <div class="col-lg-4 col-md-6">
-            <!--== Start Product Collection Item ==-->
-            <div class="product-collection">
-              <div class="inner-content">
-                <div class="product-collection-content">
-                  <div class="content">
-                    <h3 class="title"><a href="shop.html">Office Shoes</a></h3>
-                    <h4 class="price">From $82.00</h4>
-                  </div>
-                </div>
-                <div class="product-collection-thumb" data-bg-img="assets/img/shop/collection/3.webp"></div>
-                <a class="banner-link-overlay" href="shop.html"></a>
-              </div>
-            </div>
-            <!--== End Product Collection Item ==-->
-          </div>
-        </div>
-      </div>
-    </section> --}}
-        <!--== End Product Collection Area Wrapper ==-->
-
-        <!--== Start Testimonial Area Wrapper ==-->
-        {{-- <section class="testimonial-area">
-      <div class="container pt--0">
-        <div class="row">
-          <div class="col-12">
-            <div class="section-title text-center">
-              <h3 class="title">Đánh Giá Khách Hàng</h3>
-              <div class="desc">
-                <p>Khách hàng của chúng tôi luôn hài lòng với sản phẩm giày thể thao chất lượng và dịch vụ tận tâm.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-12">
-            <div class="swiper-container testimonial-slider-container">
-              <div class="swiper-wrapper">
-                <div class="swiper-slide">
-                  <!--== Start Testimonial Item ==-->
-                  <div class="testimonial-item">
-                    <div class="testi-inner-content">
-                      <div class="testi-thumb">
-                        <img src="assets/img/testimonial/1.webp" width="90" height="90" alt="Image-HasTech">
-                      </div>
-                      <div class="testi-content">
-                        <p>Lorem ipsum dolor sit amel adipiscing elit, sed do eiusll tempor incididunt ut laborj et dolore magna.</p>
-                        <div class="testi-author">
-                          <div class="testi-info">
-                            <span class="name"><a href="about-us.html">Jaren Hammer</a></span>
-                          </div>
-                        </div>
-                        <div class="testi-quote"><img src="assets/img/icons/quote1.webp" width="62" height="44" alt="Image-HasTech"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <!--== End Testimonial Item ==-->
-                </div>
-                <div class="swiper-slide">
-                  <!--== Start Testimonial Item ==-->
-                  <div class="testimonial-item">
-                    <div class="testi-inner-content">
-                      <div class="testi-thumb">
-                        <img src="assets/img/testimonial/2.webp" width="90" height="90" alt="Image-HasTech">
-                      </div>
-                      <div class="testi-content">
-                        <p>Lorem ipsum dolor sit amel adipiscing elit, sed do eiusll tempor incididunt ut laborj et dolore magna.</p>
-                        <div class="testi-author">
-                          <div class="testi-info">
-                            <span class="name"><a href="about-us.html">Dorian Cordova</a></span>
-                          </div>
-                        </div>
-                        <div class="testi-quote"><img src="assets/img/icons/quote1.webp" width="62" height="44" alt="Image-HasTech"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <!--== End Testimonial Item ==-->
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section> --}}
-        <!--== End Testimonial Area Wrapper ==-->
     </main>
 @endsection

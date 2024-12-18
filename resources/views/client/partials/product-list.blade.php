@@ -30,10 +30,6 @@
                                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                                 <button type="submit" class="btn-product-wishlist"><i class="fa fa-heart"></i></button>
                             </form>
-                            <a class="btn-product-cart" href="shop-cart.html"><i class="fa fa-shopping-cart"></i></a>
-                            <button type="button" class="btn-product-quick-view-open">
-                                <i class="fa fa-arrows"></i>
-                            </button>
                         </div>
                         <a class="banner-link-overlay" href="shop.html"></a>
                     </div>
