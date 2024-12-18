@@ -42,7 +42,7 @@
                                 </div>
                             </div>
 
-                            <button class="btn btn-sm btn-primary mt-2">Tìm kiếm</button>
+                            <button class="btn btn-sm btn-primary mt-3">Tìm kiếm</button>
                         </form>
 
                         {{-- @if (session('success'))
@@ -99,11 +99,11 @@
                                                 <div class="d-flex gap-2">
                                                     <div class="detail">
                                                         <a href="{{ route('products.show', $item->id) }}"
-                                                            class="btn btn-sm btn-primary edit-item-btn">Xem</a>
+                                                            class="btn btn-primary edit-item-btn">Xem chi tiết</a>
                                                     </div>
                                                     <div class="edit">
                                                         <a href="{{ route('products.edit', $item->id) }}"
-                                                            class="btn btn-sm btn-success edit-item-btn">Sửa</a>
+                                                            class="btn btn-success edit-item-btn">Sửa</a>
                                                     </div>
                                                     <div class="remove">
                                                         <form action="{{ route('products.destroy', $item->id) }}"
@@ -112,7 +112,7 @@
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit"
-                                                                class="btn btn-sm btn-danger remove-item-btn">Xóa</button>
+                                                                class="btn btn-danger remove-item-btn">Xóa</button>
                                                         </form>
                                                     </div>
                                                 </div>
