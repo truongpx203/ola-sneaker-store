@@ -20,11 +20,11 @@
             </div>
         </div>
     </div>
-    {{-- @if ($errors->has('size_error'))
+    @if ($errors->has('error_size'))
         <div class="alert alert-danger">
-            {{ $errors->first('size_error') }}
+            {{ $errors->first('error_size') }}
         </div>
-    @endif --}}
+    @endif
 
     <div class="row">
         <div class="col-lg-12">

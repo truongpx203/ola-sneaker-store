@@ -34,16 +34,17 @@ class AccountController extends Controller
         $user = Auth::user();
         $bills = $user->bills()->orderBy('id', 'desc')->paginate(10);
         $vouchers = Voucher::with('voucherHistorys')->get();
-        $listVouchers=[];
+        $listVouchers = [];
+        $now = now();
         foreach ($vouchers as $voucher) {
             $forUserIds = json_decode($voucher->for_user_ids, true);
             foreach ($forUserIds as $forId) {
-                if ($forId == Auth::user()->id && count($voucher->voucherHistorys) === 0) {
+                if ($forId == Auth::user()->id && count($voucher->voucherHistorys) === 0 && $now->between($voucher->start_datetime, $voucher->end_datetime)) {
                     array_push($listVouchers, $voucher);
                 }
             }
         }
-        return view('client.account', compact('user', 'bills','listVouchers'));
+        return view('client.account', compact('user', 'bills', 'listVouchers'));
     }
 
     // Đăng ký

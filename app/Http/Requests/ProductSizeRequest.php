@@ -31,6 +31,7 @@ class ProductSizeRequest extends FormRequest
                         $rules = [
                             'name' => [
                                 'required',
+                                'numeric',
                                 Rule::unique('product_sizes')
                             ],
 
@@ -44,6 +45,7 @@ class ProductSizeRequest extends FormRequest
                         $rules = [
                             'name' => [
                                 'required',
+                                'numeric',
                                 Rule::unique('product_sizes')->where(function ($query) {
                                     return $query->where('id', '!=', $this->id);
                                 })
@@ -60,6 +62,7 @@ class ProductSizeRequest extends FormRequest
     {
         return [
             'required' => ":attribute không được để trống",
+            'numeric' => ':attribute phải là số',
             'unique' => ':attribute đã tồn tại',
         ];
     }
