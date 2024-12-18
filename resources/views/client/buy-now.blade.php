@@ -285,10 +285,10 @@
                                                 <small id="pointsError" class="text-danger" style="display: none;">
                                                     Số điểm bạn nhập vượt quá số điểm hiện có!
                                                 </small>
-                                                <small class="form-text text-muted">1 điểm = 10,000 VNĐ giảm giá</small>
+                                                <small class="form-text text-muted">1 điểm sẽ giảm giá 10,000 đ</small>
                                                 <br>
                                                 <small class="form-text text-muted">
-                                                    Đơn hàng có giá trị <strong>400.000 VNĐ</strong> sẽ được cộng <strong>1
+                                                    Đơn hàng có giá trị <strong>500.000 đ</strong> sẽ được cộng <strong>1
                                                         điểm tích lũy</strong>.
                                                 </small>
 
@@ -340,27 +340,25 @@
                         </div>
                     </div>
                 </form>
-                {{-- 24/11/2024 --}}
-                {{-- <script>
-                    function calculateDiscount() {
-                        var points = document.getElementById('points_to_use').value;
-                        var totalPrice = {{ $total_price }};
-                        var discount = points * 10000; // Giả sử mỗi điểm = 10000 VNĐ
-                        if (discount > totalPrice) {
-                            discount = totalPrice; // Không thể giảm quá số tiền cần thanh toán
-                        }
-                        var finalPrice = totalPrice - discount;
-                        document.getElementById('finalTotal').textContent = new Intl.NumberFormat('vi-VN').format(finalPrice) + ' VND';
-                    }
-                </script> --}}
                 {{-- Sửa 17/12/2024 --}}
                 <script>
                     function validatePoints(inputPoints, userPoints) {
                         let pointsError = document.getElementById('pointsError');
                         let pointsInput = document.getElementById('points_to_use');
+                        // 18/12/2024
+                        let totalPrice = {{ $total_price }};
+                        let discount = inputPoints * 10000; // 1 điểm = 10,000 VNĐ
                         if (parseInt(inputPoints) > userPoints) {
                             pointsError.style.display = 'block';
                             pointsInput.value = userPoints; // Giới hạn số điểm nhập vào
+                        } else {
+                            pointsError.style.display = 'none';
+                        }
+                        // // Kiểm tra nếu số điểm sử dụng vượt quá tổng giá trị đơn hàng
+                        if (discount >= totalPrice) {
+                            pointsError.textContent = 'Không thể sử dụng số điểm này vì đơn hàng sẽ miễn phí.';
+                            pointsError.style.display = 'block';
+                            pointsInput.value = Math.floor(totalPrice / 10000); // Điều chỉnh số điểm về mức tối đa hợp lệ
                         } else {
                             pointsError.style.display = 'none';
                         }
@@ -375,7 +373,7 @@
                             discount = totalPrice;
                         }
                         var finalPrice = totalPrice - discount;
-                        document.getElementById('finalTotal').textContent = new Intl.NumberFormat('vi-VN').format(finalPrice) + ' VND';
+                        document.getElementById('finalTotal').textContent = new Intl.NumberFormat('vi-VN').format(finalPrice) + ' đ';
                     }
                 </script>
 

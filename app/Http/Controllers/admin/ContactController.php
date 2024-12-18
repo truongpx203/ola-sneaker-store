@@ -16,14 +16,14 @@ class ContactController extends Controller
     // Hiển thị danh sách liên hệ
     public function index()
     {
-        $contacts = Contact::orderBy('created_at', 'desc')->paginate(10);
+        $contacts = Contact::with('user')->orderBy('created_at', 'desc')->paginate(10);
         return view('admin.contacts.index', compact('contacts'));
     }
 
     // Hiển thị chi tiết liên hệ
     public function show(Contact $contact, $id)
     {
-        $contact = Contact::findOrFail($id); // Tìm liên hệ theo ID
+        $contact = Contact::with('user')->findOrFail($id); //  Tải thông tin người dùng liên quan
         return view('admin.contacts.show', compact('contact'));
     }
 
@@ -40,7 +40,7 @@ class ContactController extends Controller
         // Gửi email phản hồi tới người đã gửi liên hệ
         try {
             // Lấy email người liên hệ (từ Contact)
-            $userEmail = $contact->email;
+            $userEmail = $contact->user->email;
 
             // Gửi email phản hồi tới người dùng
             Mail::to($userEmail)->send(new ReplyContact($contact, $request->reply_message));

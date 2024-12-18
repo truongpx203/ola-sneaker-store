@@ -34,11 +34,8 @@ class ContactController extends Controller
         // Xác thực dữ liệu
         $validated = $request->validated();
 
-        // Kiểm tra nếu người dùng đã đăng nhập và gán user_id
-        // if (Auth::check()) {
-        //     $validated['user_id'] = Auth::id(); // Gán user_id
-        // }
-        $validated['user_id'] = Auth::id(); // Gán user_id của người dùng đã đăng nhập
+        // Gán user_id của người dùng vào dữ liệu contact
+        $validated['user_id'] = Auth::id(); 
 
         // Lưu thông tin vào cơ sở dữ liệu
         $contact = Contact::create($validated);
