@@ -5,8 +5,8 @@
 @section('content')
     <style>
         /* .container {
-                                                padding: 20px;
-                                            } */
+                                                        padding: 20px;
+                                                    } */
         .section-title {
             font-weight: bold;
             margin-top: 20px;
@@ -324,21 +324,29 @@
 
                                 <div class="myaccount-content">
                                     {{-- 17/12/20224 --}}
-                                    @if ($bill->discount_amount > 0)
-                                        <p class="saved-message">Giảm giá từ điểm: <span
-                                                class="text-danger">-{{ number_format($bill->discount_amount, 0, ',', '.') }}
-                                                đ</span></p>
+                                    @if ($bill->discount_amount > 0 && $bill->points_used > 0)
+                                        <p class="saved-message">
+                                            Số điểm đã sử dụng:
+                                            <span
+                                                class="text-primary">{{ number_format($bill->points_used, 0, ',', '.') }}
+                                                điểm</span>
+                                            (tương đương:
+                                            <span
+                                                class="text-success">{{ number_format($bill->discount_amount, 0, ',', '.') }}
+                                                đ</span>)
+                                        </p>
+
                                     @endif
                                     @if (isset($voucerHistory))
                                         <p class="saved-message">Giảm giá từ voucher: <span
                                                 class="text-danger">{{ $voucerHistory->voucher->value }}%</span></p>
                                     @endif
-                                    {{-- <p class="saved-message">Tiền ship: <span class="text-danger">30.000đ</span></p> --}}
-                                    <strong>
-                                        <p class="saved-message">Tổng tiền hàng:
-                                            {{ number_format($bill->total_price, 0, ',', '.') }} đ<span
-                                                class="text-danger" id="formattedTotal"></span></p>
-                                    </strong>
+                                        {{-- <p class="saved-message">Tiền ship: <span class="text-danger">30.000đ</span></p> --}}
+                                        <strong>
+                                            <p class="saved-message">Tổng tiền hàng:
+                                                {{ number_format($bill->total_price, 0, ',', '.') }} đ<span
+                                                    class="text-danger" id="formattedTotal"></span></p>
+                                        </strong>
                                 </div>
                             </div>
                         </div>
