@@ -7,12 +7,14 @@
 @section('content')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <div class="row">
+       <div class="col-lg-12">
         @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
-
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+       </div>
+        <div class="col-lg-12">
         <div class="card">
             <h5 class="card-header">Cập nhật thông tin tài khoản</h5>
             <div class="card-body">
@@ -46,7 +48,7 @@
                         @enderror
                     </div>
 
-                    <div class="mb-3">
+                    {{-- <div class="mb-3">
                         <label for="role" class="form-label">Vai trò</label>
                         <select class="form-select" name="role" id="role">
                             <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>Quản trị viên</option>
@@ -55,7 +57,7 @@
                         @error('role')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
-                    </div>
+                    </div> --}}
 
                     <div class="mb-3">
                         <label for="status" class="form-label">Trạng thái</label>
@@ -136,9 +138,29 @@
                 </form>
             </div>
         </div>
-
+        </div>
 
     </div>
 @endsection
+@section('scriptsToastr')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        console.log("Success message:", "{{ session('success') }}");
+        toastr.options = {
+            
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "5000",
+        };
+        @if (session('success'))
+            toastr.success("{{ session('success') }}");
+        @endif
 
+        @if (session('error'))
+            toastr.error("{{ session('error') }}");
+        @endif
+    </script>
+@endsection
 

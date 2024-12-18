@@ -138,13 +138,13 @@
                                             <td>
                                                 <a href="{{ route('contacts.show', $contact->id) }}"
                                                     class="btn btn-primary">Xem chi tiết</a>
-                                                <form action="{{ route('contacts.destroy', $contact->id) }}"
+                                                {{-- <form action="{{ route('contacts.destroy', $contact->id) }}"
                                                     method="POST" style="display:inline;"
                                                     onsubmit="return confirm('Xác nhận xóa?')">  
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger">Xóa</button>
-                                                </form>
+                                                </form> --}}
                                             </td>
                                         </tr>
                                     @endforeach
