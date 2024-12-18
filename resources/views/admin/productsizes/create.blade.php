@@ -59,7 +59,7 @@
                                 <div class="col-md-4">
                                     <div>
                                         <label for="name" class="form-label">Tên kích thước</label>
-                                        <input type="text" class="form-control" name="name" id="name">
+                                        <input type="number" class="form-control" name="name" id="name">
                                     </div>
                                 </div>
                             </div>

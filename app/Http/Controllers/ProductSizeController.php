@@ -43,6 +43,11 @@ class ProductSizeController extends Controller
     public function edit($id)
     {
         $productSize = ProductSize::find($id);
+        $variants = Variant::query()->where('product_size_id', $id)->first();
+        if ($variants) {
+            return redirect()->route('productsize.index')
+                ->withErrors(['error_size' => 'Kích thước ' . $productSize->name . ' đang được sử dụng không thể sửa']);
+        }
         return view('admin.productsizes.edit', compact('productSize'));
     }
 
@@ -55,7 +60,7 @@ class ProductSizeController extends Controller
         $productSize->update([
             'name' => $request->name
         ]);
-        return redirect()->route('productsize.index') ->with('success', 'Thành công! Dữ liệu đã được thêm.');
+        return redirect()->route('productsize.index')->with('success', 'Thành công! Dữ liệu đã được thêm.');
     }
 
     /**
@@ -68,7 +73,7 @@ class ProductSizeController extends Controller
 
         if ($variants) {
             return redirect()->route('productsize.index')
-                ->with(['success' => 'Kích thước "' . $productSizes->name . '" đang được sử dụng không thể xóa']);
+                ->withErrors(['error_size' => 'Kích thước "' . $productSizes->name . '" đang được sử dụng không thể xóa']);
         }
 
         $productSizes->delete();
