@@ -5,8 +5,8 @@
 @section('content')
     <style>
         /* .container {
-                                    padding: 20px;
-                                } */
+                                                        padding: 20px;
+                                                    } */
         .section-title {
             font-weight: bold;
             margin-top: 20px;
@@ -175,6 +175,10 @@
                     @if ($bill->discount_amount > 0)
                         <p class="saved-message">Giảm giá từ điểm: <span
                                 class="text-danger">-{{ number_format($bill->discount_amount, 0, ',', '.') }} đ</span></p>
+                    @endif
+                    @if (isset($voucerHistory))
+                        <p class="saved-message">Mã giảm giá (Voucher): <span
+                                class="text-danger">{{ $voucerHistory->voucher->value }}%</span></p>
                     @endif
                 </div>
                 {{-- <div class="voucher">Mã giảm giá (Voucher): -{{ number_format($bill->discount ?? 0, 0, ',', '.') }} đ
