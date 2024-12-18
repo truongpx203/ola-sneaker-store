@@ -33,11 +33,13 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $data =  $request->validate([
-            'name' => 'required|unique:categories,name'
+            'name' => 'required|unique:categories,name|max:50|regex:/^[^\d]*$/'
         ],
         [
-            'unique'   => 'Danh mục đã tồn tại, vui lòng chọn tên danh mục khác.',
-            'required' => 'Tên danh mục không được để trống.',
+            'name.unique'   => 'Danh mục đã tồn tại, vui lòng chọn tên danh mục khác.',
+            'name.required' => 'Tên danh mục không được để trống.',
+            'name.max'      => 'Tên danh mục không được vượt quá 50 ký tự.',
+            'name.regex'    => 'Tên danh mục không được chứa số.',
         ]
     );
 
@@ -73,11 +75,13 @@ class CategoryController extends Controller
     {
         //
         $data =  $request->validate([
-            'name' => 'required|unique:categories,name'
+             'name' => 'required|unique:categories,name|max:50|regex:/^[^\d]*$/'
         ],
         [
-            'unique'   => 'Danh mục đã tồn tại, vui lòng chọn tên danh mục khác.',
-            'required' => 'Tên danh mục không được để trống.',
+            'name.unique'   => 'Danh mục đã tồn tại, vui lòng chọn tên danh mục khác.',
+            'name.required' => 'Tên danh mục không được để trống.',
+            'name.max'      => 'Tên danh mục không được vượt quá 50 ký tự.',
+            'name.regex'    => 'Tên danh mục không được chứa số.',
         ]
     );
         // DB::table('categories')->where('id', $id)->update([
