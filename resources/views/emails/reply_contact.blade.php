@@ -6,83 +6,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phản hồi từ Admin</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
+/* General Styles */
+body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7fb;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            color: #333333;
         }
 
-        .invoice {
-            background: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        .container {
+            width: 100%;
+            max-width: 750px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
         }
 
         .invoice-header {
-            border-bottom: 2px solid #007bff;
-            margin-bottom: 20px;
             text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #f1f1f1;
         }
 
         .invoice-header h1 {
+            font-size: 36px;
             color: #007bff;
+            font-weight: 600;
             margin: 0;
+            letter-spacing: 1px;
         }
 
         .invoice-body {
-            margin-top: 20px;
+            margin-top: 30px;
+        }
+
+        .invoice-body p {
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #4a4a4a;
+        }
+
+        .invoice-body p strong {
+            color: #1a73e8;
+            font-weight: 600;
         }
 
         .invoice-footer {
-            margin-top: 20px;
             text-align: center;
-            font-size: 0.9em;
-            color: #6c757d;
+            margin-top: 50px;
+            font-size: 14px;
+            color: #8c8c8c;
+            font-weight: 400;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        table,
-        th,
-        td {
-            border: 1px solid #ddd;
-        }
-
-        th,
-        td {
-            padding: 10px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
+        /* Responsive Design */
         @media only screen and (max-width: 600px) {
-            .invoice {
-                padding: 10px;
+            .container {
+                padding: 20px;
+            }
+
+            .invoice-header h1 {
+                font-size: 28px;
+            }
+
+            .invoice-body p {
+                font-size: 14px;
+            }
+
+            .invoice-footer {
+                font-size: 13px;
             }
         }
     </style>
 </head>
 
 <body>
-    {{-- 10/12/2024 --}}
-    <div class="invoice">
-        <div class="invoice-body">
-            <h5>Phản hồi từ Admin:</h5>
-            <p>Xin chào {{ $contact->name }},</p>
-            <p>Chúng tôi đã nhận được liên hệ của bạn và đây là phản hồi từ đội ngũ hỗ trợ:</p>
-            <p>{{ $replyMessage }}</p>
+    <div class="container">
+        <div class="invoice-header">
+            <h1>Phản hồi từ Admin</h1>
         </div>
+
+        <div class="invoice-body">
+            <p>Xin chào <strong>{{ $contact->user->full_name }}</strong>,</p> <!-- Hiển thị tên người dùng -->
+            
+            <p>Email của bạn: <strong>{{ $contact->user->email }}</strong></p> <!-- Hiển thị email người dùng -->
+            
+            <p>Cảm ơn bạn đã liên hệ với chúng tôi! Chúng tôi đã nhận được thông tin của bạn và đây là phản hồi từ đội ngũ hỗ trợ:</p>
+            
+            <p><strong>Tiêu đề:</strong> {{ $contact->subject }}</p> <!-- Tiêu đề của yêu cầu -->
+            
+            <p><strong>Nội dung liên hệ:</strong> </p>
+            <blockquote style="border-left: 3px solid #1a73e8; padding-left: 15px; margin: 20px 0;">
+                {{ $contact->message }}
+            </blockquote> <!-- Nội dung liên hệ của người dùng -->
+            
+            <p><strong>Phản hồi của chúng tôi:</strong></p>
+            <p>{{ $replyMessage }}</p> <!-- Phản hồi từ admin -->
+        </div>
+
         <div class="invoice-footer">
-            <p>Cảm ơn bạn đã liên hệ với chúng tôi!</p>
+            <p>Chúng tôi luôn sẵn sàng hỗ trợ bạn. Nếu có bất kỳ câu hỏi nào, đừng ngần ngại liên hệ với chúng tôi.</p>
+            <p>Cảm ơn bạn đã tin tưởng và sử dụng dịch vụ của chúng tôi!</p>
         </div>
     </div>
 </body>

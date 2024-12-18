@@ -178,8 +178,7 @@
                         <p class="saved-message">
                             Số điểm đã sử dụng:
                             <span class="text-primary">{{ number_format($bill->points_used, 0, ',', '.') }} điểm</span>
-                            (tương đương:
-                            <span class="text-success">{{ number_format($bill->discount_amount, 0, ',', '.') }} đ</span>)
+                            (<span class="text-danger"> -{{ number_format($bill->discount_amount, 0, ',', '.') }} đ</span>)
                         </p>
                     @endif
                     @if (isset($voucerHistory))

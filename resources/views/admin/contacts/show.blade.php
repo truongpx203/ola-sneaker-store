@@ -26,8 +26,8 @@
                                     Liên hệ #{{ $contact->id }}
                                 </div>
                                 <div class="card-body">
-                                    <p><strong>Họ và tên:</strong> {{ $contact->name }}</p>
-                                    <p><strong>Email:</strong> {{ $contact->email }}</p>
+                                    <p><strong>Họ và tên:</strong> {{ $contact->user->full_name }}</p>
+                                    <p><strong>Email:</strong> {{ $contact->user->email }}</p>
                                     <p><strong>Tiêu đề:</strong> {{ $contact->subject ?? 'Không có tiêu đề' }}</p>
                                     <p><strong>Nội dung:</strong></p>
                                     <p>{{ $contact->message }}</p>

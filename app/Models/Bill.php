@@ -43,7 +43,7 @@ class Bill extends Model
     // 7/11/2024
     public function awardPointsToUser()
     {
-        $pointsToAward = floor($this->total_price / 400000); // Cộng 1 điểm cho mỗi 400000 VND
+        $pointsToAward = floor($this->total_price / 500000); // Cộng 1 điểm cho mỗi 400000 VND
 
         // Cộng điểm vào tài khoản người dùng
         $this->user->points += $pointsToAward;

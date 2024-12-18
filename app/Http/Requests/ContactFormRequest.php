@@ -22,9 +22,7 @@ class ContactFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'subject' => 'nullable|string|max:255',
+            'subject' => 'required|string|max:255',
             'message' => 'required|string',
         ];
     }
@@ -32,19 +30,9 @@ class ContactFormRequest extends FormRequest
     public function messages()
     {
         return [
-            // 'name.required' => 'Vui lòng nhập họ tên.',
-            // 'email.required' => 'Vui lòng nhập email.',
-            // 'email.email' => 'Email không hợp lệ.',
-            // 'message.required' => 'Vui lòng nhập nội dung.',
 
             // 10/12/2024
-
-            'name.required' => 'Vui lòng nhập họ tên.',
-            'name.string' => 'Họ tên phải là chuỗi ký tự.',
-            'name.max' => 'Họ tên không được vượt quá 255 ký tự.',
-            'email.required' => 'Vui lòng nhập email.',
-            'email.email' => 'Email không hợp lệ.',
-            'email.max' => 'Email không được vượt quá 255 ký tự.',
+            'subject.required' => 'Vui lòng nhập tiêu đề.',
             'subject.string' => 'Tiêu đề phải là chuỗi ký tự.',
             'subject.max' => 'Tiêu đề không được vượt quá 255 ký tự.',
             'message.required' => 'Vui lòng nhập nội dung.',
