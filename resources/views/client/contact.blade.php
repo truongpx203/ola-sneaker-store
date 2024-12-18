@@ -46,8 +46,8 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <input class="form-control" type="text" name="name"
-                                                    placeholder="Họ tên *" value="{{ old('name', $user->full_name ?? '') }}"
-                                                    required>
+                                                    placeholder="Họ tên *" value="{{ old('name', $user->full_name ?? '') }}" readonly
+                                                    required >
                                                 @error('name')
                                                     <small style="color: red;">{{ $message }}</small>
                                                 @enderror
@@ -56,7 +56,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <input class="form-control" type="email" name="email"
-                                                    placeholder="Email *" value="{{ old('email', $user->email ?? '') }}"
+                                                    placeholder="Email *" value="{{ old('email', $user->email ?? '') }}" readonly
                                                     required>
                                                 @error('email')
                                                     <small style="color: red;">{{ $message }}</small>
