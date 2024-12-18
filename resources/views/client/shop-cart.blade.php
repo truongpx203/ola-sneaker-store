@@ -90,12 +90,16 @@
                                                                 <div class="dec qty-btn">-</div>
                                                                 <input type="number" class="quantity-input"
                                                                     name="variant_quantity[]"
-                                                                    value="{{ $cart->variant_quantity }}" min="1"
-                                                                    data-price="{{ $cart->variant->sale_price }}" required>
+                                                                    value="{{ $cart->variant_quantity }}" 
+                                                                    min="1" 
+                                                                    max="{{ $cart->variant->stock }}" 
+                                                                    data-stock="{{ $cart->variant->stock }}" 
+                                                                    data-price="{{ $cart->variant->sale_price }}" 
+                                                                    required>
                                                                 <div class="inc qty-btn">+</div>
                                                             </div>
                                                         @endif
-                                                    </td>
+                                                    </td>                                                    
                                                     <td class="product-subtotal">
                                                         <span
                                                             class="subtotal">{{ number_format($cart->variant->sale_price * $cart->variant_quantity) }}
@@ -248,36 +252,61 @@
             });
         });
 
-        // Hiển thị tổng tiền khi tăng giảm số lượng
-        $('.inc.qty-btn').off('click').on('click', function() {
-            let quantityInput = $(this).siblings('.quantity-input');
-            let quantity = parseInt(quantityInput.val()) || 0;
-            quantity += 1;
-            quantityInput.val(quantity);
-            updateSubtotal(quantityInput);
-        });
+// Hiển thị tổng tiền khi tăng giảm số lượng
+$('.inc.qty-btn').off('click').on('click', function() {
+    let quantityInput = $(this).siblings('.quantity-input');
+    let quantity = parseInt(quantityInput.val()) || 0;
+    let stock = parseInt(quantityInput.attr('data-stock')) || 0; // Lấy số lượng tồn kho từ thuộc tính data-stock
 
-        $('.dec.qty-btn').off('click').on('click', function() {
-            let quantityInput = $(this).siblings('.quantity-input');
-            let quantity = parseInt(quantityInput.val()) || 1;
-            if (quantity > 1) {
-                quantity -= 1;
-                quantityInput.val(quantity);
-                updateSubtotal(quantityInput);
-            }
+    if (quantity < stock) {
+        quantity += 1;
+        quantityInput.val(quantity);
+        updateSubtotal(quantityInput);
+    } else {
+        // Hiển thị thông báo bằng SweetAlert2
+        Swal.fire({
+            icon: 'warning', // Loại thông báo: cảnh báo
+            title: 'Số lượng vượt quá tồn kho!',
+            html: `Sản phẩm này chỉ còn lại <b>${stock}</b> sản phẩm trong kho.`,
+            confirmButtonText: 'OK'
         });
+    }
+});
+$('.dec.qty-btn').off('click').on('click', function() {
+    let quantityInput = $(this).siblings('.quantity-input');
+    let quantity = parseInt(quantityInput.val()) || 1;
 
-        function updateSubtotal(input) {
-            let quantity = parseInt(input.val()) || 0;
-            let price = parseFloat(input.data('price'));
-            let subtotal = price * quantity;
-            input.closest('tr').find('.subtotal').text(new Intl.NumberFormat('vi-VN').format(subtotal) +
-                ' VNĐ');
-        }
+    if (quantity > 1) {
+        quantity -= 1;
+        quantityInput.val(quantity);
+        updateSubtotal(quantityInput);
+    }
+});
 
-        $('.quantity-input').on('input', function() {
-            updateSubtotal($(this));
-        });
+function updateSubtotal(input) {
+    let quantity = parseInt(input.val()) || 0;
+    let price = parseFloat(input.data('price')) || 0;
+    let subtotal = price * quantity;
+
+    input.closest('tr').find('.subtotal').text(
+        new Intl.NumberFormat('vi-VN').format(subtotal) + ' VNĐ'
+    );
+}
+
+// Kiểm tra khi nhập số lượng trực tiếp
+$('.quantity-input').on('input', function() {
+    let input = $(this);
+    let quantity = parseInt(input.val()) || 0;
+    let stock = parseInt(input.attr('data-stock')) || 0;
+
+    if (quantity > stock) {
+        alert(`Không thể vượt quá số lượng tồn kho: ${stock}`);
+        input.val(stock); // Đặt giá trị lại thành tồn kho tối đa
+    }
+
+    updateSubtotal(input);
+});
+
 
         $('.btn-theme.btn-flat').click(function(event) {
             event.preventDefault(); // Ngừng hành động mặc định của nút thanh toán
