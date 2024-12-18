@@ -8,6 +8,7 @@ use App\Mail\OrderCanceledMail;
 use App\Mail\OrderCompletedMail;
 use App\Mail\OrderStatusUpdatedMail;
 use App\Models\Bill;
+use App\Models\VoucerHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -41,7 +42,8 @@ class BillController extends Controller
     public function show($id)
     {
         $bill = Bill::with(['items.variant', 'histories'])->findOrFail($id);
-        return view('admin.bills.show-bill-item', compact('bill'));
+        $voucerHistory=VoucerHistory::query()->with('voucher')->where('bill_id',$id)->first();
+        return view('admin.bills.show-bill-item', compact('bill','voucerHistory'));
     }
 
     public function updateStatus(Request $request, $id)

@@ -90,50 +90,49 @@
                         {{ session('error') }}
                     </div>
                 @endif
-                @if (session('voucher') == null)
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="checkout-page-coupon-wrap">
-                                <!--== Start Checkout Coupon Accordion ==-->
-                                <div class="coupon-accordion" id="CouponAccordion">
-                                    <div class="card">
-                                        <h3>
-                                            <i class="fa fa-info-circle"></i>
-                                            Có phiếu giảm giá?
-                                            <a href="#/" data-bs-toggle="collapse"
-                                                data-bs-target="#couponaccordion">Nhấp
-                                                vào đây để nhập mã của bạn</a>
-                                        </h3>
-                                        <div id="couponaccordion" class="collapse" data-bs-parent="#CouponAccordion">
-                                            <div class="card-body">
-                                                <div class="apply-coupon-wrap mb-60">
-                                                    <p>Nếu bạn có mã giảm giá, vui lòng áp dụng bên dưới.</p>
-                                                    <form action="{{ route('cart.voucher') }}" method="POST">
-                                                        @csrf
-                                                        <div class="row">
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <input type="text" id="couponCode" name="couponCode"
-                                                                        class="form-control"
-                                                                        placeholder="Nhập mã phiếu giảm giá của bạn"
-                                                                        required value="{{ session('voucher.code') }}">
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <button class="btn-coupon" type="submit">Áp dụng</button>
+                {{-- @if (session('voucher') == null) --}}
+                <div class="row">
+                    <div class="col-12">
+                        <div class="checkout-page-coupon-wrap">
+                            <!--== Start Checkout Coupon Accordion ==-->
+                            <div class="coupon-accordion" id="CouponAccordion">
+                                <div class="card">
+                                    <h3>
+                                        <i class="fa fa-info-circle"></i>
+                                        Có phiếu giảm giá?
+                                        <a href="#/" data-bs-toggle="collapse" data-bs-target="#couponaccordion">Nhấp
+                                            vào đây để nhập mã của bạn</a>
+                                    </h3>
+                                    <div id="couponaccordion" class="collapse" data-bs-parent="#CouponAccordion">
+                                        <div class="card-body">
+                                            <div class="apply-coupon-wrap mb-60">
+                                                <p>Nếu bạn có mã giảm giá, vui lòng áp dụng bên dưới.</p>
+                                                <form action="{{ route('cart.voucher') }}" method="POST">
+                                                    @csrf
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <input type="text" id="couponCode" name="couponCode"
+                                                                    class="form-control"
+                                                                    placeholder="Nhập mã phiếu giảm giá của bạn" required
+                                                                    value="{{ session('voucher.code') }}">
                                                             </div>
                                                         </div>
-                                                    </form>
-                                                </div>
+                                                        <div class="col-md-6">
+                                                            <button class="btn-coupon" type="submit">Áp dụng</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <!--== End Checkout Coupon Accordion ==-->
                             </div>
+                            <!--== End Checkout Coupon Accordion ==-->
                         </div>
                     </div>
-                @endif
+                </div>
+                {{-- @endif --}}
 
                 <form id="checkout-form" action="{{ route('checkout.process') }}" method="post">
                     @csrf
@@ -350,7 +349,7 @@
                     }
                 </script> --}}
 
-                {{--Sửa 17/12/2024 --}}
+                {{-- Sửa 17/12/2024 --}}
                 <script>
                     function validatePoints(inputPoints, userPoints) {
                         let pointsError = document.getElementById('pointsError');
@@ -363,7 +362,7 @@
                         }
                         calculateDiscount();
                     }
-                
+
                     function calculateDiscount() {
                         var points = document.getElementById('points_to_use').value;
                         var totalPrice = {{ $total_price }};
