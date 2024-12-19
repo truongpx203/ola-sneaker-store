@@ -214,6 +214,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/account', [AccountController::class, 'account'])->name('account');
 
     Route::post('/updateProfile', [AccountController::class, 'updateProfile'])->name('your.route.name');
+    Route::post('/profile/update-password', [AccountController::class, 'updatePassword'])->name('profile.update.password');
 
     // chi tiết đơn hàng truyền id bảng bill
     // Route::get('order-details/{id}', [HomeController::class, 'detailBill'])->name('order-details');
