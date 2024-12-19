@@ -1,16 +1,12 @@
-@extends('admin.layouts.master');
+@extends('admin.layouts.master')
 
 @section('title')
-    Chi tiết liên hệ
+Chi tiết liên hệ
 @endsection
 
 @section('content')
     <div class="row">
         <div class="col-lg-12">
-            @if (session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-            @endif
-
             @if (session('error'))
                 <div class="alert alert-danger">{{ session('error') }}</div>
             @endif
@@ -22,9 +18,9 @@
                     <div class="live-preview">
                         <div class="row gy-4">
                             <div class="col-md-4">
-                                <div class="card-header">
+                                {{-- <div class="card-header">
                                     Liên hệ #{{ $contact->id }}
-                                </div>
+                                </div> --}}
                                 <div class="card-body">
                                     <p><strong>Họ và tên:</strong> {{ $contact->user->full_name }}</p>
                                     <p><strong>Email:</strong> {{ $contact->user->email }}</p>
@@ -59,7 +55,7 @@
                                         @csrf
                                         <div class="form-group">
                                             <label for="reply_message">Nội dung phản hồi:</label>
-                                            <textarea class="form-control" name="reply_message" id="reply_message" rows="5" required>{{ old('reply_message') }}</textarea>
+                                            <textarea class="form-control" name="reply_message" id="reply_message" rows="5" >{{ old('reply_message') }}</textarea>
                                             @error('reply_message')
                                                 <small style="color: red;">{{ $message }}</small>
                                             @enderror
@@ -90,4 +86,27 @@
         </div>
         <!--end col-->
     </div>
+@endsection
+@section('scriptsToastr')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            toastr.options = {
+
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000",
+            };
+            @if (session('success'))
+                toastr.success("{{ session('success') }}");
+            @endif
+
+            @if (session('error'))
+                toastr.error("{{ session('error') }}");
+            @endif
+        });
+    </script>
 @endsection

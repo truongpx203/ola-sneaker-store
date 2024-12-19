@@ -70,7 +70,7 @@
                 <li><strong>Số điện thoại:</strong> {{ $bill->phone_number }}</li>
                 <li><strong>Địa chỉ:</strong> {{ $bill->address }}</li>
                 <li><strong>Phương thức thanh toán:</strong> {{ $bill->payment_type}}</li>
-                <li><strong>Thành tiền:</strong> {{ number_format($bill->total_price, 0, ',', '.') }} VNĐ</li>
+                <li><strong>Thành tiền:</strong> {{ number_format($bill->total_price, 0, ',', '.') }} đ</li>
             </ul>
             <h5>Chi tiết sản phẩm:</h5>
             <table>
@@ -88,7 +88,7 @@
                             <td>{{ $item->product_name }}</td>
                             <td>{{ $item->variant->size->name }}</td>
                             <td>{{ $item->variant_quantity }}</td>
-                            <td>{{ number_format($item->sale_price * $item->variant_quantity) }} VNĐ</td>
+                            <td>{{ number_format($item->sale_price * $item->variant_quantity) }} đđ</td>
                         </tr>
                     @endforeach
                 </tbody>
