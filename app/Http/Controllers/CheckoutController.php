@@ -143,10 +143,6 @@ class CheckoutController extends Controller
             }
             // 7/11/2024
             /// Xác định điểm sử dụng và tính giảm giá
-            // $pointsToUse = $request->input('points_to_use', 0);
-            // if ($pointsToUse > $user->points) {
-            //     return redirect()->back()->withErrors(['error' => 'Số điểm bạn nhập không hợp lệ.']);
-            // }
             //Sửa 17/12/2024
             $pointsToUse = $request->input('points_to_use', 0);
             if ($pointsToUse > $user->points || $pointsToUse < 0) {
@@ -155,18 +151,19 @@ class CheckoutController extends Controller
                 ]);
             }
 
-            $discountAmount = $pointsToUse * 10000;
-            $finalPrice = max(0, $total_price - $discountAmount);
+            $pointValue = 10000; // Giá trị mỗi điểm là 10,000 VND
+            $discountAmount = $pointsToUse * $pointValue;
+            // $finalPrice = max(0, $total_price - $discountAmount);
 
-            // Kiểm tra nếu tổng giá trị đơn hàng sau khi áp dụng giảm giá đã bằng 0 (18/12/2024)
-            if ($validateData['payment_type'] === 'cod') {
-                if ($finalPrice <= 0) {
-                    return redirect()->back()->withErrors([
-                        'error' => 'Không thể sử dụng thêm điểm vì giá trị đơn hàng đã đạt mức tối thiểu.'
-                    ]);
-                }
+            // Kiểm tra nếu số điểm sử dụng vượt quá giá trị đơn hàng
+            if ($discountAmount > $total_price) {
+                return redirect()->back()->withErrors([
+                    'error' => 'Số điểm bạn sử dụng vượt quá giá trị đơn hàng. Bạn chỉ có thể sử dụng tối đa ' . floor($total_price / $pointValue) . ' điểm.'
+                ]);
             }
 
+            // Tính giá trị đơn hàng sau khi áp dụng giảm giá
+            $finalPrice = max(0, $total_price - $discountAmount);
 
             // Tạo mã hóa đơn
             // $code = 'BILL-' . strtoupper(uniqid());
@@ -348,7 +345,7 @@ class CheckoutController extends Controller
 
         // Kiểm tra giá trị tối thiểu để thanh toán VNPAY (18/12/2024)
         if ($validateData['payment_type'] === 'vnpay') {
-            $minPriceForVNPay = 5000;
+            $minPriceForVNPay = 10000;
             if ($finalPrice < $minPriceForVNPay) {
                 return redirect()->back()->withErrors([
                     'error' => 'Tổng giá trị đơn hàng phải lơn hơn ' . number_format($minPriceForVNPay, 0, ',', '.') . ' đ để thanh toán qua VNPAY.'
@@ -490,13 +487,13 @@ class CheckoutController extends Controller
 
 
                 // Kiểm tra nếu giá cuối nhỏ hơn mức tối thiểu cho thanh toán VNPay (18/12/2024)       
-                    $minPriceForVNPay = 5000;
-                    if ($finalPrice < $minPriceForVNPay) {
-                        DB::rollBack();
-                        return redirect()->route('tt-that-bai')->withErrors([
-                            'error' => 'Tổng giá trị đơn hàng phải lơn hơn ' . number_format($minPriceForVNPay, 0, ',', '.') . ' đ để hoàn thành giao dịch.'
-                        ]);
-                    }
+                $minPriceForVNPay = 10000;
+                if ($finalPrice < $minPriceForVNPay) {
+                    DB::rollBack();
+                    return redirect()->route('tt-that-bai')->withErrors([
+                        'error' => 'Tổng giá trị đơn hàng phải lơn hơn ' . number_format($minPriceForVNPay, 0, ',', '.') . ' đ để hoàn thành giao dịch.'
+                    ]);
+                }
 
 
                 // Trừ điểm người dùng đã sử dụng
@@ -891,10 +888,6 @@ class CheckoutController extends Controller
 
             // Xử lý số điểm giảm giá(7/11/2024)
             $pointsToUse = $validatedData['points_to_use'] ?? 0;
-            // if ($pointsToUse > $user->points) {
-            //     return redirect()->back()->withErrors(['error' => 'Số điểm bạn nhập vượt quá số điểm hiện có.']);
-            // }
-
             // Sửa 17/12/2024
             if ($pointsToUse > $user->points || $pointsToUse < 0) {
                 return redirect()->back()->withErrors([
@@ -903,23 +896,16 @@ class CheckoutController extends Controller
             }
             $pointValue = 10000; // Giá trị mỗi điểm là 10,000 VND
             $discountAmount = $pointsToUse * $pointValue;
-            $finalPrice = max(0, $totalPrice - $discountAmount); // Không cho phép giá trị âm
-
-            // Kiểm tra nếu tổng giá trị đơn hàng sau khi áp dụng giảm giá đã bằng 0(18/12/2024)
-            // if ($finalPrice <= 0) {
-            //     return redirect()->back()->withErrors([
-            //         'error' => 'Không thể sử dụng thêm điểm vì giá trị đơn hàng đã đạt mức tối thiểu.'
-            //     ]);
-            // }
-            // Kiểm tra nếu phương thức thanh toán là COD
-            if ($validatedData['payment_type'] === 'cod') {
-                // Nếu giá trị đơn hàng cuối cùng nhỏ hơn giá trị sử dụng điểm, không cho phép sử dụng điểm nữa
-                if ($pointsToUse > 0 && $finalPrice < ($pointsToUse * $pointValue)) {
-                    return redirect()->back()->withErrors([
-                        'error' => 'Không thể sử dụng thêm điểm vì giá trị đơn hàng đã đạt mức tối thiểu.'
-                    ]);
-                }
+            // $finalPrice = max(0, $totalPrice - $discountAmount); // Không cho phép giá trị âm (Comment vào ngày 19/12/2024)
+            // Kiểm tra nếu số điểm sử dụng vượt quá tổng giá trị đơn hàng (Ngày 19/12/2024)
+            if ($discountAmount > $totalPrice) {
+                return redirect()->back()->withErrors([
+                    'error' => 'Số điểm bạn sử dụng vượt quá giá trị đơn hàng. Bạn chỉ có thể sử dụng tối đa ' . floor($totalPrice / $pointValue) . ' điểm.'
+                ]);
             }
+
+            // Tính giá trị đơn hàng sau khi giảm giá
+            $finalPrice = max(0, $totalPrice - $discountAmount);
 
             // Tạo mã đơn hàng
             // $billCode = 'BILL-' . strtoupper(uniqid());
@@ -1102,7 +1088,7 @@ class CheckoutController extends Controller
 
         // Kiểm tra nếu số tiền cuối cùng nhỏ hơn mức tối thiểu cho VNPay(18/12/2024)
         if ($validatedData['payment_type'] === 'vnpay') {
-            $minPriceForVNPay = 5000;
+            $minPriceForVNPay = 10000;
             if ($finalPrice < $minPriceForVNPay) {
                 return redirect()->back()->withErrors([
                     'error' => 'Tổng giá trị đơn hàng phải lơn hơn ' . number_format($minPriceForVNPay, 0, ',', '.') . ' đ để thanh toán qua VNPay.'
@@ -1195,7 +1181,6 @@ class CheckoutController extends Controller
 
                 // 29/11/2024
                 // Lấy số điểm đã sử dụng từ session
-                $pointsToUse = session('payment.points_to_use', 0);
                 $user = Auth::user();
 
                 // if ($pointsToUse > $user->points) {
@@ -1234,7 +1219,7 @@ class CheckoutController extends Controller
 
                 // Kiểm tra nếu giá trị cuối cùng không hợp lệ (18/12/2024)
                 if ($validatedData['payment_type'] === 'vnpay') {
-                    $minPriceForVNPay = 5000;
+                    $minPriceForVNPay = 10000;
                     if ($finalPrice < $minPriceForVNPay) {
                         DB::rollBack();
                         return redirect()->route('tt-that-bai')->withErrors([
