@@ -1,4 +1,4 @@
-@extends('admin.layouts.master');
+@extends('admin.layouts.master')
 
 @section('title')
     Chi tiết sản phẩm

@@ -1,6 +1,8 @@
-@extends('admin.layouts.master');
+@extends('admin.layouts.master')
 
-@section('title', 'Chi tiết đơn hàng')
+@section('title')
+    Danh sách người dùng
+@endsection
 
 @section('content')
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -86,8 +88,8 @@
                                                     </a>
                                                 </td>
                                                 <td>
-                                                    <button type="button" class="btn btn-primary edit-item-btn" data-toggle="modal"
-                                                        data-target="#userModal{{ $user->id }}">
+                                                    <button type="button" class="btn btn-primary edit-item-btn"
+                                                        data-toggle="modal" data-target="#userModal{{ $user->id }}">
                                                         Xem chi tiết
                                                     </button>
                                                     <a href="{{ route('user.update', $user->id) }}"><button type="button"
@@ -152,26 +154,27 @@
             </div>
         </div>
     </div>
-
 @endsection
 @section('scriptsToastr')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
-        console.log("Success message:", "{{ session('success') }}");
-        toastr.options = {
+        $(document).ready(function() {
+            toastr.options = {
 
-            "closeButton": true,
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "timeOut": "5000",
-        };
-        @if (session('success'))
-            toastr.success("{{ session('success') }}");
-        @endif
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000",
+            };
+            @if (session('success'))
+                toastr.success("{{ session('success') }}");
+            @endif
 
-        @if (session('error'))
-            toastr.error("{{ session('error') }}");
-        @endif
+            @if (session('error'))
+                toastr.error("{{ session('error') }}");
+            @endif
+        });
     </script>
 @endsection

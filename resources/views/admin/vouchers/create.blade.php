@@ -5,35 +5,14 @@
 @endsection
 
 @section('content')
-    <div class="row">
-        <div class="col-12">
-            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0">Thêm mới mã giảm giá</h4>
-
-                <div class="page-title-right">
-                    <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item"><a href="javascript: void(0);">Mã giảm giá</a></li>
-                        <li class="breadcrumb-item active">Thêm mới</li>
-                    </ol>
-                </div>
-
-            </div>
-        </div>
-    </div>
 
     @if ($errors->any())
         <div class="row">
             <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-header align-items-center d-flex">
-                        <div class="alert alert-danger" style="width: 100%;">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    </div>
+                <div class="alert alert-danger" style="width: 100%;">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -131,41 +110,11 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header align-items-center d-flex">
-                        <a href="{{ route('voucher.index') }}" class="btn btn-primary mx-3" type="submit">Quay
-                            lại</a>
-                        <button class="btn btn-primary" type="submit">Thêm</button>
+                        <button class="btn btn-primary me-2" type="submit">Thêm</button>
+                        <a href="{{ route('voucher.index') }}" class="btn btn-secondary" type="submit">Danh sách</a>
                     </div>
                 </div>
             </div>
         </div>
     </form>
-@endsection
-@section('scriptsToastr')
-    @if (session('success'))
-        <script>
-            Swal.fire({
-                icon: 'error', // Hoặc 'warning', 'error', v.v.
-                // title: 'Thành công',
-                text: '{{ session('error') }}',
-                confirmButtonText: 'OK',
-                timer: 5000,
-                timerProgressBar: true,
-            });
-        </script>
-    @endif
-@endsection
-@section('scriptsToastr')
-    @if (session('success'))
-        <script>
-            Swal.fire({
-                icon: 'success', // Hoặc 'warning', 'error', v.v.
-                title: 'Thành công',
-                text: '{{ session('success') }}',
-                confirmButtonText: 'OK',
-                timer: 5000,
-                timerProgressBar: true,
-
-            });
-        </script>
-    @endif
 @endsection

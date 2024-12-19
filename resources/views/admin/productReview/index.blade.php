@@ -1,7 +1,7 @@
-@extends('admin.layouts.master');
+@extends('admin.layouts.master')
 
 @section('title')
-    Quản lý đánh giá
+    Danh sách đánh giá
 @endsection
 
 @section('content')
@@ -29,7 +29,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="card-title mb-0">Danh Sách Sản phẩm</h4>
+                    <h4 class="card-title mb-0">Danh Sách Đánh Giá</h4>
                 </div>
 
                 <div class="card-body">
@@ -170,4 +170,27 @@
         </div>
     </div>
     
+@endsection
+@section('scriptsToastr')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            toastr.options = {
+
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000",
+            };
+            @if (session('success'))
+                toastr.success("{{ session('success') }}");
+            @endif
+
+            @if (session('error'))
+                toastr.error("{{ session('error') }}");
+            @endif
+        });
+    </script>
 @endsection

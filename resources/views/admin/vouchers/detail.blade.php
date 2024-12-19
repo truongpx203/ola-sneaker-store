@@ -5,21 +5,6 @@
 @endsection
 
 @section('content')
-    <div class="row">
-        <div class="col-12">
-            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0">Chi tiết mã giảm giá</h4>
-
-                <div class="page-title-right">
-                    <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item"><a href="javascript: void(0);">Mã giảm giá</a></li>
-                        <li class="breadcrumb-item active">Thêm mới</li>
-                    </ol>
-                </div>
-
-            </div>
-        </div>
-    </div>
 
     @if ($errors->any())
         <div class="row">
@@ -44,7 +29,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header align-items-center d-flex">
-                        <h4 class="card-title mb-0 flex-grow-1">Thông tin</h4>
+                        <h4 class="card-title mb-0 flex-grow-1">Chi tiết mã giảm giá</h4>
                     </div>
                     <div class="card-body">
                         <div class="live-preview">
@@ -91,6 +76,27 @@
                             <div class="row gy-4">
                                 <div class="col-md-6">
                                     <div>
+                                        <label for="quantity" class="form-label">Số lượng đã sử dụng</label>
+                                        <input type="number" class="form-control" value="{{ $voucher->used_quantity }}" disabled
+                                            id="quantity">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div>
+                                        <label for="description" class="form-label">Mô tả</label>
+                                        <input type="text" class="form-control" value="{{ $voucher->description }}"
+                                            disabled id="description">
+                                    </div>
+                                </div>
+                               
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="live-preview">
+                            <div class="row gy-4">
+                                <div class="col-md-6">
+                                    <div>
                                         <label for="start_datetime" class="form-label">Ngày bắt đầu</label>
                                         <input type="datetime-local" class="form-control"
                                             value="{{ $voucher->start_datetime }}" disabled id="start_datetime">
@@ -106,19 +112,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div class="live-preview">
-                            <div class="row gy-4">
-                                <div class="col-md-12">
-                                    <div>
-                                        <label for="description" class="form-label">Mô tả</label>
-                                        <input type="text" class="form-control" value="{{ $voucher->description }}"
-                                            disabled id="description">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                   
                     <div class="card-body">
                         <h4 class="card-title flex-grow-1">Thông tin người dùng được sử dụng mã</h4>
                         <table id="example" class="table table-bordered dt-responsive nowrap table-striped align-middle"
@@ -154,8 +148,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header align-items-center d-flex">
-                        <a href="{{ route('voucher.index') }}" class="btn btn-primary mx-3" type="submit">Quay
-                            lại</a>
+                        <a href="{{ route('voucher.index') }}" class="btn btn-primary" type="submit">Danh sách</a>
                     </div>
                 </div>
             </div>

@@ -1,6 +1,8 @@
-@extends('admin.layouts.master');
+@extends('admin.layouts.master')
 
-@section('title', 'Chi tiết đơn hàng')
+@section('title')
+   Chi tiết đơn hàng
+@endsection
 
 @section('content')
     <style>
