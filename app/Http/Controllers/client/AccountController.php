@@ -208,32 +208,39 @@ class AccountController extends Controller
         // Validate the incoming request data
         $request->validate([
             'full_name' => 'required|string|max:255',
-            'phone_number' => 'required|string|max:15',
+            'phone_number' => 'required|string|max:10',
             'address' => 'required|string|max:255',
-            'current_password' => 'required|string',
-            'new_password' => 'nullable|string|min:8|confirmed',
+
         ]);
 
         $user = Auth::user();
 
-        // Check if the current password is correct
+        $user->full_name = $request->full_name;
+        $user->phone_number = $request->phone_number;
+        $user->address = $request->address;
+        $user->save();
+
+        return back()->with('success', 'Thông tin đã được cập nhật thành công.');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = Auth::user();
+
+        // Kiểm tra mật khẩu hiện tại
         if (!Hash::check($request->current_password, $user->password)) {
             return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không đúng.']);
         }
 
-        // Update user fields
-        $user->full_name = $request->full_name;
-        $user->phone_number = $request->phone_number;
-        $user->address = $request->address;
-
-        // Update password if provided
-        if ($request->new_password) {
-            $user->password = Hash::make($request->new_password);
-        }
-
-        // Save the user
+        // Cập nhật mật khẩu mới
+        $user->password = Hash::make($request->new_password);
         $user->save();
 
-        return back()->with('success', 'Thông tin đã được cập nhật thành công.');
+        return back()->with('success', 'Mật khẩu đã được thay đổi thành công.');
     }
 }
