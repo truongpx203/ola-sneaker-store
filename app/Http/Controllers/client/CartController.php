@@ -36,9 +36,16 @@ class CartController extends Controller
                 continue;
             }
             $productName = $variant->product->name;
+            $size = $variant->size->name;
+
+            // Kiểm tra số lượng phải lớn hơn 1
+            if ($listQuantity[$i] < 1) {
+                $errors[] = "Sản phẩm '{$productName}' (Size: {$size}) phải chọn số lượng lớn hơn 0.";
+                continue; 
+            }
 
             if ($variant->stock < $listQuantity[$i]) {
-                $errors[] = "Sản phẩm '{$productName}' không đủ số lượng trong kho (còn lại {$variant->stock}).";
+                $errors[] = "Sản phẩm '{$productName}' (Size: {$size})  không đủ số lượng trong kho (còn lại {$variant->stock}).";
             }
         }
         if (!empty($errors)) {

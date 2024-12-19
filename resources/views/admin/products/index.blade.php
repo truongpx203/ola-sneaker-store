@@ -1,10 +1,10 @@
-@extends('admin.layouts.master');
+@extends('admin.layouts.master')
 
 @section('title')
-    Danh Sách Sản phẩm
+    Danh sách sản phẩm
 @endsection
+
 @section('content')
-    <!-- end page title -->
 
     <div class="row">
         <div class="col-lg-12">
@@ -65,13 +65,13 @@
                             <table class="table align-middle table-nowrap" id="customerTable">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>ID</th>
+                                        <th>#</th>
                                         <th>Hình ảnh</th>
                                         <th>Mã sản phẩm</th>
                                         <th>Tên sản phẩm</th>
                                         <th>Danh mục</th>
                                         <th>Đánh giá</th>
-                                        <th>Action </th>
+                                        <th>Hàng động</th>
                                     </tr>
                                 </thead>
                                 <tbody class="list form-check-all">

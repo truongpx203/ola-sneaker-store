@@ -45,6 +45,6 @@ class ProductReviewController extends Controller
             }
             $productReview->save();
         }
-        return back();
+        return back()->with('success', 'Cập nhật thành công!');
     }
 }

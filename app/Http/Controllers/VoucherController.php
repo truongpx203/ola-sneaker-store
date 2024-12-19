@@ -8,15 +8,35 @@ use App\Models\VoucerHistory;
 use App\Models\Voucher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class VoucherController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $vouchers = Voucher::query()->get();
+        $query = DB::table('vouchers')->latest('id');
+
+        if ($request->filled('value')) {
+            $query->where('value', $request->value);
+        }
+    
+        if ($request->filled('max_price')) {
+            $query->where('max_price', '<=', $request->max_price);
+        }
+    
+        if ($request->filled('start_date')) {
+            $query->whereDate('start_datetime', '>=', $request->start_date);
+        }
+    
+        if ($request->filled('end_date')) {
+            $query->whereDate('end_datetime', '<=', $request->end_date);
+        }
+
+        $vouchers = $query->paginate(10);
+    
         return view('admin.vouchers.index', compact('vouchers'));
     }
 
@@ -60,7 +80,7 @@ class VoucherController extends Controller
     {
         $voucerHistory = VoucerHistory::query()->where('voucher_id', $id)->first();
         if ($voucerHistory) {
-            return redirect()->route('voucher.index')->withErrors(['error_voucher' => 'Voucher này đã có người sử dụng nên không được sửa']);
+            return redirect()->route('voucher.index')->with(['error' => 'Voucher này đã có người sử dụng nên không được sửa']);
         }
         $allUsers = User::where('status', 'active')->get();
         $voucher = Voucher::find($id);
@@ -83,7 +103,7 @@ class VoucherController extends Controller
             "for_user_ids" => json_encode($request->for_user_ids)
         ];
         $voucher->update($data);
-        return redirect()->route('voucher.index')->with('success', 'Cập nhật voucher thành công.');;
+        return back()->with('success', 'Cập nhật voucher thành công.');;
     }
 
     /**
@@ -94,7 +114,7 @@ class VoucherController extends Controller
         $voucher = Voucher::find($id);
         $voucerHistory = VoucerHistory::query()->where('voucher_id', $id)->first();
         if ($voucerHistory) {
-            return redirect()->route('voucher.index')->withErrors(['error_voucher' => 'Voucher này đã có người sử dụng nên không được xóa']);
+            return redirect()->route('voucher.index')->with(['error' => 'Voucher này đã có người sử dụng nên không được xóa']);
         } else {
             $voucher->delete();
             return redirect()->route('voucher.index')->with('success', 'Đã xóa voucher thành công.');

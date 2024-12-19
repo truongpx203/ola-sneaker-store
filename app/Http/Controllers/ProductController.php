@@ -223,7 +223,7 @@ class ProductController extends Controller
             }
     
             DB::commit();
-            return redirect()->route('products.index')->with('success', 'Cập nhật sản phẩm thành công!');
+            return back()->with('success', 'Cập nhật sản phẩm thành công!');
         } catch (\Exception $e) {
             DB::rollback();
             return back()->withErrors(['error' => 'Cập nhật sản phẩm thất bại. Vui lòng thử lại.'])->withInput();

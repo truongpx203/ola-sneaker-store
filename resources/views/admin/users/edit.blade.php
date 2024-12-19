@@ -7,13 +7,6 @@
 @section('content')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <div class="row">
-       <div class="col-lg-12">
-        @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-       </div>
         <div class="col-lg-12">
         <div class="card">
             <h5 class="card-header">Cập nhật thông tin tài khoản</h5>
@@ -134,7 +127,7 @@
                     </script>
 
                     <button type="submit" class="btn btn-primary">Cập nhật</button>
-                    <a href="{{ route('list.user') }}" class="btn btn-secondary">Quay lại</a>
+                    <a href="{{ route('list.user') }}" class="btn btn-secondary">Danh sách</a>
                 </form>
             </div>
         </div>
@@ -143,24 +136,25 @@
     </div>
 @endsection
 @section('scriptsToastr')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
-        console.log("Success message:", "{{ session('success') }}");
-        toastr.options = {
+        $(document).ready(function() {
+            toastr.options = {
             
             "closeButton": true,
             "progressBar": true,
             "positionClass": "toast-top-right",
             "timeOut": "5000",
         };
-        @if (session('success'))
-            toastr.success("{{ session('success') }}");
-        @endif
-
-        @if (session('error'))
-            toastr.error("{{ session('error') }}");
-        @endif
+            @if (session('success'))
+                toastr.success("{{ session('success') }}");
+            @endif
+    
+            @if (session('error'))
+                toastr.error("{{ session('error') }}");
+            @endif
+        });
     </script>
 @endsection
-

@@ -245,7 +245,8 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header align-items-center d-flex">
-                        <button class="btn btn-primary" type="submit">Save</button>
+                        <button class="btn btn-primary me-2" type="submit">Sửa</button>
+                        <a href="{{ route('products.index') }}" class="btn btn-secondary" type="submit">Danh sách</a>
                     </div><!-- end card header -->
                 </div>
             </div>
@@ -382,33 +383,26 @@
     </script>
 @endsection
 @section('scriptsToastr')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            toastr.options = {
 
-    @if (session('success'))
-        <script>
-            Swal.fire({
-                icon: 'success', // Hoặc 'warning', 'error', v.v.
-                title: 'Thành công',
-                text: '{{ session('success') }}',
-                confirmButtonText: 'OK',
-                timer: 5000, // Thời gian hiển thị thông báo (5000ms = 5 giây)
-                timerProgressBar: true,
-            });
-        </script>
-    @endif
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000",
+            };
+            @if (session('success'))
+                toastr.success("{{ session('success') }}");
+            @endif
 
+            @if (session('error'))
+                toastr.error("{{ session('error') }}");
+            @endif
+        });
+    </script>
 @endsection
-@section('scriptsToastr')
-    @if (session('error'))
-        <script>
-            Swal.fire({
-                icon: 'error', // Hoặc 'warning', 'error', v.v.
-                // title: 'Thành công',
-                text: '{{ session('error') }}',
-                confirmButtonText: 'OK',
-                timer: 5000, // Thời gian hiển thị thông báo (5000ms = 5 giây)
-                timerProgressBar: true,
-            });
-        </script>
-    @endif
 
-@endsection

@@ -65,7 +65,7 @@
                                                     <td class="product-thumb">
                                                         <a href="{{ route('cart.show', $cart->variant->product_id) }}">
                                                             <img src="{{ Storage::url($cart->variant->product->primary_image_url) }}"
-                                                                width="90" height="110"
+                                                                style="width: 100px; height: 100px; object-fit: cover"
                                                                 alt="{{ $cart->variant->product->name }}">
                                                         </a>
                                                     </td>
@@ -90,16 +90,14 @@
                                                                 <div class="dec qty-btn">-</div>
                                                                 <input type="number" class="quantity-input"
                                                                     name="variant_quantity[]"
-                                                                    value="{{ $cart->variant_quantity }}" 
-                                                                    min="1" 
-                                                                    max="{{ $cart->variant->stock }}" 
-                                                                    data-stock="{{ $cart->variant->stock }}" 
-                                                                    data-price="{{ $cart->variant->sale_price }}" 
-                                                                    required>
+                                                                    value="{{ $cart->variant_quantity }}" min="1"
+                                                                    max="{{ $cart->variant->stock }}"
+                                                                    data-stock="{{ $cart->variant->stock }}"
+                                                                    data-price="{{ $cart->variant->sale_price }}" required>
                                                                 <div class="inc qty-btn">+</div>
                                                             </div>
                                                         @endif
-                                                    </td>                                                    
+                                                    </td>
                                                     <td class="product-subtotal">
                                                         <span
                                                             class="subtotal">{{ number_format($cart->variant->sale_price * $cart->variant_quantity) }}
@@ -112,13 +110,29 @@
                                                     <button type="submit" value="update" class="update-cart">Cập nhật Giỏ
                                                         hàng</button>
                                 </form>
-                                <form action="{{ route('cart.clear') }}" method="POST" style="display:inline;">
+                                <form action="{{ route('cart.clear') }}" method="POST" id="clearCartForm"
+                                    style="display:inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="clear-cart"
-                                        onclick="return confirm('Bạn có chắc chắn muốn xóa toàn bộ giỏ hàng không?');">Xóa
-                                        toàn bộ giỏ hàng</button>
+                                    <button type="button" class="clear-cart" id="clearCartButton">Xóa toàn bộ giỏ
+                                        hàng</button>
                                 </form>
+                                <script>
+                                    document.getElementById('clearCartButton').addEventListener('click', function() {
+                                        Swal.fire({
+                                            icon: 'warning',
+                                            text: 'Bạn có chắc chắn muốn xóa toàn bộ giỏ hàng không?',
+                                            showCancelButton: true,
+                                            confirmButtonText: 'Xóa',
+                                            cancelButtonText: 'Hủy'
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                // Nếu người dùng xác nhận, tiến hành gửi form để xóa giỏ hàng
+                                                document.getElementById('clearCartForm').submit();
+                                            }
+                                        });
+                                    });
+                                </script>
                                 <a href="{{ route('shop.filter') }}" class="btn-theme btn-flat">Tiếp tục mua sắm</a>
                                 </td>
                                 </tr>
@@ -141,7 +155,7 @@
 
                                 @if (session('error'))
                                     <div class="alert alert-danger">
-                                        {{ session('error') }}
+                                        {!! session('error') !!}
                                     </div>
                                 @endif
                                 </tbody>
@@ -234,78 +248,104 @@
             let row = $(this).closest('.cart-product-item');
             let productId = row.find('input[name="id[]"]').val();
 
-            // Gửi yêu cầu AJAX để xóa sản phẩm khỏi cơ sở dữ liệu
-            $.ajax({
-                url: `/cart/remove/${productId}`,
-                type: 'DELETE',
-                data: {
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    alert(response.success); // Thông báo xóa thành công
-                    window.location.reload(); // Tải lại trang giỏ hàng
-                },
-                error: function(error) {
-                    console.error(error);
-                    alert('Có lỗi xảy ra, vui lòng thử lại.');
+            // Hiển thị cảnh báo xác nhận trước khi xóa
+            Swal.fire({
+                icon: 'warning',
+                text: 'Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?',
+                showCancelButton: true,
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Gửi yêu cầu AJAX để xóa sản phẩm khỏi cơ sở dữ liệu
+                    $.ajax({
+                        url: `/cart/remove/${productId}`,
+                        type: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            // Thay thế alert bằng Swal.fire
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thành công!',
+                                text: 'Sản phẩm đã được xóa khỏi giỏ hàng.',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                window.location
+                            .reload(); // Tải lại trang giỏ hàng
+                            });
+                        },
+                        error: function(error) {
+                            console.error(error);
+                            alert('Có lỗi xảy ra, vui lòng thử lại.');
+                        }
+                    });
                 }
             });
         });
 
-// Hiển thị tổng tiền khi tăng giảm số lượng
-$('.inc.qty-btn').off('click').on('click', function() {
-    let quantityInput = $(this).siblings('.quantity-input');
-    let quantity = parseInt(quantityInput.val()) || 0;
-    let stock = parseInt(quantityInput.attr('data-stock')) || 0; // Lấy số lượng tồn kho từ thuộc tính data-stock
+        // Hiển thị tổng tiền khi tăng giảm số lượng
+        $('.inc.qty-btn').off('click').on('click', function() {
+            let quantityInput = $(this).siblings('.quantity-input');
+            let quantity = parseInt(quantityInput.val()) || 0;
+            let stock = parseInt(quantityInput.attr('data-stock')) ||
+                0; // Lấy số lượng tồn kho từ thuộc tính data-stock
 
-    if (quantity < stock) {
-        quantity += 1;
-        quantityInput.val(quantity);
-        updateSubtotal(quantityInput);
-    } else {
-        // Hiển thị thông báo bằng SweetAlert2
-        Swal.fire({
-            icon: 'warning', // Loại thông báo: cảnh báo
-            title: 'Số lượng vượt quá tồn kho!',
-            html: `Sản phẩm này chỉ còn lại <b>${stock}</b> sản phẩm trong kho.`,
-            confirmButtonText: 'OK'
+            if (quantity < stock) {
+                quantity += 1;
+                quantityInput.val(quantity);
+                updateSubtotal(quantityInput);
+            } else {
+                // Hiển thị thông báo bằng SweetAlert2
+                Swal.fire({
+                    icon: 'warning', // Loại thông báo: cảnh báo
+                    title: 'Vượt quá số lượng tồn kho!',
+                    html: `Sản phẩm này chỉ còn lại <b>${stock}</b> sản phẩm trong kho.`,
+                    confirmButtonText: 'OK'
+                });
+            }
         });
-    }
-});
-$('.dec.qty-btn').off('click').on('click', function() {
-    let quantityInput = $(this).siblings('.quantity-input');
-    let quantity = parseInt(quantityInput.val()) || 1;
+        $('.dec.qty-btn').off('click').on('click', function() {
+            let quantityInput = $(this).siblings('.quantity-input');
+            let quantity = parseInt(quantityInput.val()) || 1;
 
-    if (quantity > 1) {
-        quantity -= 1;
-        quantityInput.val(quantity);
-        updateSubtotal(quantityInput);
-    }
-});
+            if (quantity > 1) {
+                quantity -= 1;
+                quantityInput.val(quantity);
+                updateSubtotal(quantityInput);
+            }
+        });
 
-function updateSubtotal(input) {
-    let quantity = parseInt(input.val()) || 0;
-    let price = parseFloat(input.data('price')) || 0;
-    let subtotal = price * quantity;
+        function updateSubtotal(input) {
+            let quantity = parseInt(input.val()) || 0;
+            let price = parseFloat(input.data('price')) || 0;
+            let subtotal = price * quantity;
 
-    input.closest('tr').find('.subtotal').text(
-        new Intl.NumberFormat('vi-VN').format(subtotal) + ' VNĐ'
-    );
-}
+            input.closest('tr').find('.subtotal').text(
+                new Intl.NumberFormat('vi-VN').format(subtotal) + ' VNĐ'
+            );
+        }
 
-// Kiểm tra khi nhập số lượng trực tiếp
-$('.quantity-input').on('input', function() {
-    let input = $(this);
-    let quantity = parseInt(input.val()) || 0;
-    let stock = parseInt(input.attr('data-stock')) || 0;
+        // Kiểm tra khi nhập số lượng trực tiếp
+        $('.quantity-input').on('input', function() {
+            let input = $(this);
+            let quantity = parseInt(input.val()) || 0;
+            let stock = parseInt(input.attr('data-stock')) || 0;
 
-    if (quantity > stock) {
-        alert(`Không thể vượt quá số lượng tồn kho: ${stock}`);
-        input.val(stock); // Đặt giá trị lại thành tồn kho tối đa
-    }
+            if (quantity > stock) {
+                // alert(`Không thể vượt quá số lượng tồn kho: ${stock}`);
+                Swal.fire({
+                    icon: 'warning', // Loại thông báo: cảnh báo
+                    title: 'Vượt quá số lượng tồn kho!',
+                    html: `Sản phẩm này chỉ còn lại <b>${stock}</b> sản phẩm trong kho.`,
+                    confirmButtonText: 'OK'
+                });
+                input.val(stock); // Đặt giá trị lại thành tồn kho tối đa
+            }
 
-    updateSubtotal(input);
-});
+            updateSubtotal(input);
+        });
 
 
         $('.btn-theme.btn-flat').click(function(event) {
