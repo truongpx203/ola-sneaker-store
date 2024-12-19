@@ -356,7 +356,7 @@
                         }
                         // // Kiểm tra nếu số điểm sử dụng vượt quá tổng giá trị đơn hàng
                         if (discount >= totalPrice) {
-                            pointsError.textContent = 'Không thể sử dụng số điểm này vì đơn hàng sẽ miễn phí.';
+                            pointsError.textContent = 'Không thể sử dụng thêm điểm vì tổng giá trị đơn hàng không thể giảm nữa .';
                             pointsError.style.display = 'block';
                             pointsInput.value = Math.floor(totalPrice / 10000); // Điều chỉnh số điểm về mức tối đa hợp lệ
                         } else {

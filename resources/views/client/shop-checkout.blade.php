@@ -349,7 +349,7 @@
                         } else {
                             pointsError.style.display = 'none';
                         }
-                        // Kiểm tra nếu số điểm sử dụng vượt quá tổng giá trị đơn hàng
+                        // // Kiểm tra nếu số điểm sử dụng vượt quá tổng giá trị đơn hàng
                         if (discount >= totalPrice) {
                             pointsError.textContent = 'Không thể sử dụng thêm điểm vì tổng giá trị đơn hàng không thể giảm nữa .';
                             pointsError.style.display = 'block';
