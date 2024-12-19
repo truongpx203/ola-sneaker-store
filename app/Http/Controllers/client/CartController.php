@@ -181,7 +181,7 @@ class CartController extends Controller
         // Kiểm tra xem đã dùng mã lần nào chưa
         $voucherHistory = VoucerHistory::query()->where('voucher_id', $voucher->id)->first();
         if ($voucherHistory) {
-            return redirect()->back()->with('error', 'Mã giảm giá bạn đã từng dùng rồi');
+            return redirect()->back()->with('error', 'Mã giảm giá đã sử dụng!');
         }
         // Kiểm tra các điều kiện của voucher
         $currentDateTime = now();
@@ -201,7 +201,7 @@ class CartController extends Controller
         // Kiểm tra xem voucher có dành cho người dùng này không
         $forUserIds = json_decode($voucher->for_user_ids, true);
         if (!in_array(Auth::user()->id, $forUserIds)) {
-            return redirect()->back()->with('error', 'Mã giảm giá không dành cho bạn');
+            return redirect()->back()->with('error', 'Mã giảm giá không hợp lệ!');
         }
         return redirect()->back()->with(compact('voucher'))->with('success', 'Mã giảm giá "' . $validatedData['couponCode'] . '" đã được áp dụng');
     }

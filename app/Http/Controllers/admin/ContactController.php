@@ -14,9 +14,29 @@ class ContactController extends Controller
 
 
     // Hiển thị danh sách liên hệ
-    public function index()
+    public function index(Request $request)
     {
-        $contacts = Contact::with('user')->orderBy('created_at', 'desc')->paginate(10);
+        $query = Contact::with('user')->orderBy('created_at', 'desc');
+
+        if ($request->filled('email')) {
+            $query->whereHas('user', function ($q) use ($request) {
+                $q->where('email', 'LIKE', '%' . $request->email . '%');
+            });
+        }
+
+        if ($request->filled('status')) {
+            $isResolved = $request->status === 'resolved' ? 1 : 0;
+            $query->where('is_resolved', $isResolved);
+        }
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        $contacts = $query->paginate(10);
         return view('admin.contacts.index', compact('contacts'));
     }
 
@@ -55,7 +75,7 @@ class ContactController extends Controller
             $contact->update(['is_resolved' => true]);
 
             // Trả về thông báo thành công
-            return redirect()->route('contacts.index')->with('success', 'Phản hồi đã được gửi thành công!');
+            return back()->with('success', 'Phản hồi đã được gửi thành công!');
         } catch (\Exception $e) {
             // Nếu có lỗi trong quá trình gửi email, ghi lại lỗi và trả về thông báo lỗi
             \Log::error('Error sending reply email: ' . $e->getMessage());

@@ -64,9 +64,6 @@ Route::get('shop-wishlist', function () {
 Route::get('shop-checkout', function () {
     return view('client.shop-checkout');
 });
-Route::get('order-details', function () {
-    return view('client.order-details');
-})->name('order-details');
 
 Route::get('check-outCart', function () {
     return view('client.shop-checkout');
@@ -219,7 +216,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/updateProfile', [AccountController::class, 'updateProfile'])->name('your.route.name');
 
     // chi tiết đơn hàng truyền id bảng bill
-    Route::get('order-details/{id}', [HomeController::class, 'detailBill'])->name('order-details');
+    // Route::get('order-details/{id}', [HomeController::class, 'detailBill'])->name('order-details');
+    Route::get('order-details/{id?}', [HomeController::class, 'detailBill'])
+    ->where('id', '[0-9]+') // Ensure that {id} is numeric if provided
+    ->name('order-details');
     Route::post('/bills/{id}/cancel', [HomeController::class, 'cancelOrder'])->name('cancelOrder');
     Route::post('/bills/{bill}/complete', [HomeController::class, 'completeOrder'])->name('completeOrder');
 

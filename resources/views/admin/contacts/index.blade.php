@@ -1,6 +1,8 @@
-@extends('admin.layouts.master');
+@extends('admin.layouts.master')
 
-@section('title', 'Liên hệ')
+@section('title')
+   Liên hệ
+@endsection
 
 @section('content')
     <style>
@@ -47,6 +49,42 @@
                 </div>
                 <div class="card-body">
                     <div class="listjs-table">
+                        <form action="{{ route('contacts.index') }}" method="GET">
+                            <div class="row">
+                                {{-- <!-- Tìm kiếm theo email -->
+                                <div class="form-group col-md-4">
+                                    <label for="email">Email:</label>
+                                    <input type="text" name="email" id="email" class="form-control"
+                                        value="{{ request('email') }}" placeholder="Nhập email">
+                                </div> --}}
+                        
+                                <!-- Tìm kiếm theo trạng thái -->
+                                <div class="form-group col-md-4">
+                                    <label for="status">Trạng thái:</label>
+                                    <select name="status" class="form-control">
+                                        <option value="">Tất cả</option>
+                                        <option value="resolved" {{ request('status') == 'resolved' ? 'selected' : '' }}>Đã phản hồi</option>
+                                        <option value="unresolved" {{ request('status') == 'unresolved' ? 'selected' : '' }}>Chưa phản hồi</option>
+                                    </select>
+                                </div>
+                        
+                                <!-- Tìm kiếm theo ngày gửi -->
+                                <div class="form-group col-md-4">
+                                    <label for="start_date">Ngày gửi từ:</label>
+                                    <input type="date" name="start_date" id="start_date" class="form-control"
+                                        value="{{ request('start_date') }}">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="end_date">Đến ngày:</label>
+                                    <input type="date" name="end_date" id="end_date" class="form-control"
+                                        value="{{ request('end_date') }}">
+                                </div>
+                            </div>
+                        
+                            <!-- Nút tìm kiếm -->
+                            <button class="btn btn-sm btn-primary mt-3">Tìm kiếm</button>
+                        </form>
+                        
                         <div class="table-responsive table-card mt-3 mb-1">
                             <table class="table align-middle table-nowrap" id="customerTable">                           
                                 <thead class="table-light">

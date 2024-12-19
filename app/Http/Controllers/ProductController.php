@@ -150,24 +150,24 @@ class ProductController extends Controller
                 'category_id' => $request->category_id,
                 'is_visible' => $request->has('is_visible') ? 1 : 0,
             ]);
-    
+
             // Xử lý ảnh chính (primary image)
             if ($request->hasFile('primary_image_url')) {
                 $imagePath = $request->file('primary_image_url')->store('products', 'public');
                 // Storage::disk('public')->delete($product->primary_image_url);
                 $product->update(['primary_image_url' => $imagePath]);
             }
-    
+
             // Lưu danh sách các biến thể hiện có
             $currentVariants = $product->variants()->pluck('product_size_id')->toArray();
-    
+
             // Xử lý cập nhật và thêm mới các biến thể
             $updatedVariantIds = []; // Lưu các ID biến thể đã cập nhật
-    
+
             foreach ($request->variants as $variantData) {
                 if (isset($variantData['size_id'])) {
                     $updatedVariantIds[] = $variantData['size_id'];
-    
+
                     // Cập nhật biến thể đã tồn tại
                     $variant = $product->variants()->where('product_size_id', $variantData['size_id'])->first();
                     if ($variant) {
@@ -191,14 +191,14 @@ class ProductController extends Controller
                     }
                 }
             }
-    
+
             // Xóa các biến thể không còn tồn tại trong request
             foreach ($currentVariants as $currentVariantId) {
                 if (!in_array($currentVariantId, $updatedVariantIds)) {
                     $product->variants()->where('product_size_id', $currentVariantId)->delete();
                 }
             }
-    
+
             // Xử lý cập nhật thư viện ảnh (gallery)
             if ($request->hasFile('product_galleries')) {
                 foreach ($request->file('product_galleries') as $file) {
@@ -210,7 +210,7 @@ class ProductController extends Controller
                     ]);
                 }
             }
-    
+
             // Xóa các ảnh từ thư viện nếu có
             if ($request->filled('delete_galleries')) {
                 foreach ($request->delete_galleries as $image_id => $image_url) {
@@ -221,7 +221,7 @@ class ProductController extends Controller
                     }
                 }
             }
-    
+
             DB::commit();
             return back()->with('success', 'Cập nhật sản phẩm thành công!');
         } catch (\Exception $e) {
@@ -235,6 +235,14 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
+        $usedInOrders = DB::table('bill_items')
+            ->whereIn('variant_id', $product->variants->pluck('id'))
+            ->exists();
+
+        if ($usedInOrders) {
+            return redirect()->route('products.index')->with('error', 'Không thể xóa sản phẩm vì đã được sử dụng trong đơn hàng.');
+        }
+
         $product->variants()->delete();
 
         if ($product->primary_image_url && Storage::disk('public')->exists($product->primary_image_url)) {
@@ -252,10 +260,11 @@ class ProductController extends Controller
 
         return redirect()->route('products.index')->with('success', 'Xóa sản phẩm thành công.');
     }
-    public function search(Request $request) {
+    public function search(Request $request)
+    {
         $query = $request->input('name');
-    $products = Product::where('name', 'like', '%' . $query . '%')->with('variants')->get();
+        $products = Product::where('name', 'like', '%' . $query . '%')->with('variants')->get();
 
-    return view('client.search', compact('products', 'query'));
+        return view('client.search', compact('products', 'query'));
     }
 }

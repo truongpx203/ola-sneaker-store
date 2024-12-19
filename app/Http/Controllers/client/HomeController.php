@@ -16,8 +16,12 @@ use Illuminate\Support\Facades\Mail;
 
 class HomeController extends Controller
 {
-    public function detailBill($id)
+    public function detailBill($id = null)
     {
+        if (is_null($id) || !is_numeric($id)) {
+        // Return a 404 response if ID is missing or invalid
+        abort(404);
+    }
         $bill = Bill::query()
             ->with(['items.variant', 'items.variant.productReviews'])
             ->findOrFail($id);
@@ -27,7 +31,7 @@ class HomeController extends Controller
 
         if ($bill->user_id != $userId) {
             // Nếu không phải, chuyển hướng về trang khác và hiển thị thông báo lỗi
-            return redirect()->route('page-not-found')->with('error', 'Bạn không có quyền truy cập vào đơn hàng này.');
+            abort(404);
         }
         $voucerHistory=VoucerHistory::query()->with('voucher')->where('bill_id',$id)->first();
         foreach ($bill->items as $item) {

@@ -71,7 +71,7 @@
                                         <th>Tên sản phẩm</th>
                                         <th>Danh mục</th>
                                         <th>Đánh giá</th>
-                                        <th>Hàng động</th>
+                                        <th>Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody class="list form-check-all">
