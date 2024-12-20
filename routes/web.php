@@ -41,43 +41,10 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::get('/blog', function () {
-    return view('client.blog');
-})->name('/blog');
-Route::get('/product-detail', function () {
-    return view('client.product-details');
-})->name('product-detail');
-// ...
 
 Route::get('page-not-found', function () {
     return view('client.page-not-found');
 })->name('page-not-found');
-Route::get('contact', function () {
-    return view('client.contact');
-})->name('contact');
-Route::get('shop-wishlist', function () {
-    return view('client.shop-wishlist');
-});
-// Route::get('shop-cart', function () {
-//     return view('client.shop-cart');
-// });
-Route::get('shop-checkout', function () {
-    return view('client.shop-checkout');
-});
-
-Route::get('check-outCart', function () {
-    return view('client.shop-checkout');
-});
-Route::get('shop-wishlist', function () {
-    return view('client.shop-wishlist');
-});
-Route::get('shop-compare', function () {
-    return view('client.shop-compare');
-});
-Route::get('account', function () {
-    return view('client.account');
-});
-
 
 
 
@@ -174,7 +141,7 @@ Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
             Route::delete('/delete/{id}',       [VoucherController::class, 'destroy'])->name('destroy');
         });
 
-        Route::prefix('banners')
+    Route::prefix('banners')
         ->as('banners.')
         ->group(function () {
             Route::get('/',                     [BannerController::class, 'index'])->name('index');
@@ -183,12 +150,11 @@ Route::middleware(CheckRole::class)->prefix('admin')->group(function () {
             Route::get('/edit/{id}',            [BannerController::class, 'edit'])->name('edit');
             Route::put('/update/{id}',          [BannerController::class, 'update'])->name('update');
             Route::delete('/delete/{banner}',       [BannerController::class, 'destroy'])->name('destroy');
-
         });
 
-        Route::get('/date-export', [DateExportController::class,'dateExport']);
-        Route::get('/month-export', [DateExportController::class,'monthExport']);
-        Route::get('/year-export', [DateExportController::class,'yearExport']);
+    Route::get('/date-export', [DateExportController::class, 'dateExport']);
+    Route::get('/month-export', [DateExportController::class, 'monthExport']);
+    Route::get('/year-export', [DateExportController::class, 'yearExport']);
 });
 
 
@@ -210,16 +176,15 @@ Route::post('/reset-password/{token}', [AccountController::class, 'check_reset_p
 
 Route::get('/logout', [AccountController::class, 'logout'])->name('logout');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'checkStatus'])->group(function () {
     Route::get('/account', [AccountController::class, 'account'])->name('account');
 
     Route::post('/updateProfile', [AccountController::class, 'updateProfile'])->name('your.route.name');
 
     // chi tiết đơn hàng truyền id bảng bill
-    // Route::get('order-details/{id}', [HomeController::class, 'detailBill'])->name('order-details');
     Route::get('order-details/{id?}', [HomeController::class, 'detailBill'])
-    ->where('id', '[0-9]+') // Ensure that {id} is numeric if provided
-    ->name('order-details');
+        ->where('id', '[0-9]+') // Ensure that {id} is numeric if provided
+        ->name('order-details');
     Route::post('/bills/{id}/cancel', [HomeController::class, 'cancelOrder'])->name('cancelOrder');
     Route::post('/bills/{bill}/complete', [HomeController::class, 'completeOrder'])->name('completeOrder');
 
@@ -230,43 +195,48 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/wishlist/store',              [WishlistController::class, 'store'])->name('wishlist.store');
     Route::delete('/wishlist/{wishlist}/destroy',     [WishlistController::class, 'destroy'])->name('wishlist.destroy');
 
+    // Thanh toán
+    Route::get('tt-that-bai', function () {
+        return view('client.tt-that-bai');
+    })->name('tt-that-bai');
 
-    Route::get('/chat', [App\Http\Controllers\MessageController::class, 'showChat'])->name('chat.show');
-    Route::post('/chat/message', [App\Http\Controllers\MessageController::class, 'messageReceived'])->name('chat.message');
-    Route::post('/chat/greet/{receiver}', [App\Http\Controllers\MessageController::class, 'greetReceived'])->name('chat.greet');
+    Route::get('tt-thanh-cong/{bill}', function ($billId) {
+        $bill = Bill::findOrFail($billId);
+        return view('client.tt-thanh-cong', compact('bill'));
+    })->name('tt-thanh-cong');
+
+    Route::get('/payment/return/{voucher_id?}', [CheckoutController::class, 'returnFromVNPAY'])->name('checkout.vnpay.returnFrom');
+    Route::post('/checkout/vnpay', [CheckoutController::class, 'processVNPAY'])->name('checkout.vnpay');
+
+    // Route::post('/checkout/cod', [CheckoutController::class, 'processCheckout'])->name('checkout.cod');
+    Route::post('/checkouts', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
+    Route::get('/checkouts', [CheckoutController::class, 'checkout'])->name('checkouts');
+
+    // momo
+    Route::post('/payment/momo', [CheckoutController::class, 'paymentMOMO'])->name('checkout.momo');
+    Route::get('/checkout/momo/return', [CheckoutController::class, 'returnFromMOMO'])->name('checkout.momo.returnFrom');
+
+    // Liên hệ
+    Route::get('/contact', [ContactController::class, 'showForm'])->name('contact.form');
+    Route::post('/contact', [ContactController::class, 'submitForm'])->name('contact.submit');
+
+    // mua ngay
+    Route::get('/buy-now', [CheckoutController::class, 'buyNow'])->name('buy.now');
+    Route::post('/buy-now/process', [CheckoutController::class, 'processBuyNow'])->name('buy.now.process');
+    Route::get('/checkout/vnpay/return/{voucher_id?}', [CheckoutController::class, 'vnpayReturn'])->name('checkout.vnpay.return');
+
+    //trang giỏ hàng
+    Route::get('/cart', [CartController::class, 'showCart'])->name('cart.show');
+    Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+    Route::delete('/cart/remove/{id}', [CartController::class, 'removeItem'])->name('cart.remove');
+    Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
+    Route::post('/cart/voucher', [CartController::class, 'applyVoucher'])->name('cart.voucher');
+    Route::post('/cart/update-all', [CartController::class, 'updateAll'])->name('cart.updateAll');
 });
 
 
-// Thanh toán
 
-Route::get('tt-that-bai', function () {
-    return view('client.tt-that-bai');
-})->name('tt-that-bai');
 
-Route::get('tt-thanh-cong/{bill}', function ($billId) {
-    $bill = Bill::findOrFail($billId);
-    return view('client.tt-thanh-cong', compact('bill'));
-})->name('tt-thanh-cong');
-
-Route::get('/payment/return/{voucher_id?}', [CheckoutController::class, 'returnFromVNPAY'])->name('checkout.vnpay.returnFrom');
-Route::post('/checkout/vnpay', [CheckoutController::class, 'processVNPAY'])->name('checkout.vnpay');
-
-// Route::post('/checkout/cod', [CheckoutController::class, 'processCheckout'])->name('checkout.cod');
-Route::post('/checkouts', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
-Route::get('/checkouts', [CheckoutController::class, 'checkout'])->name('checkouts');
-
-// momo
-Route::post('/payment/momo', [CheckoutController::class, 'paymentMOMO'])->name('checkout.momo');
-Route::get('/checkout/momo/return', [CheckoutController::class, 'returnFromMOMO'])->name('checkout.momo.returnFrom');
-
-// Liên hệ
-Route::get('/contact', [ContactController::class, 'showForm'])->name('contact.form');
-Route::post('/contact', [ContactController::class, 'submitForm'])->name('contact.submit');
-
-// mua ngay
-Route::get('/buy-now', [CheckoutController::class, 'buyNow'])->name('buy.now');
-Route::post('/buy-now/process', [CheckoutController::class, 'processBuyNow'])->name('buy.now.process');
-Route::get('/checkout/vnpay/return/{voucher_id?}', [CheckoutController::class, 'vnpayReturn'])->name('checkout.vnpay.return');
 
 
 
@@ -274,33 +244,17 @@ Route::get('/checkout/vnpay/return/{voucher_id?}', [CheckoutController::class, '
 
 Route::get('/', [ClientProductController::class, 'showNewProducts'])->name('/');
 
-Route::get('/product/{id}', [ClientProductController::class, 'show'])->name('product-detail');
-
-// Route::get('/', [ClientProductController::class, 'showNewProducts'])->name('/');
-
-// Route::get('/', [clientProductController::class, 'showTopSellingProducts']);
 // chi tiết sp
 Route::get('/product/{id}', [ClientProductController::class, 'show'])->name('product-detail');
 // trang sản phẩm (có bộ lọc)
 Route::get('/shop/filter', [ClientProductController::class, 'filterProducts'])->name('shop.filter');
 Route::get('/shop/page', [ClientProductController::class, 'paginateProducts'])->name('shop.paginate');
 Route::get('/shop/filter/price', [ClientProductController::class, 'filterByPrice'])->name('shop.filter.price');
-//trang giỏ hàng
-Route::get('/cart', [CartController::class, 'showCart'])->name('cart.show');
-Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
-Route::delete('/cart/remove/{id}', [CartController::class, 'removeItem'])->name('cart.remove');
-Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
-Route::post('/cart/voucher', [CartController::class, 'applyVoucher'])->name('cart.voucher');
-Route::post('/cart/update-all', [CartController::class, 'updateAll'])->name('cart.updateAll');
+
 
 //tìm kiếm theo tên sản phẩm
 Route::get('/search', [ProductController::class, 'search'])->name('search');
 
-
-
-Route::get('show-bill-item', function () {
-    return view('admin.bills.show-bill-item');
-});
 
 
 //chat
