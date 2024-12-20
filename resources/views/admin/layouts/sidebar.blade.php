@@ -4,19 +4,19 @@
         <!-- Dark Logo-->
         <a href="{{route('dashboard')}}" class="logo logo-dark">
             <span class="logo-sm">
-                <img src="{{ asset('theme/admins/velzon/assets/images/olaLogo.png') }}" alt="" height="17">
+                <img src="{{asset('assets/img/OLASNEAKER-light.png')}}" alt="" height="17">
             </span>
             <span class="logo-lg">
-                <img src="{{ asset('theme/admins/velzon/assets/images/olaLogo.png') }}" alt="" height="20">
+                <img src="{{asset('assets/img/OLASNEAKER-light.png')}}" alt="" height="20">
             </span>
         </a>
         <!-- Light Logo-->
         <a href="{{route('dashboard')}}" class="logo logo-light" style="padding: 20px">
             <span class="logo-sm">
-                <img src="{{ asset('theme/admins/velzon/assets/images/olaLogo.png') }}" alt="" height="17">
+                <img src="{{asset('assets/img/OLASNEAKER-light.png')}}" alt="" height="17">
             </span>
             <span class="logo-lg">
-                <img src="{{ asset('theme/admins/velzon/assets/images/olaLogo.png') }}" alt="" height="20">
+                <img src="{{asset('assets/img/OLASNEAKER-light.png')}}" alt="" height="20">
             </span>
         </a>
         <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
@@ -199,7 +199,7 @@
                     </div>
                 </li>
 
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a class="nav-link menu-link" href="#banner" data-bs-toggle="collapse"
                         role="button" aria-expanded="false" aria-controls="banner">
                         <i class="ri-coupon-line"></i> <span data-key="t-layouts">Banner</span>
@@ -213,7 +213,7 @@
                             </li>
                         </ul>
                     </div>
-                </li>
+                </li> --}}
 
 
             </ul>

@@ -99,7 +99,7 @@
               <div class="header-middle-align-start">
                 <div class="header-logo-area">
                   <a href="{{route('/')}}">
-                    <img class="logo-main" src="{{asset('assets/img/OLASNEAKER.png')}}" width="200" style="" alt="Logo" />
+                    <img class="logo-main" src="{{asset('assets/img/OLASNEAKER.png')}}" width="200" style="height: 30px;" alt="Logo" />
                     {{-- <img class="logo-light" src="{{asset('assets/img/logo-light.webp')}}" width="131" height="34" alt="Logo" /> --}}
                   </a>
                 </div>
@@ -237,8 +237,8 @@
             <div class="widget-item">
               <div class="about-widget-wrap">
                 <div class="widget-logo-area">
-                  <a href="index.html">
-                    <img class="logo-main" src="{{asset('assets/img/logo-light.webp')}}" width="131" height="34" alt="Logo" />
+                  <a href="{{route('/')}}">
+                    <img class="logo-main" src="{{asset('assets/img/OLASNEAKER-light.png')}}" width="200" style="height: 30px;" alt="Logo" />
                   </a>
                 </div>
                 <p class="desc">Khám phá bộ sưu tập giày thể thao đa dạng, phong cách và chất lượng. Mang đến sự thoải mái và tự tin cho từng bước đi của bạn.

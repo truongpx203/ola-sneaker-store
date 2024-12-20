@@ -176,7 +176,7 @@
                                     data-bs-target="#dasboard-tg" type="button" role="tab"
                                     aria-controls="dasboard-tg" aria-selected="false">Theo khoảng thời gian</button>
                             </li>
-                            <li class="nav-item ms-auto" role="presentation"> <!-- Thêm 'ms-auto' -->
+                            {{-- <li class="nav-item ms-auto" role="presentation"> <!-- Thêm 'ms-auto' -->
                                 <button class="btn  dropdown-toggle" type="button" id="exportDropdown"
                                     data-bs-toggle="dropdown" aria-expanded="false" role="tab">
                                     Xuất Excel
@@ -204,7 +204,7 @@
                                         </form>
                                     </li>
                                 </ul>
-                            </li>
+                            </li> --}}
                         </ul>
 
                     </div><!-- end card header -->
