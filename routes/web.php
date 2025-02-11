@@ -209,7 +209,6 @@ Route::middleware(['auth', 'checkStatus'])->group(function () {
     Route::get('/payment/return/{voucher_id?}', [CheckoutController::class, 'returnFromVNPAY'])->name('checkout.vnpay.returnFrom');
     Route::post('/checkout/vnpay', [CheckoutController::class, 'processVNPAY'])->name('checkout.vnpay');
 
-    // Route::post('/checkout/cod', [CheckoutController::class, 'processCheckout'])->name('checkout.cod');
     Route::post('/checkouts', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
     Route::get('/checkouts', [CheckoutController::class, 'checkout'])->name('checkouts');
 
