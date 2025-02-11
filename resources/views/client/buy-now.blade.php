@@ -142,7 +142,7 @@
                         <div class="col-lg-6">
                             <!--== Start Billing Accordion ==-->
                             <div class="checkout-billing-details-wrap">
-                                <h2 class="title">Chi tiết thanh toán</h2>
+                                <h2 class="title">Thông tin khách hàng</h2>
                                 <div class="billing-form-wrap">
                                     {{-- <form action="#" method="post"> --}}
                                     <div class="row">

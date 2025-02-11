@@ -1110,12 +1110,10 @@ class CheckoutController extends Controller
         $vnp_HashSecret = "12GUKMUAGMQR4QW57D26MKG56RCYN9G8";
 
         $vnp_OrderInfo = "Thanh toán VNPAY - Mã đơn hàng: " . $vnp_TxnRef;
-        // $vnp_Amount = $totalPrice * 100;
-        $vnp_Amount = $finalPrice * 100; //7/11/2024
+        $vnp_Amount = $finalPrice * 100; 
         $vnp_Locale = "VN";
         $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
 
-        // Chuẩn bị dữ liệu gửi đến VNPAY
         $inputData = [
             "vnp_Version" => "2.1.0",
             "vnp_TmnCode" => $vnp_TmnCode,

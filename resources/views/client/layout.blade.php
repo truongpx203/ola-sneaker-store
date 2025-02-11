@@ -72,8 +72,8 @@
                 <div class="header-info-items">
                   <div class="info-items">
                     <ul>
-                      <li class="number"><i class="fa fa-phone"></i><a href="tel://0123456789">0328902188</a></li>
-                      <li class="email"><i class="fa fa-envelope"></i><a href="mailto://datn@gmail.com">datn@gmail.com</a></li>
+                      <li class="number"><i class="fa fa-phone"></i><a href="tel://0328902188">0328902188</a></li>
+                      <li class="email"><i class="fa fa-envelope"></i><a href="mailto://truongpxph39601@fpt.edu.vn">truongpxph39601@fpt.edu.vn</a></li>
                       <li class="account">
                         <i class="fa fa-user"></i>
                         @if (Auth::check())
@@ -306,8 +306,8 @@
                     <ul>
                       <li><span>Địa chỉ: </span>Nam Từ Liêm - Hà Nội.</li>
                       <li><span>Điện thoại:</span> <a href="tel://0123456789">0328902188</a></li>
-                      <li><span>Email:</span> <a href="mailto://demo@example.com">datn@gmail.com</a></li>
-                      <li><a target="_blank" href="https://www.hasthemes.com/">OlaSneaker.vn</a></li>
+                      <li><span></span> <a href="mailto://truongpxph39601@fpt.edu.vn">truongpxph39601@fpt.edu.vn</a></li>
+                      {{-- <li><a target="_blank" href="https://www.hasthemes.com/">OlaSneaker.vn</a></li> --}}
                     </ul>
                   </div>
                 </div>
